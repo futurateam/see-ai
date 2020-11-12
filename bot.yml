@@ -1,7 +1,7 @@
 name: seeAi
-tag: null
+tag: latest
 deleted_at: null
-desc: sex edu bot
+desc: ''
 timezone: 7
 flows:
     fallback:
@@ -172,6 +172,104 @@ flows:
                             Kenalin aku See, Sex Educator for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Tak perlu takut untuk
                             bertanya apapun karena aku tidak akan menghakimimu. Selamat bertanya!
         methods: {}
+    pubertas:
+        active: true
+        volatile: false
+        intents:
+            pengertianPubertas:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: pubertas
+                    match: apa itu pubertas
+            'yes':
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: 'yes'
+            'no':
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: 'no'
+            mens:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: ciriPuber
+                    match: menstruasi
+        states:
+            init:
+                transitions:
+                    tentangPuber:
+                        condition: intent=="pengertianPubertas"
+                initial: true
+            tentangPuber:
+                transitions:
+                    yangKamuAlami:
+                        condition: intent=="yes"
+                    belumPuber:
+                        condition: intent=="no"
+                    mens:
+                        condition: intent=="mens"
+                action:
+                    -
+                        name: penjelasanPuber
+                    -
+                        name: sudahPuber
+                initial: false
+            yangKamuAlami:
+                transitions:
+                    mens:
+                        fallback: false
+                        condition: intent=="mens"
+                action: tanya
+            belumPuber:
+                transitions: {}
+                action:
+                    -
+                        name: kasihTau
+                    -
+                        name: tanyaLagi
+            mens:
+                transitions: {}
+                action: mens
+        actions:
+            penjelasanPuber:
+                type: text
+                options:
+                    text: 'Pubertas adalah kondisi matangnya seksual seeorang dan itu pasti terjadi kesemua orang, ada beberapa ciri pubertas yaitu'
+            sudahPuber:
+                type: text
+                options:
+                    text: apa kamu sudah mengalaminya?
+            tanya:
+                type: text
+                options:
+                    text: apa yang kamu alami?
+            kasihTau:
+                type: text
+                options:
+                    text: 'ohh begitu, kamu nanti pasti bakal ngalamin kok'
+            tanyaLagi:
+                type: text
+                options:
+                    text: ada yang mau kamu tanyain lagi nggak?
+            mimpiBasah:
+                type: text
+                options:
+                    text: Itu wajar terjadi pada laki laki
+            mens:
+                type: text
+                options:
+                    text: itu wajat terjadi pada perempuan
+        methods: {}
 nlus:
     basic:
         type: keyword
@@ -236,5 +334,31 @@ nlus:
                     - okk
                     - okkk
                     - okke
+                'yes':
+                    - 'yes'
+                    - yap
+                    - iyaa
+                    - iya
+                    - yoi
+                    - ya
+                'no':
+                    - 'no'
+                    - nope
+                    - tidak
+                    - nggak
+                    - gak
+    pubertas:
+        type: nl
+        options:
+            threshold: 0.4
+            nluId: 'futura:seeAi'
+            asIntent: pubertas
+            output: raw
+    ciriPuber:
+        type: keyword
+        options:
+            keywords:
+                menstruasi:
+                    - menstruasi
 methods: {}
 config: {}
