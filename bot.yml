@@ -1,0 +1,240 @@
+name: seeAi
+tag: null
+deleted_at: null
+desc: sex edu bot
+timezone: 7
+flows:
+    fallback:
+        active: true
+        volatile: false
+        fallback: true
+        intents:
+            fallback:
+                type: text
+                initial: false
+                fallback: true
+        states:
+            init:
+                transitions:
+                    init:
+                        fallback: true
+                action: sayDontUnderstand
+                initial: true
+                end: true
+        actions:
+            sayDontUnderstand:
+                type: text
+                options:
+                    text: 'Maaf, kami belum mengetahui hal tersebut.'
+        methods: {}
+    halo:
+        active: true
+        volatile: false
+        intents:
+            sapa:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: sapa
+            adaBantu:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: adaBantu
+            tidakBantu:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: tidakBantu
+            oke:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: oke
+        states:
+            init:
+                transitions:
+                    sapa:
+                        condition: intent=="sapa"
+                    oke:
+                        condition: intent=="oke"
+                initial: true
+            sapa:
+                transitions:
+                    adaBantu:
+                        condition: intent=="adaBantu"
+                    tidakBantu:
+                        condition: intent=="tidakBantu"
+                    sapa:
+                        fallback: true
+                        condition: intent=="sapa"
+                action: sapa
+            adaBantu:
+                transitions:
+                    tidakBantu:
+                        condition: intent=="tidakBantu"
+                action: adaBantu
+            tidakBantu:
+                transitions:
+                    sapa:
+                        condition: intent=="sapa"
+                    tidakBantu:
+                        fallback: true
+                action: tidakBantu
+            oke:
+                transitions:
+                    adaBantu:
+                        condition: intent=="adaBantu"
+                    tidakBantu:
+                        condition: intent=="tidakBantu"
+                action: oke
+        actions:
+            sapa:
+                type: text
+                options:
+                    text:
+                        - 'Halo! Namaku See, mentor edukasi seks pribadimu. Ada yang bisa aku bantu?'
+                        - Hai! Ada yang bisa See bantu?
+                        - See disini! Ada yang bisa aku bantu?
+                        - 'Hey, See disini! Ada yang bisa See bantu?'
+            siapa:
+                type: text
+                options:
+                    text: >-
+                        Aku memiiki singkatan dari Sex Education for Eudaemonism (SEE). Eudaemonsim sendiri memiliki makan kebahagiaan. Harapan penuh
+                        kami ialah dapat memberikan edukasi seks ke siapapun tanpa perlu takut dihakimi karena aku seorang bot. Selamat mencari tahu!
+            adaBantu:
+                type: text
+                options:
+                    text:
+                        - Apakah itu?
+                        - 'Kalau boleh See tau, apakah itu?'
+                        - Apa yang membuatmu penasaran?
+                        - Coba jelaskan ke See apa itu?
+            tidakBantu:
+                type: text
+                options:
+                    text:
+                        - 'Baik kalau begitu, terima kasih telah mengajak ngobrol aku!'
+                        - Okey kalau begitu. Sampai jumpa!
+                        - 'Semoga kamu paham, yah! Terima kasih!'
+            oke:
+                type: text
+                options:
+                    text:
+                        - Ada yang bisa aku bantu lagi?
+                        - 'Baik, apakah sudah cukup?'
+        methods: {}
+    siapa:
+        active: true
+        volatile: false
+        intents:
+            siapa:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: siapa
+        states:
+            init:
+                transitions:
+                    siapa:
+                        condition: intent=="siapa"
+                initial: true
+            siapa:
+                transitions:
+                    siapa:
+                        fallback: true
+                action: siapa
+                initial: true
+        actions:
+            siapa:
+                type: text
+                options:
+                    text:
+                        - >-
+                            Namaku See dengan singkatan dari Sex Educator for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Aku hadir
+                            sebagai mentor yang akan menjawab segala pertanyaanmu mengenai edukasi seks tanpa perlu takut dihakimi. Kenapa? Karena aku
+                            sebuah bot. Selamat bertanya!
+                        - >-
+                            Aku See. Aku adalah mentor edukasi seks pribadimu. Aku hadir tiap saat dikala kamu membutuhkanku. Tenang, aku tidak akan
+                            menghakimimu, kok! Aku kan robot. :)
+                        - >-
+                            Kenalin aku See, Sex Educator for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Tak perlu takut untuk
+                            bertanya apapun karena aku tidak akan menghakimimu. Selamat bertanya!
+        methods: {}
+nlus:
+    basic:
+        type: keyword
+        options:
+            keywords:
+                sapa:
+                    - halo
+                    - hai
+                    - hi
+                    - hello
+                    - hay
+                    - hey
+                    - hallo
+                    - hola
+                    - ola
+                    - oy
+                    - woy
+                siapa:
+                    - siapa
+                    - bisa
+                    - mampu
+                    - ngapain
+                    - tugasmu
+                    - jobdeskmu
+                    - jobmu
+                adaBantu:
+                    - ada
+                    - tanya
+                    - tahu
+                    - kepo
+                    - tau
+                    - penasaran
+                    - sudah
+                    - suda
+                    - sdh
+                    - tao
+                tidakBantu:
+                    - engga ada
+                    - gada
+                    - tidak ada
+                    - ndak ada
+                    - ga ada
+                    - tidak
+                    - blm
+                    - belom
+                    - belum
+                    - ga jadi
+                    - gajadi
+                    - gjd
+                oke:
+                    - oke
+                    - ok
+                    - baik
+                    - ooh
+                    - oooo
+                    - begitu
+                    - okay
+                    - okey
+                    - k
+                    - okee
+                    - okeee
+                    - okk
+                    - okkk
+                    - okke
+methods: {}
+config: {}
