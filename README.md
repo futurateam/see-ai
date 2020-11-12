@@ -1,2 +1,2 @@
-# see-ai
-Sex Education Bot
+# SEE.AI
+SEE is stands for Sex Educator for Eudaemonism. Eudaemonism means a state of being full of happiness. SEE rethinks our society stigma about sex education as taboo information becomes a fun one.  SEE provides the user an acknowledgment of sex education without giving any out of context judgment, so the user does not need to be worried about being judged, just full of happiness of being acknowledged.
