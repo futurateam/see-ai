@@ -25,7 +25,9 @@ flows:
             sayDontUnderstand:
                 type: text
                 options:
-                    text: 'Maaf, kami belum mengetahui hal tersebut.'
+                    text:
+                        - 'Maaf, See belum mengetahui hal tersebut.'
+                        - 'Sayang sekali, See belum mengerti hal tersebut.'
         methods: {}
     halo:
         active: true
@@ -142,8 +144,12 @@ flows:
                 initial: true
                 fallback: false
                 classifier:
-                    nlu: basic
-                    match: siapa
+                    -
+                        nlu: basic
+                        match: siapa
+                    -
+                        nlu: basic
+                        match: buat
         states:
             init:
                 transitions:
@@ -154,7 +160,11 @@ flows:
                 transitions:
                     siapa:
                         fallback: true
-                action: siapa
+                action:
+                    -
+                        name: siapa
+                    -
+                        name: siapaBuat
                 initial: true
         actions:
             siapa:
@@ -171,6 +181,18 @@ flows:
                         - >-
                             Kenalin aku See, Sex Educator for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Tak perlu takut untuk
                             bertanya apapun karena aku tidak akan menghakimimu. Selamat bertanya!
+            buat:
+                type: text
+                options:
+                    text:
+                        - 'Tiga orang jenius ini lah yang melahirkan See ke dunia. Abiel Zulio M, Syaufiq Alaudin, dan Shafa.'
+                        - 'See lahir dari pemikiran tiga orang jenius ini. Abiel Zulio M, Syaufiq Alaudin, dan Shafa.'
+            siapaBuat:
+                type: text
+                options:
+                    text:
+                        - 'See diwujudkan oleh ketiga orang jenius ini. Abiel Zulio M, Syaufiq Alaudin, dan Shafa.'
+                        - 'See hadir dibuat oleh tiga orang jenisu ini. Abiel Zulio M, Syaufiq Alaudin, dan Shafa.'
         methods: {}
     pubertas:
         active: true
@@ -213,7 +235,7 @@ flows:
             tentangPuber:
                 transitions:
                     yangKamuAlami:
-                        condition: intent=="yes"
+                        condition: intent=="yes" && intent=="sudah"
                     belumPuber:
                         condition: intent=="no"
                     mens:
@@ -248,7 +270,7 @@ flows:
             sudahPuber:
                 type: text
                 options:
-                    text: apa kamu sudah mengalaminya?
+                    text: Apa kamu sudah mengalaminya?
             tanya:
                 type: text
                 options:
@@ -256,11 +278,11 @@ flows:
             kasihTau:
                 type: text
                 options:
-                    text: 'ohh begitu, kamu nanti pasti bakal ngalamin kok'
+                    text: 'Ohh begitu, kamu nanti pasti bakal ngalamin kok!'
             tanyaLagi:
                 type: text
                 options:
-                    text: ada yang mau kamu tanyain lagi nggak?
+                    text: Ada yang mau kamu tanyain lagi kepada See?
             mimpiBasah:
                 type: text
                 options:
@@ -268,7 +290,58 @@ flows:
             mens:
                 type: text
                 options:
-                    text: itu wajat terjadi pada perempuan
+                    text: itu wajar terjadi pada perempuan.
+        methods: {}
+    tanya:
+        active: true
+        volatile: true
+        intents:
+            tanya:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: adaBantu
+            cerita:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: cerita
+        states:
+            init:
+                transitions:
+                    tanya:
+                        condition: intent=="adaBantu"
+                    cerita:
+                        condition: intent=="cerita"
+                initial: true
+            tanya:
+                transitions:
+                    tanya:
+                        fallback: true
+                action: tanya
+                initial: true
+            cerita:
+                transitions:
+                    cerita:
+                        fallback: true
+                action: cerita
+                initial: false
+        actions:
+            tanya:
+                type: text
+                options:
+                    text: Apa yang ingin kamu ketahui?
+            cerita:
+                type: text
+                options:
+                    text:
+                        - Silahkan bercerita kepada See.
+                        - Apakah itu kalau See boleh tau?
+                        - 'Kalau See boleh tau, bagaimana ceritanya?'
         methods: {}
 nlus:
     basic:
@@ -306,6 +379,15 @@ nlus:
                     - suda
                     - sdh
                     - tao
+                    - udah
+                    - uda
+                    - udh
+                    - dah
+                    - sudahh
+                    - sampun
+                    - mpun
+                    - nanya
+                    - takon
                 tidakBantu:
                     - engga ada
                     - gada
@@ -347,6 +429,12 @@ nlus:
                     - tidak
                     - nggak
                     - gak
+                cerita:
+                    - crita
+                    - cerita
+                    - curhat
+                    - curcol
+                    - berkisah
     pubertas:
         type: nl
         options:

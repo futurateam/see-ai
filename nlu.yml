@@ -1,0 +1,17 @@
+name: seeAi
+lang: id
+visibility: private
+entities:
+  pubertas:
+    type: trait
+    profile: default
+    labels:
+      - apa itu pubertas
+      - puber
+      - pubertas
+  ciriPuber:
+    type: trait
+    profile: default
+    labels:
+      - mimpi basah
+      - menstruasi
