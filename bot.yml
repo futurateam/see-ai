@@ -224,7 +224,7 @@ flows:
                 initial: false
                 fallback: false
                 classifier:
-                    nlu: ciriPuber
+                    nlu: pubertas
                     match: menstruasi
         states:
             init:
@@ -234,12 +234,18 @@ flows:
                 initial: true
             tentangPuber:
                 transitions:
-                    yangKamuAlami:
-                        condition: intent=="yes" && intent=="sudah"
                     belumPuber:
                         condition: intent=="no"
+                        mapping:
+                            context.gejala: intent
                     mens:
                         condition: intent=="mens"
+                        mapping:
+                            context.mens: intent
+                    yangKamuAlami:
+                        condition: intent=="yes"
+                        mapping:
+                            context.ya: intent
                 action:
                     -
                         name: penjelasanPuber
@@ -251,6 +257,8 @@ flows:
                     mens:
                         fallback: false
                         condition: intent=="mens"
+                        mapping:
+                            context.mens: intent
                 action: tanya
             belumPuber:
                 transitions: {}
@@ -261,7 +269,9 @@ flows:
                         name: tanyaLagi
             mens:
                 transitions: {}
-                action: mens
+                action:
+                    name: mens
+                    condition: context.mens="mens"
         actions:
             penjelasanPuber:
                 type: text
@@ -274,7 +284,7 @@ flows:
             tanya:
                 type: text
                 options:
-                    text: apa yang kamu alami?
+                    text: '$(context.ya), apa yang kamu alami?'
             kasihTau:
                 type: text
                 options:
@@ -282,7 +292,7 @@ flows:
             tanyaLagi:
                 type: text
                 options:
-                    text: Ada yang mau kamu tanyain lagi kepada See?
+                    text: Ada yang mau kamu tanyain lagi kepada See?$(context.gejala)
             mimpiBasah:
                 type: text
                 options:
@@ -342,6 +352,305 @@ flows:
                         - Silahkan bercerita kepada See.
                         - Apakah itu kalau See boleh tau?
                         - 'Kalau See boleh tau, bagaimana ceritanya?'
+        methods: {}
+    organReproduksi:
+        active: true
+        volatile: false
+        intents:
+            ereksi:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: ereksi
+            penyebabereksi:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: penyebab ereksi
+        states:
+            init:
+                transitions:
+                    ereksi:
+                        condition: intent=="ereksi"
+                initial: true
+            ereksi:
+                transitions:
+                    penyebab_ereksi:
+                        condition: intent="penyebabereksi"
+                action: ereksi
+            penyebab_ereksi:
+                transitions: {}
+                action:
+                    -
+                        name: penyebab_ereksi
+                    -
+                        name: simpulan
+        actions:
+            ereksi:
+                type: text
+                options:
+                    text: Ereksi adalah kondisi penis menjadi tegang dan terangkat
+            penyebab_ereksi:
+                type: text
+                options:
+                    text: 'Ereksi bisa disebabkan oleh berbagai macam stimul seperti psikologis, rangsang sentuh, bau, dan visual stimulus'
+            simpulan:
+                type: text
+                options:
+                    text: 'Ereksi merupakan hal wajar yang terjadi pada laki laki, jadi tidak perlu cemas jika itu terjadi.'
+        methods: {}
+    penyakitMenularSeksual:
+        active: true
+        volatile: false
+        intents:
+            pengertianPenyakit:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: penyakitMenularSeksual
+                    match: penyakit menular seksual
+            hivaids:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: penyakitMenularSeksual
+                    match: HIV AIDS
+            gonorrhea:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: penyakitMenularSeksual
+                    match: gonorrhea
+            sifilis:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: penyakitMenularSeksual
+                    match: sifilis
+            keputihan:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: penyakitMenularSeksual
+                    match: keputihan
+            semua:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: penyakitMenularSeksual
+                    match: semua penyakit
+            pencegahan:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: penyakitMenularSeksual
+                    match: pencegahan
+        states:
+            init:
+                transitions:
+                    pengertian:
+                        condition: intent="pengertianPenyakit"
+                    hivaids:
+                        condition: intent=="hivaids"
+                    gonorrhea:
+                        condition: intent=="gonorrhea"
+                    sifilis:
+                        condition: intent=="sifilis"
+                    keputihan:
+                        condition: intent=="keputihan"
+                    semua:
+                        condition: intent=="semua"
+                initial: true
+            pengertian:
+                transitions:
+                    hivaids:
+                        condition: intent="hivaids"
+                    gonorrhea:
+                        condition: intent=="gonorrhea"
+                    sifilis:
+                        condition: intent=="sifilis"
+                    keputihan:
+                        condition: intent=="keputihan"
+                    semua:
+                        condition: intent=="semua"
+                action:
+                    -
+                        name: pengertian
+                    -
+                        name: jenis
+                    -
+                        name: tanya
+            hivaids:
+                transitions:
+                    gonorrhea:
+                        condition: intent=="gonorrhea"
+                    sifilis:
+                        condition: intent=="sifilis"
+                    keputihan:
+                        condition: intent=="keputihan"
+                    semua:
+                        condition: intent=="semua"
+                    pencegahan:
+                        condition: intent=="pencegahan"
+                action: penjelasan
+            gonorrhea:
+                transitions:
+                    hivaids:
+                        condition: intent=="hivaids"
+                    sifilis:
+                        condition: intent=="sifilis"
+                    keputihan:
+                        condition: intent=="keputihan"
+                    semua:
+                        condition: intent=="semua"
+                    pencegahan:
+                        condition: intent=="pencegahan"
+                action: penjelasangonorrhea
+            sifilis:
+                transitions:
+                    gonorrhea:
+                        condition: intent=="gonorrhea"
+                    hivaids:
+                        condition: intent=="hivaids"
+                    keputihan:
+                        condition: intent=="keputihan"
+                    semua:
+                        condition: intent=="semua"
+                    pencegahan:
+                        condition: intent=="pencegahan"
+                action: penjelasanSifilis
+            keputihan:
+                transitions:
+                    gonorrhea:
+                        condition: intent=="gonorrhea"
+                    hivaids:
+                        condition: intent=="hivaids"
+                    sifilis:
+                        condition: intent=="sifilis"
+                    semua:
+                        condition: intent=="semua"
+                    pencegahan:
+                        condition: intent=="pencegahan"
+                action: penjelasanKeputihan
+            semua:
+                transitions:
+                    pencegahan:
+                        condition: intent=="pencegahan"
+                action:
+                    -
+                        name: penjelasan
+                    -
+                        name: penjelasangonorrhea
+                    -
+                        name: penjelasanSifilis
+                    -
+                        name: penjelasanKeputihan
+            pencegahan:
+                transitions: {}
+                action:
+                    -
+                        name: pencegahan
+                    -
+                        name: pencegahan1
+                    -
+                        name: pencegahan2
+                    -
+                        name: pencegahan3
+                    -
+                        name: pencegahan4
+                    -
+                        name: pencegahan5
+                    -
+                        name: pencegahan6
+                    -
+                        name: pencegahan7
+        actions:
+            pengertian:
+                type: text
+                options:
+                    text: Penyakit menular seksual (PMS) adalah infeksi yang ditularkan dari satu orang ke orang lain melalui kontak seksual.
+            jenis:
+                type: text
+                options:
+                    text: 'Ada beberapa jenis PMS diantaranya, HIV AIDS, Sifilis, Gonorrhea, Kandidiasis Vaginalis atau keputihan'
+            tanya:
+                type: text
+                options:
+                    text: kamu pengen tau lebih jauh nggak mengenai penyakit menular seksual ini? bisa salah satu atau semuanya kok
+            penjelasan:
+                type: text
+                options:
+                    text: >-
+                        AIDS kepanjangan dari Acquired Immuno Deficiency Syndrome atau Acquired Immune Deficiency Syndrome Penyakit AIDS disebabkan
+                        oleh virus Human Immunodeficiency Virus (HIV) yang menyerang sistem kekebalan tubuh manusia, sehingga penderita AIDS menjadi
+                        rentan terhadap berbagai infeksi.
+            penjelasangonorrhea:
+                type: text
+                options:
+                    text: >-
+                        Penyakit ini disebabkan oleh Neisseria gonorrhoeae. Masa inkubasi : Pria 2-5 hari, gejala pada wanita sulit diketahui oleh
+                        karena sering asimtomatik . Gejala klinis: Pria duh tubuh uretra, kental, putih kekuningan atau kuning, kadang-kadang mukoid
+                        atau mukopurulen; eritema dan atau edema pada meatus. Sedangkan pada wanita seringkali asimtomatik, apabila ada duh tubuh
+                        serviks purulen atau mukopurulen, kadang kadang disertai eksudat purulen dari uretra atau kelenjar Bartholini. Pada wanita
+                        biasanya datang berobat setelah ada komplikasi antara lain servisitis, bartilinitis, dan nyeri pada panggul bagian bawah.
+            penjelasanSifilis:
+                type: text
+                options:
+                    text: >-
+                        Sifilis adalah penyakit menular yang disebabkan oleh bakteri Treponema palladium. Infeksi terjadi pada organ kelamin bagian
+                        luar. Sifilis dapat berkembang ke tahap sekunder dan tersier yang sulit diamati. Sifilis sekunder menular sedangkan yang
+                        tersier tidak menular. Akan tetapi sifilis tersier menimbulkan dapat menimbulkan kerusakan pada otak, jantung, pembuluh darah,
+                        hati.
+            penjelasanKeputihan:
+                type: text
+                options:
+                    text: >-
+                        Keputihan atau kandidiasis adalah infeksi dengan berbagai manifestasi klinis yang disebabkan oleh candida, candida albicans
+                        dan ragi (yeast) lain (terkadang C.glabarata) dari genus candida. Gejala penyakit ini adalah rasa panas dan iritasi pada
+                        vulva, selain itu juga sekret vagina yang berlebihan berwarna putih susu. Pada dinding vagina terdapat gumpalan seperti keju.
+            pencegahan:
+                type: text
+                options:
+                    text: '- Menjaga kebersihan alat kelamin'
+            pencegahan1:
+                type: text
+                options:
+                    text: '- Menggunakan pakaian dalam yang dapat menyerap keringat'
+            pencegahan2:
+                type: text
+                options:
+                    text: '- Mengganti pakaian dalam minimal 2 kali sehari'
+            pencegahan3:
+                type: text
+                options:
+                    text: '- Menjaga agar alat kelamin tetap kering'
+            pencegahan4:
+                type: text
+                options:
+                    text: '- Tidak menggunakan pakaian yang ketat'
+            pencegahan5:
+                type: text
+                options:
+                    text: '-  Menahan Dorongan Seksual (Abstinence)'
+            pencegahan6:
+                type: text
+                options:
+                    text: '- Tidak berganti- ganti pasangan'
+            pencegahan7:
+                type: text
+                options:
+                    text: '-  Vaksin (Hepatitis Bdan HPV)'
         methods: {}
 nlus:
     basic:
@@ -448,5 +757,19 @@ nlus:
             keywords:
                 menstruasi:
                     - menstruasi
+    organreproduksi:
+        type: nl
+        options:
+            nluId: 'futura:seeAi'
+            threshold: 0.5
+            output: raw
+            asIntent: organreproduksi
+    penyakitMenularSeksual:
+        type: nl
+        options:
+            nluId: 'futura:seeAi'
+            threshold: 0.7
+            asIntent: penyakitkelamin
+            output: raw
 methods: {}
 config: {}
