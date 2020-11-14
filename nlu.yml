@@ -9,9 +9,39 @@ entities:
       - apa itu pubertas
       - puber
       - pubertas
-  ciriPuber:
+      - menstruasi
+      - ereksi
+  organreproduksi:
     type: trait
     profile: default
     labels:
-      - mimpi basah
-      - menstruasi
+      - ereksi
+      - penyebab ereksi
+      - jenis pria
+      - penis
+      - testis
+      - skrotum
+      - kelenjar prostat
+  penyakitkelamin:
+    type: trait
+    profile: default
+    labels:
+      - penyakit menular seksual
+      - HIV AIDS
+      - sifilis
+      - gonorrhea
+      - keputihan
+      - semua penyakit
+      - pencegahan
+  seks:
+    type: trait
+    profile: default
+    labels:
+      - pengertian seks
+      - jenis seks
+      - pengertian hormon
+      - peran hormon
+      - pengertian orgasm
+      - hubungan seksual
+      - kepentingan dari consent
+      - perbedaan seks
