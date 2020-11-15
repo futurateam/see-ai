@@ -2,24 +2,6 @@ name: seeAi
 lang: id
 visibility: private
 entities:
-  kata:
-    type: phrase
-    profile: super
-    labels:
-      - area
-      - currency
-      - datetime
-      - duration
-      - email
-      - length
-      - location
-      - number
-      - person
-      - phone
-      - temperature
-      - volume
-      - weight
-    inherit: 'kata:nl/kata'
   pubertas:
     type: trait
     profile: default
