@@ -500,10 +500,6 @@ flows:
                         - Silahkan bercerita kepada See.
                         - Apakah itu kalau See boleh tau?
                         - 'Kalau See boleh tau, bagaimana ceritanya?'
-            umur:
-                type: text
-                options:
-                    text: jadi umurmu $(context.umur)
         methods: {}
     organReproduksiPria:
         active: true
