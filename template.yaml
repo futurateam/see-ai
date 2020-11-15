@@ -1,0 +1,28 @@
+            adaBantu:
+                type: text
+                options:
+                    text:
+                        - Apakah itu?
+                        - 'Kalau boleh See tau, apakah itu?'
+                        - Apa yang membuatmu penasaran?
+                        - Coba jelaskan ke See apa itu?
+            oke:
+                type: text
+                options:
+                    text:
+                        - Ada yang bisa aku bantu lagi?
+                        - 'Baik, apakah sudah cukup?'
+                        - Ada yang bisa See jawab lagi?
+                        - Ada yang mau kamu tanyain lagi kepada See?
+                        - 'Ada yang ingin ditanyain lagi tidak?'
+                        - Ada yang mau ditanyain ke See lagi nggak?
+                        - Ada yang mau ditanyakan lagi nggak?
+                        - Mungkin ada yang bisa See bantu lagi?
+                    text:
+                        - Apakah itu?
+                        - 'Kalau boleh See tau, apakah itu?'
+                        - Apa yang membuatmu penasaran?
+                        - Coba jelaskan ke See apa itu?
+                        - Silahkan bercerita kepada See.
+                        - Apakah itu kalau See boleh tau?
+                        - 'Kalau See boleh tau, bagaimana ceritanya?'

@@ -11,6 +11,8 @@ entities:
       - pubertas
       - menstruasi
       - ereksi
+      - tanda puber
+      - mimpi basah
   organreproduksi:
     type: trait
     profile: default

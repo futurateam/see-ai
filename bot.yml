@@ -1,5 +1,5 @@
 name: seeAi
-tag: latest
+tag: null
 deleted_at: null
 desc: ''
 timezone: 7
@@ -28,6 +28,7 @@ flows:
                     text:
                         - 'Maaf, See belum mengetahui hal tersebut.'
                         - 'Sayang sekali, See belum mengerti hal tersebut.'
+                        - 'Maaf beribu maaf, See belum memahami hal tersebut.'
         methods: {}
     halo:
         active: true
@@ -121,11 +122,14 @@ flows:
                         - 'Kalau boleh See tau, apakah itu?'
                         - Apa yang membuatmu penasaran?
                         - Coba jelaskan ke See apa itu?
+                        - Silahkan bercerita kepada See.
+                        - Apakah itu kalau See boleh tau?
+                        - 'Kalau See boleh tau, bagaimana ceritanya?'
             tidakBantu:
                 type: text
                 options:
                     text:
-                        - 'Baik kalau begitu, terima kasih telah mengajak ngobrol aku!'
+                        - 'Baik kalau begitu, terima kasih telah bertanya pada See!'
                         - Okey kalau begitu. Sampai jumpa!
                         - 'Semoga kamu paham, yah! Terima kasih!'
             oke:
@@ -134,6 +138,12 @@ flows:
                     text:
                         - Ada yang bisa aku bantu lagi?
                         - 'Baik, apakah sudah cukup?'
+                        - Ada yang bisa See jawab lagi?
+                        - Ada yang mau kamu tanyain lagi kepada See?
+                        - Ada yang ingin ditanyain lagi tidak?
+                        - Ada yang mau ditanyain ke See lagi nggak?
+                        - Ada yang mau ditanyakan lagi nggak?
+                        - Mungkin ada yang bisa See bantu lagi?
         methods: {}
     siapa:
         active: true
@@ -177,7 +187,7 @@ flows:
                             sebuah bot. Selamat bertanya!
                         - >-
                             Aku See. Aku adalah mentor edukasi seks pribadimu. Aku hadir tiap saat dikala kamu membutuhkanku. Tenang, aku tidak akan
-                            menghakimimu, kok! Aku kan robot. :)
+                            menghakimimu, kok! Aku kan robot.
                         - >-
                             Kenalin aku See, Sex Educator for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Tak perlu takut untuk
                             bertanya apapun karena aku tidak akan menghakimimu. Selamat bertanya!
@@ -221,31 +231,65 @@ flows:
                     match: 'no'
             mens:
                 type: text
-                initial: false
+                initial: true
                 fallback: false
                 classifier:
                     nlu: pubertas
                     match: menstruasi
+            tandaPuber:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: pubertas
+                    match: tanda puber
+            mimpiBasah:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: pubertas
+                    match: mimpi basah
+            thanks:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: thanks
         states:
             init:
                 transitions:
                     tentangPuber:
                         condition: intent=="pengertianPubertas"
+                    tandaPuber:
+                        condition: intent=="tandaPuber"
+                    mens:
+                        condition: intent=="mens"
+                        mapping: {}
+                    mimpiBasah:
+                        condition: intent=="mimpiBasah"
+                        mapping: {}
                 initial: true
             tentangPuber:
                 transitions:
-                    belumPuber:
-                        condition: intent=="no"
-                        mapping:
-                            context.gejala: intent
                     mens:
                         condition: intent=="mens"
                         mapping:
                             context.mens: intent
                     yangKamuAlami:
                         condition: intent=="yes"
+                        mapping: {}
+                    tandaPuber:
+                        condition: intent=="tandaPuber"
+                    mimpiBasah:
+                        condition: intent=="mimpiBasah"
                         mapping:
-                            context.ya: intent
+                            context.mimpiBasah: intent
+                    belumPuber:
+                        fallback: true
+                        condition: intent=="no"
+                        mapping: {}
                 action:
                     -
                         name: penjelasanPuber
@@ -254,6 +298,10 @@ flows:
                 initial: false
             yangKamuAlami:
                 transitions:
+                    mimpiBasah:
+                        condition: intent=="mimpiBasah"
+                        mapping:
+                            context.mimpiBasah: intent
                     mens:
                         fallback: false
                         condition: intent=="mens"
@@ -261,22 +309,67 @@ flows:
                             context.mens: intent
                 action: tanya
             belumPuber:
-                transitions: {}
+                transitions:
+                    belumPuber:
+                        fallback: true
                 action:
                     -
                         name: kasihTau
                     -
                         name: tanyaLagi
+                end: true
             mens:
-                transitions: {}
+                transitions:
+                    thanks:
+                        fallback: true
+                        condition: intent=="thanks"
                 action:
-                    name: mens
-                    condition: context.mens="mens"
+                    -
+                        name: penjelasnMens
+                        condition: context.mens=="mens"
+                    -
+                        name: mens
+                        condition: context.mens=="mens"
+            tandaPuber:
+                transitions:
+                    mens:
+                        condition: intent=="mens"
+                        mapping: {}
+                    mimpiBasah:
+                        condition: intent=="mimpiBasah"
+                        mapping: {}
+                    thanks:
+                        fallback: true
+                        condition: intent=="thanks"
+                action:
+                    -
+                        name: pubercowo
+                    -
+                        name: pubercewe
+            mimpiBasah:
+                transitions:
+                    thanks:
+                        fallback: true
+                        condition: intent=="thanks"
+                action:
+                    -
+                        name: penjelasanMimpiBasah
+                    -
+                        name: pesan
+                        condition: context.mimpiBasah=="mimpiBasah"
+            thanks:
+                transitions:
+                    thanks:
+                        fallback: true
+                action: samaSama
+                end: true
         actions:
             penjelasanPuber:
                 type: text
                 options:
-                    text: 'Pubertas adalah kondisi matangnya seksual seeorang dan itu pasti terjadi kesemua orang, ada beberapa ciri pubertas yaitu'
+                    text: >-
+                        Pubertas adalah proses perubahan ketidakmatangan fisik dan seksual menuju kematangan fisik dan seksual. Fase kematangan fisik
+                        dan seksual dapat membuat organ reproduksi seorang remaja dapat berfungsi untuk bereproduksi
             sudahPuber:
                 type: text
                 options:
@@ -284,7 +377,7 @@ flows:
             tanya:
                 type: text
                 options:
-                    text: '$(context.ya), apa yang kamu alami?'
+                    text: Apa yang kamu alami?
             kasihTau:
                 type: text
                 options:
@@ -292,7 +385,15 @@ flows:
             tanyaLagi:
                 type: text
                 options:
-                    text: Ada yang mau kamu tanyain lagi kepada See?$(context.gejala)
+                    text:
+                        - Ada yang bisa aku bantu lagi?
+                        - 'Baik, apakah sudah cukup?'
+                        - Ada yang bisa See jawab lagi?
+                        - Ada yang mau kamu tanyain lagi kepada See?
+                        - Ada yang ingin ditanyain lagi tidak?
+                        - Ada yang mau ditanyain ke See lagi nggak?
+                        - Ada yang mau ditanyakan lagi nggak?
+                        - Mungkin ada yang bisa See bantu lagi?
             mimpiBasah:
                 type: text
                 options:
@@ -300,7 +401,46 @@ flows:
             mens:
                 type: text
                 options:
-                    text: itu wajar terjadi pada perempuan.
+                    text: >-
+                        Itu berarti kamu sudah bisa hamil jika pada masa subur dan juga telah dibuahi oleh laki-laki yang sudah pubertas. Jaga dirimu
+                        sebaik mungkin dan tunggu sampai menjadi seorang istri yang sah, ya. Itu saran dari See!
+            pubercewe:
+                type: text
+                options:
+                    text: >-
+                        Ada beberapa tanda pubertas pada perempuan diantaranya, (1) ukuran payudara mulai tumbuh alias membesar, (2) tumbuhnya rambut
+                        di kemaluan dan ketiak, dan (3) menstruasi alias keluarnya darah kotor dalam vagina.
+            pubercowo:
+                type: text
+                options:
+                    text: >-
+                        Ada beberapa tanda pubertas pada laki-laki seperti, (1) ukuran testikel dan penis yang membesar, (2) mengalami mimpi basah,
+                        (3) tumbuh rambut pada daerah kemaluan dan ketiak, dan (4) suara menjadi lebih berat
+            penjelasnMens:
+                type: text
+                options:
+                    text: >-
+                        Perempuan memiliki sel telur yang akan menjadi janin bila dibuahi atau bertemu sperma dari laki-laki. Tiap bulan, rahim
+                        membuat lapisan darah dan jaringan sebagai tempat menempel sel telur yang akan dibuahi. Namun, jika sel telur tidak dibuahi,
+                        pada akhirnya akan luruh dan keluar dari vagina dalam bentuk darah menstruasi. Periode menstruasi umumnya berlangsung sekitar
+                        2-7 hari. Ganti pembalut secara teratur tiap 4-8 jam untuk menjaga kebersihan organ vitalmu, ya!
+            penjelasanMimpiBasah:
+                type: text
+                options:
+                    text: >-
+                        Selama pubertas, remaja laki-laki juga akan mengalami mimpi basah, yaitu ejakulasi yang terjadi saat sedang tidur. Mimpi basah
+                        yang kamu alami terjadi karena adanya peningkatan kadar hormon testosteron dalam tubuh. Seiring bertambahnya usia, intensitas
+                        mimpi basah akan berkurang.
+            pesan:
+                type: text
+                options:
+                    text: >-
+                        Setelah mimpi basah maka kamu sudah bisa membuahi perempuan. Jadi berhati-hatilah dan tunggu sampai menjadi seorang suami.
+                        Membuahi seorang perempuan perihal yang mudah dikarenakan butuh tanggung jawab yang besar. Itu saran dari See :)
+            samaSama:
+                type: text
+                options:
+                    text: 'Sama-sama, See senang bisa membantu kamu. Ada yang ingin ditanyain lagi tidak?'
         methods: {}
     tanya:
         active: true
@@ -353,6 +493,10 @@ flows:
                 type: text
                 options:
                     text:
+                        - Apakah itu?
+                        - 'Kalau boleh See tau, apakah itu?'
+                        - Apa yang membuatmu penasaran?
+                        - Coba jelaskan ke See apa itu?
                         - Silahkan bercerita kepada See.
                         - Apakah itu kalau See boleh tau?
                         - 'Kalau See boleh tau, bagaimana ceritanya?'
@@ -541,7 +685,7 @@ flows:
             simpulan:
                 type: text
                 options:
-                    text: 'Ereksi merupakan hal wajar yang terjadi pada laki laki, jadi tidak perlu cemas jika itu terjadi.'
+                    text: Ereksi merupakan hal wajar yang terjadi pada laki laki jadi tidak perlu cemas jika itu terjadi.
             jenis:
                 type: text
                 options:
@@ -550,40 +694,48 @@ flows:
                 type: text
                 options:
                     text: >-
-                        organ kopulasi pada pria. nah organ ini nih yang bertanggung jawab untuk mentransfer sperma agar bisa masuk ke tubuh betina,
-                        nah proses ini dapat terjadi ketika penis pada kondisi ereksi, nah tapi ada juga loh yang gk perlu ereksi tapi sprmanya
-                        keluar, contoh gampangnya adalah ketika laki laki mimpi basah.  selain itu kalian tw gak kalo penis itu masuk salah satu oran
-                        erotica yang paling sensitive pada laki laki, sehingga dengan kena rangsang sedikit saja dorongan seksual pada laki laki dapat
-                        langsung naik.
+                        Penis merupakan organ kopulasi pada pria jadi ini nih yang bertanggung jawab untuk mentransfer sperma agar bisa masuk ke tubuh
+                        betina. Nah, proses ini dapat terjadi ketika penis pada kondisi ereksi, tapi ada juga loh yang tidak perlu ereksi tapi
+                        spermanya keluar. Contoh gampangnya adalah ketika laki laki mimpi basah.  Selain itu kalian tau tidak? kalo penis itu masuk
+                        salah satu organ erotica yang paling sensitif pada laki laki, sehingga dengan kena rangsang sedikit saja dorongan seksual pada
+                        laki laki dapat langsung naik.
             penjelasanTestis:
                 type: text
                 options:
                     text: >-
-                        testis ini fungsinya seperti yang umum yaitu pembentukan sperma, tapi klian juga harus tau klo testis itu penting bangen untuk
-                        membentuk hormon hormon steroid pada laki laki
+                        Testis berfungsi untuk pembentukan sperma. Tapi kalian juga harus tau kalo testis itu penting banget dalam pembentukan
+                        hormon-hormon steroid pada laki laki.
             penjelasnSkrotum:
                 type: text
                 options:
                     text: >-
-                        gini scrotum itu kalo diperhatiin kan biasanya dia menggantung ya dia di tubuh si cowok jd kyk agak diluar tubuh cowok, nah
-                        ini itu ada fungsinya, fungsinya itu adalah menjada suhu testis agar dibawah suhu tubuh karena sebenernya sperma itu dibentuk
-                        pada suh yg relatif lebih rendah dari suhu tuhbuh normalnya.
+                        Gini, skrotum itu kalo diperhatiin kan biasanya dia menggantung di tubuh laki-laki jadi seperti berada di luar tubuh cowok.
+                        Nah, ini itu ada fungsinya yaitu agar menjaga suhu testis agar dibawah suhu tubuh karena pada dasarnya sperma itu dibentuk
+                        pada suhu yang relatif lebih rendah daripada suhu tubuh normalnya.
             penjelasanKelenjarProstat:
                 type: text
                 options:
                     text: >-
-                        prostat ini tuh berperan dalam pembentukan 13-33% dari semen (cairan yang dikeluarkan ketika ejakulasi) cairan dari prostat
-                        ini mengandung nutrisi dari proteksi pada sperma agar bisa bergerak efisien di dalam saluran reproduksi wanita, nah organ ini
-                        tuh ketika laki laki ereksi dia akan membesar sehingga menyumbat jalur kencing, supaya ketika akan ejakulasi yang keluar hanya
-                        semen bukan urin.
+                        Kelenjar prostat berperan dalam pembentukan 13-33% dari semen (cairan yang dikeluarkan ketika ejakulasi). Cairan dari prostat
+                        ini mengandung nutrisi yang berguna sebagai proteksi pada sperma agar bisa bergerak efisien di dalam saluran reproduksi
+                        perempuan. Ketika pada laki-laki penis mengalami ereksi maka akan membesar sehingga menyumbat jalur kencing supaya ketika akan
+                        ejakulasi yang keluar hanya semen bukan urin.
             thanks:
                 type: text
                 options:
-                    text: 'sama sama, SEE senang bisa membantu kamu'
+                    text: 'Sama-sama, See senang bisa membantu kamu'
             tanyaLagi:
                 type: text
                 options:
-                    text: ada yang mau ditanyain ke SEE lagi nggak?
+                    text:
+                        - Ada yang bisa aku bantu lagi?
+                        - 'Baik, apakah sudah cukup?'
+                        - Ada yang bisa See jawab lagi?
+                        - Ada yang mau kamu tanyain lagi kepada See?
+                        - Ada yang ingin ditanyain lagi tidak?
+                        - Ada yang mau ditanyain ke See lagi nggak?
+                        - Ada yang mau ditanyakan lagi nggak?
+                        - Mungkin ada yang bisa See bantu lagi?
         methods: {}
     penyakitMenularSeksual:
         active: true
@@ -783,20 +935,6 @@ flows:
                     -
                         name: pencegahan
                     -
-                        name: pencegahan1
-                    -
-                        name: pencegahan2
-                    -
-                        name: pencegahan3
-                    -
-                        name: pencegahan4
-                    -
-                        name: pencegahan5
-                    -
-                        name: pencegahan6
-                    -
-                        name: pencegahan7
-                    -
                         name: tanyaAkhir
                 end: true
             end:
@@ -821,23 +959,24 @@ flows:
             tanya:
                 type: text
                 options:
-                    text: kamu pengen tau lebih jauh nggak mengenai penyakit menular seksual ini? bisa salah satu atau semuanya kok
+                    text: 'Kamu pengen tau lebih jauh tentang mengenai penyakit menular seksual ini? Bisa salah satu atau semuanya, kok!'
             penjelasan:
                 type: text
                 options:
                     text: >-
-                        AIDS kepanjangan dari Acquired Immuno Deficiency Syndrome atau Acquired Immune Deficiency Syndrome Penyakit AIDS disebabkan
-                        oleh virus Human Immunodeficiency Virus (HIV) yang menyerang sistem kekebalan tubuh manusia, sehingga penderita AIDS menjadi
-                        rentan terhadap berbagai infeksi.
+                        AIDS memiliki kepanjangan dari Acquired Immuno Deficiency Syndrome atau Acquired Immune Deficiency Syndrome. Penyakit AIDS
+                        disebabkan oleh virus Human Immunodeficiency Virus (HIV) yang menyerang sistem kekebalan tubuh manusia sehingga penderita AIDS
+                        menjadi rentan terhadap berbagai infeksi.
             penjelasangonorrhea:
                 type: text
                 options:
                     text: >-
-                        Penyakit ini disebabkan oleh Neisseria gonorrhoeae. Masa inkubasi : Pria 2-5 hari, gejala pada wanita sulit diketahui oleh
-                        karena sering asimtomatik . Gejala klinis: Pria duh tubuh uretra, kental, putih kekuningan atau kuning, kadang-kadang mukoid
-                        atau mukopurulen; eritema dan atau edema pada meatus. Sedangkan pada wanita seringkali asimtomatik, apabila ada duh tubuh
-                        serviks purulen atau mukopurulen, kadang kadang disertai eksudat purulen dari uretra atau kelenjar Bartholini. Pada wanita
-                        biasanya datang berobat setelah ada komplikasi antara lain servisitis, bartilinitis, dan nyeri pada panggul bagian bawah.
+                        Penyakit ini disebabkan oleh Neisseria gonorrhoeae. Masa inkubasi pada pria ialah selama 2-5 hari, sedangkan pada perempuan
+                        sulit diketahui  karena sering mengalami asimtomatik. Gejala klinis pada pria terjadi di tubuh uretra yakni bersifat kental,
+                        putih kekuningan atau kuning,  kadang-kadang mukoid atau mukopurulen; eritema dan atau edema pada meatus. Sedangkan pada
+                        perempuan seringkali asimtomatik. Apabila ada dua tubuh serviks purulen atau mukopurulen, kadang kadang disertai eksudat
+                        purulen dari uretra atau kelenjar Bartholini. Pada perempuan biasanya datang berobat setelah ada komplikasi antara lain
+                        servisitis, bartilinitis, dan nyeri pada panggul bagian bawah.
             penjelasanSifilis:
                 type: text
                 options:
@@ -856,47 +995,31 @@ flows:
             pencegahan:
                 type: text
                 options:
-                    text: '- Menjaga kebersihan alat kelamin'
-            pencegahan1:
-                type: text
-                options:
-                    text: '- Menggunakan pakaian dalam yang dapat menyerap keringat'
-            pencegahan2:
-                type: text
-                options:
-                    text: '- Mengganti pakaian dalam minimal 2 kali sehari'
-            pencegahan3:
-                type: text
-                options:
-                    text: '- Menjaga agar alat kelamin tetap kering'
-            pencegahan4:
-                type: text
-                options:
-                    text: '- Tidak menggunakan pakaian yang ketat'
-            pencegahan5:
-                type: text
-                options:
-                    text: '-  Menahan Dorongan Seksual (Abstinence)'
-            pencegahan6:
-                type: text
-                options:
-                    text: '- Tidak berganti- ganti pasangan'
-            pencegahan7:
-                type: text
-                options:
-                    text: '-  Vaksin (Hepatitis Bdan HPV)'
+                    text:
+                        - Menjaga kebersihan alat kelamin
+                        - Menggunakan pakaian dalam yang dapat menyerap keringat
+                        - Mengganti pakaian dalam minimal 2 kali sehari
+                        - Menjaga agar alat kelamin tetap kering
+                        - Tidak menggunakan pakaian yang ketat
+                        - Menahan dorongan seksual (abstinence)
+                        - Tidak berganti-ganti pasangan seksual
+                        - Vaksinasi (Hepatitis Bdan HPV)
             tanyaAkhir:
                 type: text
                 options:
-                    text: ada yang mau ditanyakan lagi nggak?
-            penjelasanAkhir:
-                type: text
-                options:
-                    text: jaga kesehatan ya $(context.answer)
+                    text:
+                        - Ada yang bisa aku bantu lagi?
+                        - 'Baik, apakah sudah cukup?'
+                        - Ada yang bisa See jawab lagi?
+                        - Ada yang mau kamu tanyain lagi kepada See?
+                        - Ada yang ingin ditanyain lagi tidak?
+                        - Ada yang mau ditanyain ke See lagi nggak?
+                        - Ada yang mau ditanyakan lagi nggak?
+                        - Mungkin ada yang bisa See bantu lagi?
             pesanAkhir:
                 type: text
                 options:
-                    text: Tetap jaga kesehtan ya agar terhindar dari penyakit menular seksual.
+                    text: 'Tetap jaga kesehatan, ya. Agar terhindar dari penyakit menular seksual.'
         methods: {}
     sex:
         active: true
@@ -1102,60 +1225,68 @@ flows:
             pengertianJenisKelamin:
                 type: text
                 options:
-                    text: Seks adalah karakteristik biologis yang membedakan laki laki dan perempuan
+                    text: Sex adalah karakteristik biologis yang membedakan antara laki-laki dengan perempuan.
             perbedaanSeks:
                 type: text
                 options:
                     text: >-
-                        karakteristik biologis yang membedakan laki laki dan perempuan dipandang dari anatomis seperti adanya penis dan vagina, gonad
-                        ( sperma/ovary),kromosom dan hormon
+                        Karakteristik biologis yang membedakan laki-laki dengan perempuan dipandang dari anatomis seperti adanya penis dan vagina,
+                        gonad (sperma/ovary), kromosom, dan hormon
             jenisSeks:
                 type: text
                 options:
                     text: >-
-                        sex yang dibahas disini lebih menekan pada jenis kelamin sehingga jika ditinjau dari prespektif anatomis makan type sex hanya
-                        2, perempuan atau laki laki , untuk keadaan seperti pada negara negara tertenu, dimana terdapat banyak sekali cabang dari sex
-                        makan itu dipandang dari sisi selain medis bisa dari sisi sosial.
+                        Sex yang dibahas disini lebih menekan pada jenis kelamin sehingga jika ditinjau dari prespektif anatomis maka type sex hanya
+                        2, perempuan atau laki laki. Untuk keadaan seperti pada negara tertenu dimana terdapat banyak sekali cabang dari sex, itu 
+                        dipandang dari sisi selain medis yakni sisi sosial.
             hormon:
                 type: text
                 options:
                     text: >-
-                        Salah satu yang menentukan yaitu hormon, Hormon itu penting banget buat menentukan seks kita, karena banyak sekali kararter
-                        karakter biologis yang mucul karena adanya hormon misal pada wanita kita temukan adanya esterogen, dimasa estrogen ini
-                        bertanggung jawab untuk membesarkan payudara pada wanita, kalau pada laki laki yang paling umum adalah testosteron,
-                        testosteron berperan dalam perkembangan penis dan tes- tis.
+                        Salah satu yang menentukan sex yaitu hormon. Hormon itu penting banget untuk menentukan sex kita karena banyak sekali
+                        karakter- karakter biologis yang muncul karena adanya hormon misal pada perempuan ditemui adanya esterogen dimana estrogen ini
+                        bertanggung jawab untuk membesarkan payudara pada perempuan. Pada laki-laki yang paling umum adalah testosteron yang berperan
+                        dalam perkembangan penis dan testis.
             orgasm:
                 type: text
                 options:
                     text: >-
-                        orgasm merupakan titik tertinggi dmn individunya merasa puas/ senang, nah ini itu biasanya dibarengi denga ejakulasi ( yang
-                        mengeluarkan semen )pada laki laki dan pengeluaran cairan vagina yang involunter dari wanita, nah ini biasa disebut climax.
-                        Nah biasanya orgasm ini terjadi pada laki laki itu 1 kali pada laki laki namun pada wanit sering dijumpai multiple orgasm,
-                        namun terkadang pada wanita itu bisa tidak terjadi orgasm sama sekali, hal ini di wanita lebih terkait ke emosi. ada peristiwa
-                        fake orgasm nah ini biasanya terjadi di wanita ya, jadi pada peristiwa ini tuh tidak terjadi kontraksi otot dasar panggul.
+                        Orgasme merupakan titik tertinggi dimana seorang individu merasa puas/senang. Hal ini biasanya terjadi ketika ejakulasi pada
+                        pria (keluarnya semen) dan pengeluaran cairan vagina yang involunter dari perempuan yang disebut climax terjadi di waktu yang
+                        sama. Orgasme umumnya terjadi pada laki-laki yakni 1 kali namun pada perempuan sering dijumpai multiple orgasme atau lebih
+                        dari 1. Pada kondisi tertentu, perempuan tidak bisa mengalami orgasme sama sekali. Hal ini terjadi berkaitan dengan emosional
+                        perempuan. Ada peristiwa fake orgasme (orgasme palsu) pada perempuan dimana tidak ada kontraksi otot pada dasar panggul.
             pengertianHubSeks:
                 type: text
                 options:
                     text: >-
-                        penyatuan sexual antara organ reproduksi laki laki yakni penis dan organ reproduksi wanita yakni vagina, pada bahasa medis
-                        sering juga disebut coitus, namun ada beberapa referensi juga yang menyebutkan bahwa hubungan sexual atau sexual intercourse
+                        Penyatuan sexual antara organ reproduksi laki-laki yakni penis dan organ reproduksi perempuan yakni vagina. Pada bahasa medis
+                        sering juga disebut coitus namun ada beberapa referensi juga yang menyebutkan bahwa hubungan sexual atau sexual intercourse
                         ini tidak harus memasukan penis ke vagina namun bisa juga memasukan penis ke anus atau mulut.
             penjelasanConsent:
                 type: text
                 options:
                     text: >-
-                        konsent itu merupakan suatu kesepakatan antara 2 pihak baik dari sisi laki laki ataupun sisi perempuan, sehingga tidak ada
-                        pemaksaan, hal ini dapat sangat mempengaruhi emosi dari salah satunya terutama yang wanita jika tidak berkenan, konsent ini
-                        juga dapat menetukan apakah memang itu hubungan yang saling diingin kan atau pun pemerkosaan. dimana pemerkosaan ini dapat
-                        enjadi momok tersendiri bagi korbanya.
+                        Konsent adalah suatu kesepakatan antara 2 pihak baik dari sisi laki-laki ataupun sisi perempuan sehingga tidak ada pemaksaan.
+                        Kesepakatan ini dapat sangat mempengaruhi emosi dari salah satunya terutama pada perempuan jika tidak berkenan. Konsent ini
+                        juga dapat menetukan apakah memang itu hubungan yang saling diinginkan atau pemerkosaan. Dimana pemerkosaan ini dapat enjadi
+                        momok tersendiri bagi korbannya.
             sama2:
                 type: text
                 options:
-                    text: 'Sama - sama, SEE senang bisa membantumu'
+                    text: 'Sama-sama, See senang bisa membantumu'
             tanyaLagi:
                 type: text
                 options:
-                    text: Mungkin ada yang bisa SEE bantu lagi?
+                    text:
+                        - Ada yang bisa aku bantu lagi?
+                        - 'Baik, apakah sudah cukup?'
+                        - Ada yang bisa See jawab lagi?
+                        - Ada yang mau kamu tanyain lagi kepada See?
+                        - Ada yang ingin ditanyain lagi tidak?
+                        - Ada yang mau ditanyain ke See lagi nggak?
+                        - Ada yang mau ditanyakan lagi nggak?
+                        - Mungkin ada yang bisa See bantu lagi?
         methods: {}
 nlus:
     basic:
@@ -1237,6 +1368,7 @@ nlus:
                     - iya
                     - yoi
                     - ya
+                    - yaa
                 'no':
                     - 'no'
                     - nope
