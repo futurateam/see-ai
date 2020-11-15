@@ -1413,10 +1413,6 @@ nlus:
             threshold: 0.7
             asIntent: penyakitkelamin
             output: raw
-    umur:
-        type: regex
-        options:
-            regex: '[1-50]'
     seks:
         type: nl
         options:
