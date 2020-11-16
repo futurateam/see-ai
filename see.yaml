@@ -18,6 +18,9 @@
                         - Ada yang mau ditanyain ke See lagi nggak?
                         - Ada yang mau ditanyakan lagi nggak?
                         - Mungkin ada yang bisa See bantu lagi?
+            adaBantu:
+                type: text
+                options:
                     text:
                         - Apakah itu?
                         - 'Kalau boleh See tau, apakah itu?'
@@ -26,3 +29,28 @@
                         - Silahkan bercerita kepada See.
                         - Apakah itu kalau See boleh tau?
                         - 'Kalau See boleh tau, bagaimana ceritanya?'
+            siapa:
+                type: text
+                options:
+                    text:
+                        - >-
+                            Namaku See dengan singkatan dari Sex Education for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Aku hadir
+                            sebagai mentor yang akan menjawab segala pertanyaanmu mengenai edukasi seks tanpa perlu takut dihakimi. Kenapa? Karena aku
+                            sebuah bot. Selamat bertanya!
+                        - >-
+                            Aku See. Aku adalah mentor edukasi seks pribadimu. Aku hadir di tiap saat dikala kamu membutuhkanku. Tenang, aku tidak akan
+                            menghakimimu, kok! Aku kan robot.
+                        - >-
+                            Kenalin aku See, Sex Education for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Tak perlu takut untuk
+                            bertanya apapun karena aku tidak akan menghakimimu. Selamat bertanya!
+                        - >-
+                            Aku memiiki singkatan dari Sex Education for Eudaemonism (SEE). Eudaemonism sendiri memiliki makna kebahagiaan. Harapan penuh
+                            kami ialah dapat memberikan edukasi seks ke siapapun tanpa perlu takut dihakimi karena aku sebuah bot. Selamat mencari tahu!
+            buat:
+                type: text
+                options:
+                    text:
+                        - 'Tiga orang jenius ini lah yang melahirkan See ke dunia. Abiel Zulio M, Syaufiq Alaudin, dan Timurriana Shafa.'
+                        - 'See lahir dari pemikiran tiga orang jenius ini. Abiel Zulio M, Syaufiq Alaudin, dan Timurriana Shafa.'
+                        - 'See diwujudkan oleh ketiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Timurriana Shafa.'
+                        - 'See hadir dibuat oleh tiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Timurriana Shafa.'
