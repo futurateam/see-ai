@@ -1,5 +1,5 @@
 name: seeAi
-tag: latest
+tag: null
 deleted_at: null
 desc: ''
 timezone: 7
@@ -33,9 +33,9 @@ flows:
                 type: text
                 options:
                     text:
-                        - Ketik "halo" untuk mulai mengobrol dengan see
-                        - ketik "halo" untuk bertanya kepada see
-                        - ketik "halo" untuk berbincang dengan see
+                        - Ketik "Halo" untuk mulai mengobrol dengan See
+                        - Ketik "Halo" untuk bertanya kepada See
+                        - Ketik "Halo" untuk mulai berbincang dengan See
         methods: {}
     halo:
         active: true
@@ -114,9 +114,21 @@ flows:
             siapa:
                 type: text
                 options:
-                    text: >-
-                        Aku memiiki singkatan dari Sex Education for Eudaemonism (SEE). Eudaemonsim sendiri memiliki makan kebahagiaan. Harapan penuh
-                        kami ialah dapat memberikan edukasi seks ke siapapun tanpa perlu takut dihakimi karena aku seorang bot. Selamat mencari tahu!
+                    text:
+                        - >-
+                            Namaku See dengan singkatan dari Sex Education for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Aku hadir
+                            sebagai mentor yang akan menjawab segala pertanyaanmu mengenai edukasi seks tanpa perlu takut dihakimi. Kenapa? Karena aku
+                            sebuah bot. Selamat bertanya!
+                        - >-
+                            Aku See. Aku adalah mentor edukasi seks pribadimu. Aku hadir di tiap saat dikala kamu membutuhkanku. Tenang, aku tidak
+                            akan menghakimimu, kok! Aku kan robot.
+                        - >-
+                            Kenalin aku See, Sex Education for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Tak perlu takut untuk
+                            bertanya apapun karena aku tidak akan menghakimimu. Selamat bertanya!
+                        - >-
+                            Aku memiiki singkatan dari Sex Education for Eudaemonism (SEE). Eudaemonism sendiri memiliki makna kebahagiaan. Harapan
+                            penuh kami ialah dapat memberikan edukasi seks ke siapapun tanpa perlu takut dihakimi karena aku sebuah bot. Selamat
+                            mencari tahu!
             adaBantu:
                 type: text
                 options:
@@ -182,27 +194,35 @@ flows:
                 options:
                     text:
                         - >-
-                            Namaku See dengan singkatan dari Sex Educator for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Aku hadir
+                            Namaku See dengan singkatan dari Sex Education for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Aku hadir
                             sebagai mentor yang akan menjawab segala pertanyaanmu mengenai edukasi seks tanpa perlu takut dihakimi. Kenapa? Karena aku
                             sebuah bot. Selamat bertanya!
                         - >-
-                            Aku See. Aku adalah mentor edukasi seks pribadimu. Aku hadir tiap saat dikala kamu membutuhkanku. Tenang, aku tidak akan
-                            menghakimimu, kok! Aku kan robot.
+                            Aku See. Aku adalah mentor edukasi seks pribadimu. Aku hadir di tiap saat dikala kamu membutuhkanku. Tenang, aku tidak
+                            akan menghakimimu, kok! Aku kan robot.
                         - >-
-                            Kenalin aku See, Sex Educator for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Tak perlu takut untuk
+                            Kenalin aku See, Sex Education for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Tak perlu takut untuk
                             bertanya apapun karena aku tidak akan menghakimimu. Selamat bertanya!
+                        - >-
+                            Aku memiiki singkatan dari Sex Education for Eudaemonism (SEE). Eudaemonism sendiri memiliki makna kebahagiaan. Harapan
+                            penuh kami ialah dapat memberikan edukasi seks ke siapapun tanpa perlu takut dihakimi karena aku sebuah bot. Selamat
+                            mencari tahu!
             buat:
                 type: text
                 options:
                     text:
-                        - 'Tiga orang jenius ini lah yang melahirkan See ke dunia. Abiel Zulio M, Syaufiq Alaudin, dan Shafa.'
-                        - 'See lahir dari pemikiran tiga orang jenius ini. Abiel Zulio M, Syaufiq Alaudin, dan Shafa.'
+                        - 'Tiga orang jenius ini lah yang melahirkan See ke dunia. Abiel Zulio M, Syaufiq Alaudin, dan Timurriana Shafa.'
+                        - 'See lahir dari pemikiran tiga orang jenius ini. Abiel Zulio M, Syaufiq Alaudin, dan Timurriana Shafa.'
+                        - 'See diwujudkan oleh ketiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Timurriana Shafa.'
+                        - 'See hadir dibuat oleh tiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Timurriana Shafa.'
             siapaBuat:
                 type: text
                 options:
                     text:
-                        - 'See diwujudkan oleh ketiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Shafa.'
-                        - 'See hadir dibuat oleh tiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Shafa.'
+                        - 'Tiga orang jenius ini lah yang melahirkan See ke dunia. Abiel Zulio M, Syaufiq Alaudin, dan Timurriana Shafa.'
+                        - 'See lahir dari pemikiran tiga orang jenius ini. Abiel Zulio M, Syaufiq Alaudin, dan Timurriana Shafa.'
+                        - 'See diwujudkan oleh ketiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Timurriana Shafa.'
+                        - 'See hadir dibuat oleh tiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Timurriana Shafa.'
         methods: {}
     pubertas:
         active: true
@@ -973,7 +993,7 @@ flows:
             jenis:
                 type: text
                 options:
-                    text: 'Ada beberapa jenis PMS diantaranya, HIV AIDS, Sifilis, Gonorrhea, Kandidiasis Vaginalis atau keputihan'
+                    text: 'Ada beberapa jenis penyakit menular seksual diantaranya HIV AIDS, Sifilis, Gonorrhea, Kandidiasis Vaginalis atau keputihan'
             tanya:
                 type: text
                 options:
@@ -1244,7 +1264,7 @@ flows:
                 options:
                     text: >-
                         Karakteristik biologis yang membedakan laki-laki dengan perempuan dipandang dari anatomis seperti adanya penis dan vagina,
-                        gonad (sperma/ovary), kromosom, dan hormon
+                        gonad (sperma/ovary), kromosom, dan hormon.
             jenisSeks:
                 type: text
                 options:
@@ -1383,8 +1403,8 @@ flows:
                 type: text
                 options:
                     text: >-
-                        Kontrasepsi itu hal - hal yang dilakukan untuk mencegah kehamilan saat melakukan hubungan seksual. Kontrasepsi bisa digunakan
-                        pada pihak pria dan juga wanita. Terdapat banyak macam kontrasepsi, contohnya termasuk condom, pill kontrasepsi, dan
+                        Kontrasepsi itu hal-hal yang dilakukan untuk mencegah kehamilan saat melakukan hubungan seksual. Kontrasepsi bisa digunakan
+                        pada pihak pria dan juga wanita. Terdapat banyak macam kontrasepsi contohnya termasuk kondom, pil kontrasepsi, dan
                         intrauterine device (IUD). Beberapa macam kontrasepsi juga bisa berfungsi untuk mencegah penularan penyakit.
             mengapaKontrasepsi:
                 type: text
@@ -1402,7 +1422,7 @@ flows:
             thanks:
                 type: text
                 options:
-                    text: 'sama - sama, See senang bisa membantumu'
+                    text: 'Sama-sama, See senang bisa membantumu'
         methods: {}
 nlus:
     basic:
