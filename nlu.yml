@@ -13,6 +13,9 @@ entities:
       - ereksi
       - tanda puber
       - mimpi basah
+      - yang dialami
+      - kapan puber
+      - belum puber
   organreproduksi:
     type: trait
     profile: default
@@ -47,3 +50,21 @@ entities:
       - hubungan seksual
       - kepentingan dari consent
       - perbedaan seks
+  basic:
+    type: trait
+    profile: default
+    labels:
+      - sapa
+      - adaBantu
+      - tidakBantu
+      - 'yes'
+      - 'no'
+      - thanks
+      - siapa yang buat
+  kontrasepsi:
+    type: trait
+    profile: default
+    labels:
+      - apa itu kontrasepsi
+      - mengapa menggunakan kontrasepsi
+      - kenapa kontrasepsi penting

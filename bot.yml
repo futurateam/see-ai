@@ -1,5 +1,5 @@
 name: seeAi
-tag: null
+tag: latest
 deleted_at: null
 desc: ''
 timezone: 7
@@ -18,7 +18,7 @@ flows:
                 transitions:
                     init:
                         fallback: true
-                action: sayDontUnderstand
+                action: default
                 initial: true
                 end: true
         actions:
@@ -29,6 +29,13 @@ flows:
                         - 'Maaf, See belum mengetahui hal tersebut.'
                         - 'Sayang sekali, See belum mengerti hal tersebut.'
                         - 'Maaf beribu maaf, See belum memahami hal tersebut.'
+            default:
+                type: text
+                options:
+                    text:
+                        - Ketik "halo" untuk mulai mengobrol dengan see
+                        - ketik "halo" untuk bertanya kepada see
+                        - ketik "halo" untuk berbincang dengan see
         methods: {}
     halo:
         active: true
@@ -67,14 +74,14 @@ flows:
                 transitions:
                     sapa:
                         condition: intent=="sapa"
-                    oke:
-                        condition: intent=="oke"
                 initial: true
             sapa:
                 transitions:
                     adaBantu:
+                        fallback: true
                         condition: intent=="adaBantu"
                     tidakBantu:
+                        fallback: true
                         condition: intent=="tidakBantu"
                     sapa:
                         fallback: true
@@ -82,22 +89,18 @@ flows:
                 action: sapa
             adaBantu:
                 transitions:
-                    tidakBantu:
-                        condition: intent=="tidakBantu"
+                    adaBantu:
+                        fallback: true
                 action: adaBantu
+                end: true
             tidakBantu:
                 transitions:
-                    sapa:
-                        condition: intent=="sapa"
                     tidakBantu:
                         fallback: true
                 action: tidakBantu
+                end: true
             oke:
-                transitions:
-                    adaBantu:
-                        condition: intent=="adaBantu"
-                    tidakBantu:
-                        condition: intent=="tidakBantu"
+                transitions: {}
                 action: oke
         actions:
             sapa:
@@ -131,7 +134,6 @@ flows:
                     text:
                         - 'Baik kalau begitu, terima kasih telah bertanya pada See!'
                         - Okey kalau begitu. Sampai jumpa!
-                        - 'Semoga kamu paham, yah! Terima kasih!'
             oke:
                 type: text
                 options:
@@ -154,16 +156,13 @@ flows:
                 initial: true
                 fallback: false
                 classifier:
-                    -
-                        nlu: basic
-                        match: siapa
-                    -
-                        nlu: basic
-                        match: buat
+                    nlu: basic
+                    match: siapa yang buat
         states:
             init:
                 transitions:
                     siapa:
+                        fallback: true
                         condition: intent=="siapa"
                 initial: true
             siapa:
@@ -176,6 +175,7 @@ flows:
                     -
                         name: siapaBuat
                 initial: true
+                end: true
         actions:
             siapa:
                 type: text
@@ -222,13 +222,13 @@ flows:
                 classifier:
                     nlu: basic
                     match: 'yes'
-            'no':
+            belumPuber:
                 type: text
                 initial: false
                 fallback: false
                 classifier:
-                    nlu: basic
-                    match: 'no'
+                    nlu: pubertas
+                    match: belum puber
             mens:
                 type: text
                 initial: true
@@ -257,6 +257,20 @@ flows:
                 classifier:
                     nlu: basic
                     match: thanks
+            tandaPuberYangDialami:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: pubertas
+                    match: yang dialami
+            kapanPuber:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: pubertas
+                    match: kapan puber
         states:
             init:
                 transitions:
@@ -266,10 +280,12 @@ flows:
                         condition: intent=="tandaPuber"
                     mens:
                         condition: intent=="mens"
-                        mapping: {}
                     mimpiBasah:
                         condition: intent=="mimpiBasah"
-                        mapping: {}
+                    tandaPuberYangDialami:
+                        condition: intent=="tandaPuberYangDialami"
+                    kapanPuber:
+                        condition: intent=="kapanPuber"
                 initial: true
             tentangPuber:
                 transitions:
@@ -279,17 +295,22 @@ flows:
                             context.mens: intent
                     yangKamuAlami:
                         condition: intent=="yes"
-                        mapping: {}
                     tandaPuber:
                         condition: intent=="tandaPuber"
                     mimpiBasah:
                         condition: intent=="mimpiBasah"
                         mapping:
                             context.mimpiBasah: intent
+                    tandaPuberYangDialami:
+                        condition: intent=="tandaPuberYangDialami"
+                    kapanPuber:
+                        condition: intent=="kapanPuber"
                     belumPuber:
                         fallback: true
-                        condition: intent=="no"
-                        mapping: {}
+                        condition: intent=="belumPuber"
+                    thanks:
+                        fallback: true
+                        condition: intent=="thanks"
                 action:
                     -
                         name: penjelasanPuber
@@ -298,15 +319,17 @@ flows:
                 initial: false
             yangKamuAlami:
                 transitions:
-                    mimpiBasah:
-                        condition: intent=="mimpiBasah"
-                        mapping:
-                            context.mimpiBasah: intent
                     mens:
                         fallback: false
                         condition: intent=="mens"
                         mapping:
                             context.mens: intent
+                    mimpiBasah:
+                        condition: intent=="mimpiBasah"
+                        mapping:
+                            context.mimpiBasah: intent
+                    tandaPuberYangDialami:
+                        condition: intent=="tandaPuberYangDialami"
                 action: tanya
             belumPuber:
                 transitions:
@@ -320,6 +343,8 @@ flows:
                 end: true
             mens:
                 transitions:
+                    kapanPuber:
+                        condition: intent=="kapanPuber"
                     thanks:
                         fallback: true
                         condition: intent=="thanks"
@@ -334,10 +359,10 @@ flows:
                 transitions:
                     mens:
                         condition: intent=="mens"
-                        mapping: {}
                     mimpiBasah:
                         condition: intent=="mimpiBasah"
-                        mapping: {}
+                    kapanPuber:
+                        condition: intent=="kapanPuber"
                     thanks:
                         fallback: true
                         condition: intent=="thanks"
@@ -348,6 +373,8 @@ flows:
                         name: pubercewe
             mimpiBasah:
                 transitions:
+                    kapanPuber:
+                        condition: intent=="kapanPuber"
                     thanks:
                         fallback: true
                         condition: intent=="thanks"
@@ -363,6 +390,32 @@ flows:
                         fallback: true
                 action: samaSama
                 end: true
+            tandaPuberYangDialami:
+                transitions:
+                    tandaPuber:
+                        condition: intent=="tandaPuber"
+                    kapanPuber:
+                        condition: intent=="kapanPuber"
+                    thanks:
+                        fallback: true
+                        condition: intent=="thanks"
+                action: masukPuber
+            kapanPuber:
+                transitions:
+                    tentangPuber:
+                        condition: intent=="pengertianPubertas"
+                    tandaPuberYangDialami:
+                        condition: intent=="tandaPuberYangDialami"
+                    tandaPuber:
+                        condition: intent=="tandaPuber"
+                    mens:
+                        condition: intent=="mens"
+                    mimpiBasah:
+                        condition: intent=="mimpiBasah"
+                    thanks:
+                        fallback: true
+                        condition: intent=="kapanPuber"
+                action: waktuPuber
         actions:
             penjelasanPuber:
                 type: text
@@ -441,65 +494,18 @@ flows:
                 type: text
                 options:
                     text: 'Sama-sama, See senang bisa membantu kamu. Ada yang ingin ditanyain lagi tidak?'
-        methods: {}
-    tanya:
-        active: true
-        volatile: true
-        intents:
-            tanya:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: basic
-                    match: adaBantu
-            cerita:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: basic
-                    match: cerita
-            umur:
-                type: text
-                initial: false
-                fallback: false
-                classifier:
-                    nlu: umur
-        states:
-            init:
-                transitions:
-                    tanya:
-                        condition: intent=="tanya"
-                    cerita:
-                        condition: intent=="cerita"
-                initial: true
-            tanya:
-                transitions: {}
-                action: tanya
-                initial: true
-            cerita:
-                transitions:
-                    cerita:
-                        fallback: true
-                action: cerita
-                initial: false
-        actions:
-            tanya:
+            masukPuber:
                 type: text
                 options:
-                    text: Ada yang bisa dibantu?
-            cerita:
+                    text: >-
+                        Itu merupakan salah satu tanda kamu memasuki masa pubertas. Jadi kamu nggak perlu khawatir yaa. Ada beberapa tanda tanda
+                        pubertas yang lain juga lhoo.
+            waktuPuber:
                 type: text
                 options:
-                    text:
-                        - Apakah itu?
-                        - 'Kalau boleh See tau, apakah itu?'
-                        - Apa yang membuatmu penasaran?
-                        - Coba jelaskan ke See apa itu?
-                        - Silahkan bercerita kepada See.
-                        - Apakah itu kalau See boleh tau?
-                        - 'Kalau See boleh tau, bagaimana ceritanya?'
+                    text: >-
+                        Pada perempuan, pubertas terjadi pada rentang usia 10-14 tahun dan pada laki-laki, pubertas terjadi pada kisaran usia 12-16
+                        tahun.
         methods: {}
     organReproduksiPria:
         active: true
@@ -584,6 +590,7 @@ flows:
                     penis:
                         condition: intent=="penis"
                     thanks:
+                        fallback: true
                         condition: intent=="thanks"
                 action: ereksi
             penyebab_ereksi:
@@ -591,6 +598,7 @@ flows:
                     penis:
                         condition: intent=="penis"
                     thanks:
+                        fallback: true
                         condition: intent=="thanks"
                 action:
                     -
@@ -608,6 +616,7 @@ flows:
                     kelenjarProstat:
                         condition: intent=="kelenjarProstat"
                     thanks:
+                        fallback: true
                         condition: intent=="thanks"
                 action: jenis
             penis:
@@ -635,6 +644,7 @@ flows:
                     kelenjarProstat:
                         condition: intent=="kelenjarProstat"
                     thanks:
+                        fallback: true
                         condition: intent=="thanks"
                 action: penjelasanTestis
             skrotum:
@@ -646,6 +656,7 @@ flows:
                     kelenjarProstat:
                         condition: intent=="kelenjarProstat"
                     thanks:
+                        fallback: true
                         condition: intent=="thanks"
                 action: penjelasnSkrotum
             kelenjarProstat:
@@ -657,6 +668,7 @@ flows:
                     skrotum:
                         condition: intent=="skrotum"
                     thanks:
+                        fallback: true
                         condition: intent=="thanks"
                 action: penjelasanKelenjarProstat
             thanks:
@@ -816,6 +828,7 @@ flows:
                     semua:
                         condition: intent=="semua"
                     pencegahan:
+                        fallback: true
                         condition: intent=="pencegahan"
                 initial: true
             pengertian:
@@ -830,9 +843,13 @@ flows:
                         condition: intent=="keputihan"
                     semua:
                         fallback: true
+                        condition: intent=="semua"
                     end:
                         fallback: true
                         condition: intent="no"
+                    pencegahan:
+                        fallback: true
+                        condition: intent=="pencegahan"
                 action:
                     -
                         name: pengertian
@@ -853,6 +870,7 @@ flows:
                     semua:
                         condition: intent=="semua"
                     pencegahan:
+                        fallback: true
                         condition: intent=="pencegahan"
                 action: penjelasan
             gonorrhea:
@@ -866,6 +884,7 @@ flows:
                     semua:
                         condition: intent=="semua"
                     pencegahan:
+                        fallback: true
                         condition: intent=="pencegahan"
                 action: penjelasangonorrhea
             sifilis:
@@ -879,6 +898,7 @@ flows:
                     semua:
                         condition: intent=="semua"
                     pencegahan:
+                        fallback: true
                         condition: intent=="pencegahan"
                 action: penjelasanSifilis
             keputihan:
@@ -892,11 +912,13 @@ flows:
                     semua:
                         condition: intent=="semua"
                     pencegahan:
+                        fallback: true
                         condition: intent=="pencegahan"
                 action: penjelasanKeputihan
             semua:
                 transitions:
                     pencegahan:
+                        fallback: true
                         condition: intent=="pencegahan"
                 action:
                     -
@@ -991,15 +1013,10 @@ flows:
             pencegahan:
                 type: text
                 options:
-                    text:
-                        - Menjaga kebersihan alat kelamin
-                        - Menggunakan pakaian dalam yang dapat menyerap keringat
-                        - Mengganti pakaian dalam minimal 2 kali sehari
-                        - Menjaga agar alat kelamin tetap kering
-                        - Tidak menggunakan pakaian yang ketat
-                        - Menahan dorongan seksual (abstinence)
-                        - Tidak berganti-ganti pasangan seksual
-                        - Vaksinasi (Hepatitis Bdan HPV)
+                    text: >-
+                        Menjaga kebersihan alat kelamin, Menggunakan pakaian dalam yang dapat menyerap keringat, Mengganti pakaian dalam minimal 2
+                        kali sehari, Menjaga agar alat kelamin tetap kering, Tidak menggunakan pakaian yang ketat, Menahan dorongan seksual
+                        (abstinence), Tidak berganti-ganti pasangan seksual, Vaksinasi (Hepatitis Bdan HPV)
             tanyaAkhir:
                 type: text
                 options:
@@ -1017,7 +1034,7 @@ flows:
                 options:
                     text: 'Tetap jaga kesehatan, ya. Agar terhindar dari penyakit menular seksual.'
         methods: {}
-    sex:
+    seks:
         active: true
         volatile: false
         intents:
@@ -1284,108 +1301,117 @@ flows:
                         - Ada yang mau ditanyakan lagi nggak?
                         - Mungkin ada yang bisa See bantu lagi?
         methods: {}
+    kontrasepsi:
+        active: true
+        volatile: false
+        intents:
+            pengertianKontrasepsi:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: kontrasepsi
+                    match: apa itu kontrasepsi
+            mengapaKontrasepsi:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: kontrasepsi
+                    match: mengapa menggunkan kontrasepsi
+            kontrasepsiPenting:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: kontrasepsi
+                    match: kontrasepsi penting
+            thanks:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: thanks
+        states:
+            init:
+                transitions:
+                    penjelasanKontrasepsi:
+                        condition: intent=="pengertianKontrasepsi"
+                    mengapaKontrasepsi:
+                        condition: intent=="mengapaKontrasepsi"
+                    kontrasepsiPenting:
+                        condition: intent=="kontrasepsiPenting"
+                initial: true
+            penjelasanKontrasepsi:
+                transitions:
+                    mengapaKontrasepsi:
+                        condition: intent=="mengapaKontrasepsi"
+                    kontrasepsiPenting:
+                        condition: intent=="kontrasepsiPenting"
+                    thanks:
+                        fallback: true
+                        condition: intent=="thanks"
+                action: penjelasanKontrasepsi
+            mengapaKontrasepsi:
+                transitions:
+                    kontrasepsiPenting:
+                        condition: intent=="kontrasepsiPenting"
+                    penjelasanKontrasepsi:
+                        condition: intent=="pengertianKontrasepsi"
+                    thanks:
+                        fallback: true
+                        condition: intent=="thanks"
+                action: mengapaKontrasepsi
+            kontrasepsiPenting:
+                transitions:
+                    mengapaKontrasepsi:
+                        condition: intent=="mengapaKontrasepsi"
+                    penjelasanKontrasepsi:
+                        condition: intent=="pengertianKontrasepsi"
+                    thanks:
+                        condition: intent=="thanks"
+                action: kontrasepsiPenting
+            thanks:
+                transitions:
+                    thanks:
+                        fallback: true
+                action: thanks
+                end: true
+        actions:
+            penjelasanKontrasepsi:
+                type: text
+                options:
+                    text: >-
+                        Kontrasepsi itu hal - hal yang dilakukan untuk mencegah kehamilan saat melakukan hubungan seksual. Kontrasepsi bisa digunakan
+                        pada pihak pria dan juga wanita. Terdapat banyak macam kontrasepsi, contohnya termasuk condom, pill kontrasepsi, dan
+                        intrauterine device (IUD). Beberapa macam kontrasepsi juga bisa berfungsi untuk mencegah penularan penyakit.
+            mengapaKontrasepsi:
+                type: text
+                options:
+                    text: >-
+                        Kontrasepsi bisa digunakan jika seseorang wanita belum merasa siap secara mental atau fisik untuk mengalami kehamilan. Juga
+                        bisa digunakan jika kehamilan bisa membahayakan kesehatan seorang wanita. Selain itu, kontrasepsi penting digunakan untuk
+                        mencegah penularan penyakit.
+            kontrasepsiPenting:
+                type: text
+                options:
+                    text: >-
+                        Kontrasepsi bisa mencegah kehamilan yang tidak diingankan, dan ini bisa mengurangi aborsi. Selain itu, penggunaan alat
+                        kontrasepsi seperti condom bisa mengurangi resiko penularan penyakit menular seksual atau STD.
+            thanks:
+                type: text
+                options:
+                    text: 'sama - sama, See senang bisa membantumu'
+        methods: {}
 nlus:
     basic:
-        type: keyword
+        type: nl
         options:
-            keywords:
-                sapa:
-                    - halo
-                    - hai
-                    - hi
-                    - hello
-                    - hay
-                    - hey
-                    - hallo
-                    - hola
-                    - ola
-                    - oy
-                    - woy
-                siapa:
-                    - siapa
-                    - bisa
-                    - mampu
-                    - ngapain
-                    - tugasmu
-                    - jobdeskmu
-                    - jobmu
-                adaBantu:
-                    - ada
-                    - tanya
-                    - tahu
-                    - kepo
-                    - tau
-                    - penasaran
-                    - sudah
-                    - suda
-                    - sdh
-                    - tao
-                    - udah
-                    - uda
-                    - udh
-                    - dah
-                    - sudahh
-                    - sampun
-                    - mpun
-                    - nanya
-                    - takon
-                tidakBantu:
-                    - engga ada
-                    - gada
-                    - tidak ada
-                    - ndak ada
-                    - ga ada
-                    - tidak
-                    - blm
-                    - belom
-                    - belum
-                    - ga jadi
-                    - gajadi
-                    - gjd
-                oke:
-                    - oke
-                    - ok
-                    - baik
-                    - ooh
-                    - oooo
-                    - begitu
-                    - okay
-                    - okey
-                    - k
-                    - okee
-                    - okeee
-                    - okk
-                    - okkk
-                    - okke
-                'yes':
-                    - 'yes'
-                    - yap
-                    - iyaa
-                    - iya
-                    - yoi
-                    - ya
-                    - yaa
-                'no':
-                    - 'no'
-                    - nope
-                    - tidak
-                    - nggak
-                    - gak
-                cerita:
-                    - crita
-                    - cerita
-                    - curhat
-                    - curcol
-                    - berkisah
-                thanks:
-                    - thanks
-                    - thank you
-                    - terima kasih
-                    - makasih
-                    - makasi
-                    - oke makasi
-                    - oke terima kasih
-                    - ok makasi
+            nluId: 'futura:seeAi'
+            threshold: 0.7
+            asIntent: basic
+            output: raw
     pubertas:
         type: nl
         options:
@@ -1393,12 +1419,6 @@ nlus:
             nluId: 'futura:seeAi'
             asIntent: pubertas
             output: raw
-    ciriPuber:
-        type: keyword
-        options:
-            keywords:
-                menstruasi:
-                    - menstruasi
     organreproduksi:
         type: nl
         options:
@@ -1420,5 +1440,12 @@ nlus:
             threshold: 0.4
             asIntent: seks
             output: raw
+    kontrasepsi:
+        type: nl
+        options:
+            threshold: 0.6
+            asIntent: kontrasepsi
+            output: raw
+            nluId: 'futura:seeAi'
 methods: {}
 config: {}
