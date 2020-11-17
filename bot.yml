@@ -1,5 +1,5 @@
 name: seeAi
-tag: null
+tag: latest
 deleted_at: null
 desc: ''
 timezone: 7
@@ -18,7 +18,11 @@ flows:
                 transitions:
                     init:
                         fallback: true
-                action: default
+                action:
+                    -
+                        name: yangDipahami
+                    -
+                        name: default
                 initial: true
                 end: true
         actions:
@@ -33,13 +37,56 @@ flows:
                 type: text
                 options:
                     text:
-                        - Ketik "Halo" untuk mulai mengobrol dengan See
-                        - Ketik "Halo" untuk bertanya kepada See
-                        - Ketik "Halo" untuk berbincang dengan see
+                        - Ketik "halo" untuk mulai mengobrol dengan see
+                        - ketik "halo" untuk bertanya kepada see
+                        - ketik "halo" untuk berbincang dengan see
+            yangDipahami:
+                type: text
+                options:
+                    text: ketik "materi" unutk mengetahui apa yang see pahami
+        methods: {}
+    materi:
+        active: true
+        volatile: false
+        intents:
+            materi:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: materi
+                    match: materi
+        states:
+            init:
+                transitions:
+                    materi:
+                        condition: intent=="materi"
+                initial: true
+            materi:
+                transitions: {}
+                action: materi
+                initial: false
+        actions:
+            materi:
+                type: template
+                options:
+                    type: carousel
+                    items:
+                        -
+                            title: pubertas
+                            text: Pubertas
+                            thumbnailImageUrl: 'https://i.ibb.co/2k4PghC/Blog-Banner-Icon-Only-2.jpg'
+                            actions:
+                                -
+                                    type: postback
+                                    label: pubertas
+                                    payload:
+                                        type: materi
+                                        materi: pubertas
         methods: {}
     halo:
         active: true
-        volatile: true
+        volatile: false
         intents:
             sapa:
                 type: text
@@ -83,6 +130,8 @@ flows:
                     tidakBantu:
                         fallback: true
                         condition: intent=="tidakBantu"
+                    sapa:
+                        fallback: true
                 action: sapa
             adaBantu:
                 transitions:
@@ -188,14 +237,357 @@ flows:
                         - >-
                             Kenalin aku See, Sex Educator for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Tak perlu takut untuk
                             bertanya apapun karena aku tidak akan menghakimimu. Selamat bertanya!
+            buat:
+                type: text
+                options:
+                    text:
+                        - 'Tiga orang jenius ini lah yang melahirkan See ke dunia. Abiel Zulio M, Syaufiq Alaudin, dan Shafa.'
+                        - 'See lahir dari pemikiran tiga orang jenius ini. Abiel Zulio M, Syaufiq Alaudin, dan Shafa.'
             siapaBuat:
                 type: text
                 options:
                     text:
-                        - 'Tiga orang jenius ini lah yang melahirkan See ke dunia. Abiel Zulio M, Syaufiq Alaudin, dan Timurriana Shafa.'
-                        - 'See lahir dari pemikiran tiga orang jenius ini. Abiel Zulio M, Syaufiq Alaudin, dan Timurriana Shafa.'
-                        - 'See diwujudkan oleh ketiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Timurriana Shafa.'
-                        - 'See hadir dibuat oleh tiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Timurriana Shafa.'
+                        - 'See diwujudkan oleh ketiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Shafa.'
+                        - 'See hadir dibuat oleh tiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Shafa.'
+        methods: {}
+    pubertas:
+        active: true
+        volatile: true
+        intents:
+            pengertianPubertas:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: pubertas
+                    match: apa itu pubertas
+            sudahPuber:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: pubertas
+                    match: sudah puber
+            belumPuber:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: pubertas
+                    match: belum puber
+            mens:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: pubertas
+                    match: menstruasi
+            tandaPuber:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: pubertas
+                    match: tanda puber
+            mimpiBasah:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: pubertas
+                    match: mimpi basah
+            sama2:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: thanks
+            tandaPuberYangDialami:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: pubertas
+                    match: yang dialami
+            kapanPuber:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: pubertas
+                    match: kapan puber
+        states:
+            init:
+                transitions:
+                    tentangPuber:
+                        condition: intent=="pengertianPubertas"
+                    tandaPuber:
+                        condition: intent=="tandaPuber"
+                    mens:
+                        condition: intent=="mens"
+                    mimpiBasah:
+                        condition: intent=="mimpiBasah"
+                    tandaPuberYangDialami:
+                        condition: intent=="tandaPuberYangDialami"
+                    kapanPuber:
+                        condition: intent=="kapanPuber"
+                initial: true
+            tentangPuber:
+                transitions:
+                    mens:
+                        condition: intent=="mens"
+                        mapping:
+                            context.mens: intent
+                    yangKamuAlami:
+                        condition: intent=="sudahPuber"
+                    tandaPuber:
+                        condition: intent=="tandaPuber"
+                    mimpiBasah:
+                        condition: intent=="mimpiBasah"
+                        mapping:
+                            context.mimpiBasah: intent
+                    tandaPuberYangDialami:
+                        condition: intent=="tandaPuberYangDialami"
+                    kapanPuber:
+                        condition: intent=="kapanPuber"
+                    belumPuber:
+                        fallback: true
+                        condition: intent=="belumPuber"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                    tentangPuber:
+                        fallback: true
+                action:
+                    -
+                        name: penjelasanPuber
+                    -
+                        name: sudahPuber
+                initial: false
+            yangKamuAlami:
+                transitions:
+                    mens:
+                        fallback: false
+                        condition: intent=="mens"
+                        mapping:
+                            context.mens: intent
+                    mimpiBasah:
+                        condition: intent=="mimpiBasah"
+                        mapping:
+                            context.mimpiBasah: intent
+                    tandaPuberYangDialami:
+                        condition: intent=="tandaPuberYangDialami"
+                    yangKamuAlami:
+                        fallback: true
+                action: tanya
+            belumPuber:
+                transitions:
+                    belumPuber:
+                        fallback: true
+                action:
+                    -
+                        name: kasihTau
+                    -
+                        name: tanyaLagi
+                end: true
+            mens:
+                transitions:
+                    kapanPuber:
+                        condition: intent=="kapanPuber"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                    mens:
+                        fallback: true
+                action:
+                    -
+                        name: penjelasnMens
+                        condition: context.mens=="mens"
+                    -
+                        name: siklusMens
+                    -
+                        name: mens
+                        condition: context.mens=="mens"
+            tandaPuber:
+                transitions:
+                    mens:
+                        condition: intent=="mens"
+                    mimpiBasah:
+                        condition: intent=="mimpiBasah"
+                    kapanPuber:
+                        condition: intent=="kapanPuber"
+                    tentangPuber:
+                        condition: intent=="pengertianPubertas"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                action:
+                    -
+                        name: pubercowo
+                    -
+                        name: pubercewe
+            mimpiBasah:
+                transitions:
+                    kapanPuber:
+                        condition: intent=="kapanPuber"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                    mimpiBasah:
+                        fallback: true
+                action:
+                    -
+                        name: penjelasanMimpiBasah
+                    -
+                        name: pesan
+                        condition: context.mimpiBasah=="mimpiBasah"
+            sama2:
+                transitions:
+                    sama2:
+                        fallback: true
+                action: samaSama
+                end: true
+            tandaPuberYangDialami:
+                transitions:
+                    tandaPuber:
+                        condition: intent=="tandaPuber"
+                    kapanPuber:
+                        condition: intent=="kapanPuber"
+                    tentangPuber:
+                        condition: intent=="pengertianPubertas"
+                    mimpiBasah:
+                        condition: intent=="mimpiBasah"
+                    mens:
+                        condition: intent=="mens"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                action:
+                    -
+                        name: masukPuber
+                    -
+                        name: lanjutTanda
+            kapanPuber:
+                transitions:
+                    tentangPuber:
+                        condition: intent=="pengertianPubertas"
+                    tandaPuberYangDialami:
+                        condition: intent=="tandaPuberYangDialami"
+                    tandaPuber:
+                        condition: intent=="tandaPuber"
+                    mens:
+                        condition: intent=="mens"
+                    mimpiBasah:
+                        condition: intent=="mimpiBasah"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                    kapanPuber:
+                        fallback: true
+                action: waktuPuber
+        actions:
+            penjelasanPuber:
+                type: text
+                options:
+                    text: >-
+                        Pubertas adalah proses perubahan ketidakmatangan fisik dan seksual menuju kematangan fisik dan seksual. Fase kematangan fisik
+                        dan seksual dapat membuat organ reproduksi seorang remaja dapat berfungsi untuk bereproduksi
+            sudahPuber:
+                type: text
+                options:
+                    text: Apa kamu sudah mengalaminya?
+            tanya:
+                type: text
+                options:
+                    text: Apa yang kamu alami?
+            kasihTau:
+                type: text
+                options:
+                    text: 'Ohh begitu, kamu nanti pasti bakal ngalamin kok!'
+            tanyaLagi:
+                type: text
+                options:
+                    text:
+                        - Ada yang bisa aku bantu lagi?
+                        - 'Baik, apakah sudah cukup?'
+                        - Ada yang bisa See jawab lagi?
+                        - Ada yang mau kamu tanyain lagi kepada See?
+                        - Ada yang ingin ditanyain lagi tidak?
+                        - Ada yang mau ditanyain ke See lagi nggak?
+                        - Ada yang mau ditanyakan lagi nggak?
+                        - Mungkin ada yang bisa See bantu lagi?
+            mimpiBasah:
+                type: text
+                options:
+                    text: Itu wajar terjadi pada laki laki
+            mens:
+                type: text
+                options:
+                    text: >-
+                        Itu berarti kamu sudah bisa hamil jika pada masa subur dan juga telah dibuahi oleh laki-laki yang sudah pubertas. Jaga dirimu
+                        sebaik mungkin dan tunggu sampai menjadi seorang istri yang sah, ya. Itu saran dari See!
+            pubercewe:
+                type: text
+                options:
+                    text: >-
+                        Ada beberapa tanda pubertas pada perempuan diantaranya, (1) ukuran payudara mulai tumbuh alias membesar, (2) tumbuhnya rambut
+                        di kemaluan dan ketiak, dan (3) menstruasi alias keluarnya darah kotor dalam vagina.
+            pubercowo:
+                type: text
+                options:
+                    text: >-
+                        Ada beberapa tanda pubertas pada laki-laki seperti, (1) ukuran testikel dan penis yang membesar, (2) mengalami mimpi basah,
+                        (3) tumbuh rambut pada daerah kemaluan dan ketiak, dan (4) suara menjadi lebih berat
+            penjelasnMens:
+                type: text
+                options:
+                    text: >-
+                        Perempuan memiliki sel telur yang akan menjadi janin bila dibuahi atau bertemu sperma dari laki-laki. Tiap bulan, rahim
+                        membuat lapisan darah dan jaringan sebagai tempat menempel sel telur yang akan dibuahi. Namun, jika sel telur tidak dibuahi,
+                        pada akhirnya akan luruh dan keluar dari vagina dalam bentuk darah menstruasi. Periode menstruasi umumnya berlangsung sekitar
+                        2-7 hari. Ganti pembalut secara teratur tiap 4-8 jam untuk menjaga kebersihan organ vitalmu, ya!
+            penjelasanMimpiBasah:
+                type: text
+                options:
+                    text: >-
+                        Selama pubertas, remaja laki-laki juga akan mengalami mimpi basah, yaitu ejakulasi yang terjadi saat sedang tidur. Mimpi basah
+                        yang kamu alami terjadi karena adanya peningkatan kadar hormon testosteron dalam tubuh. Seiring bertambahnya usia, intensitas
+                        mimpi basah akan berkurang.
+            pesan:
+                type: text
+                options:
+                    text: >-
+                        Setelah mimpi basah maka kamu sudah bisa membuahi perempuan. Jadi berhati-hatilah dan tunggu sampai menjadi seorang suami.
+                        Membuahi seorang perempuan perihal yang mudah dikarenakan butuh tanggung jawab yang besar. Itu saran dari See :)
+            samaSama:
+                type: text
+                options:
+                    text: 'Sama-sama, See senang bisa membantu kamu. Ada yang ingin ditanyain lagi tidak?'
+            masukPuber:
+                type: text
+                options:
+                    text: >-
+                        Itu merupakan salah satu tanda kamu memasuki masa pubertas. Jadi kamu nggak perlu khawatir yaa. Ada beberapa tanda tanda
+                        pubertas yang lain juga lhoo.
+            waktuPuber:
+                type: text
+                options:
+                    text: >-
+                        Pada perempuan, pubertas terjadi pada rentang usia 10-14 tahun dan pada laki-laki, pubertas terjadi pada kisaran usia 12-16
+                        tahun.
+            siklusMens:
+                type: text
+                options:
+                    text: >-
+                        Pada umumnya, siklus menstruasi normal rata-rata terjadi setiap 28 hari. Ada pula yang memiliki siklus haid sekitar 25 sampai
+                        35 hari. Ini masih terhitung normal. Anda dianggap memiliki haid yang teratur jika menstruasi datang setiap 23 hari atau
+                        setiap 35 hari, atau di mana saja di antara rentang waktu ini. Menstruasi yang normal berlangsung antara tiga sampai tujuh
+                        hari.
+            lanjutTanda:
+                type: text
+                options:
+                    text: ketik "lanjut" untuk mengetahuinya
         methods: {}
     organReproduksiPria:
         active: true
@@ -314,7 +706,11 @@ flows:
                         condition: intent=="sama2"
                     jenis:
                         fallback: true
-                action: jenis
+                action:
+                    -
+                        name: jenis
+                    -
+                        name: lanjut
             penis:
                 transitions:
                     ereksi:
@@ -448,333 +844,10 @@ flows:
                         - Ada yang mau ditanyain ke See lagi nggak?
                         - Ada yang mau ditanyakan lagi nggak?
                         - Mungkin ada yang bisa See bantu lagi?
-        methods: {}
-    pubertas:
-        active: true
-        volatile: true
-        intents:
-            pengertianPubertas:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: pubertas
-                    match: apa itu pubertas
-            sudahPuber:
-                type: text
-                initial: false
-                fallback: false
-                classifier:
-                    nlu: pubertas
-                    match: sudah puber
-            belumPuber:
-                type: text
-                initial: false
-                fallback: false
-                classifier:
-                    nlu: pubertas
-                    match: belum puber
-            mens:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: pubertas
-                    match: menstruasi
-            tandaPuber:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: pubertas
-                    match: tanda puber
-            mimpiBasah:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: pubertas
-                    match: mimpi basah
-            sama2:
-                type: text
-                initial: false
-                fallback: false
-                classifier:
-                    nlu: basic
-                    match: thanks
-            tandaPuberYangDialami:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: pubertas
-                    match: yang dialami
-            kapanPuber:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: pubertas
-                    match: kapan puber
-        states:
-            init:
-                transitions:
-                    tentangPuber:
-                        condition: intent=="pengertianPubertas"
-                    tandaPuber:
-                        condition: intent=="tandaPuber"
-                    mens:
-                        condition: intent=="mens"
-                    mimpiBasah:
-                        condition: intent=="mimpiBasah"
-                    tandaPuberYangDialami:
-                        condition: intent=="tandaPuberYangDialami"
-                    kapanPuber:
-                        condition: intent=="kapanPuber"
-                initial: true
-            tentangPuber:
-                transitions:
-                    mens:
-                        condition: intent=="mens"
-                        mapping:
-                            context.mens: intent
-                    yangKamuAlami:
-                        condition: intent=="sudahPuber"
-                    tandaPuber:
-                        condition: intent=="tandaPuber"
-                    mimpiBasah:
-                        condition: intent=="mimpiBasah"
-                        mapping:
-                            context.mimpiBasah: intent
-                    tandaPuberYangDialami:
-                        condition: intent=="tandaPuberYangDialami"
-                    kapanPuber:
-                        condition: intent=="kapanPuber"
-                    belumPuber:
-                        fallback: true
-                        condition: intent=="belumPuber"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    tentangPuber:
-                        fallback: true
-                action:
-                    -
-                        name: penjelasanPuber
-                    -
-                        name: sudahPuber
-                initial: false
-            yangKamuAlami:
-                transitions:
-                    mimpiBasah:
-                        condition: intent=="mimpiBasah"
-                        mapping:
-                            context.mimpiBasah: intent
-                    tandaPuberYangDialami:
-                        condition: intent=="tandaPuberYangDialami"
-                    mens:
-                        fallback: false
-                        condition: intent=="mens"
-                        mapping:
-                            context.mens: intent
-                    yangKamuAlami:
-                        fallback: true
-                action: tanya
-            belumPuber:
-                transitions:
-                    belumPuber:
-                        fallback: true
-                action:
-                    -
-                        name: kasihTau
-                    -
-                        name: tanyaLagi
-                end: true
-            mens:
-                transitions:
-                    kapanPuber:
-                        condition: intent=="kapanPuber"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    mens:
-                        fallback: true
-                action:
-                    -
-                        name: penjelasnMens
-                        condition: context.mens=="mens"
-                    -
-                        name: mens
-                        condition: context.mens=="mens"
-                    -
-                        name: siklusMens
-            tandaPuber:
-                transitions:
-                    mens:
-                        condition: intent=="mens"
-                    mimpiBasah:
-                        condition: intent=="mimpiBasah"
-                    kapanPuber:
-                        condition: intent=="kapanPuber"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    tandaPuber:
-                        fallback: true
-                action:
-                    -
-                        name: pubercowo
-                    -
-                        name: pubercewe
-            mimpiBasah:
-                transitions:
-                    kapanPuber:
-                        condition: intent=="kapanPuber"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    mimpiBasah:
-                        fallback: true
-                action:
-                    -
-                        name: penjelasanMimpiBasah
-                    -
-                        name: pesan
-                        condition: context.mimpiBasah=="mimpiBasah"
-            sama2:
-                transitions:
-                    sama2:
-                        fallback: true
-                action: samaSama
-                end: true
-            tandaPuberYangDialami:
-                transitions:
-                    tandaPuber:
-                        condition: intent=="tandaPuber"
-                    kapanPuber:
-                        condition: intent=="kapanPuber"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    tandaPuberYangDialami:
-                        fallback: true
-                action: masukPuber
-            kapanPuber:
-                transitions:
-                    tentangPuber:
-                        condition: intent=="pengertianPubertas"
-                    tandaPuberYangDialami:
-                        condition: intent=="tandaPuberYangDialami"
-                    tandaPuber:
-                        condition: intent=="tandaPuber"
-                    mens:
-                        condition: intent=="mens"
-                    mimpiBasah:
-                        condition: intent=="mimpiBasah"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    kapanPuber:
-                        fallback: true
-                action: waktuPuber
-        actions:
-            penjelasanPuber:
+            lanjut:
                 type: text
                 options:
-                    text: >-
-                        Pubertas adalah proses perubahan ketidakmatangan fisik dan seksual menuju kematangan fisik dan seksual. Fase kematangan fisik
-                        dan seksual dapat membuat organ reproduksi seorang remaja dapat berfungsi untuk bereproduksi
-            sudahPuber:
-                type: text
-                options:
-                    text: Apa kamu sudah mengalaminya?
-            tanya:
-                type: text
-                options:
-                    text: Apa yang kamu alami?
-            kasihTau:
-                type: text
-                options:
-                    text: 'Ohh begitu, kamu nanti pasti bakal ngalamin kok!'
-            tanyaLagi:
-                type: text
-                options:
-                    text:
-                        - Ada yang bisa aku bantu lagi?
-                        - 'Baik, apakah sudah cukup?'
-                        - Ada yang bisa See jawab lagi?
-                        - Ada yang mau kamu tanyain lagi kepada See?
-                        - Ada yang ingin ditanyain lagi tidak?
-                        - Ada yang mau ditanyain ke See lagi nggak?
-                        - Ada yang mau ditanyakan lagi nggak?
-                        - Mungkin ada yang bisa See bantu lagi?
-            mimpiBasah:
-                type: text
-                options:
-                    text: Itu wajar terjadi pada laki laki
-            mens:
-                type: text
-                options:
-                    text: >-
-                        Itu berarti kamu sudah bisa hamil jika pada masa subur dan juga telah dibuahi oleh laki-laki yang sudah pubertas. Jaga dirimu
-                        sebaik mungkin dan tunggu sampai menjadi seorang istri yang sah, ya. Itu saran dari See!
-            pubercewe:
-                type: text
-                options:
-                    text: >-
-                        Ada beberapa tanda pubertas pada perempuan diantaranya, (1) ukuran payudara mulai tumbuh alias membesar, (2) tumbuhnya rambut
-                        di kemaluan dan ketiak, dan (3) menstruasi alias keluarnya darah kotor dalam vagina.
-            pubercowo:
-                type: text
-                options:
-                    text: >-
-                        Ada beberapa tanda pubertas pada laki-laki seperti, (1) ukuran testikel dan penis yang membesar, (2) mengalami mimpi basah,
-                        (3) tumbuh rambut pada daerah kemaluan dan ketiak, dan (4) suara menjadi lebih berat
-            penjelasnMens:
-                type: text
-                options:
-                    text: >-
-                        Perempuan memiliki sel telur yang akan menjadi janin bila dibuahi atau bertemu sperma dari laki-laki. Tiap bulan, rahim
-                        membuat lapisan darah dan jaringan sebagai tempat menempel sel telur yang akan dibuahi. Namun, jika sel telur tidak dibuahi,
-                        pada akhirnya akan luruh dan keluar dari vagina dalam bentuk darah menstruasi. Periode menstruasi umumnya berlangsung sekitar
-                        2-7 hari. Ganti pembalut secara teratur tiap 4-8 jam untuk menjaga kebersihan organ vitalmu, ya!
-            penjelasanMimpiBasah:
-                type: text
-                options:
-                    text: >-
-                        Selama pubertas, remaja laki-laki juga akan mengalami mimpi basah, yaitu ejakulasi yang terjadi saat sedang tidur. Mimpi basah
-                        yang kamu alami terjadi karena adanya peningkatan kadar hormon testosteron dalam tubuh. Seiring bertambahnya usia, intensitas
-                        mimpi basah akan berkurang.
-            pesan:
-                type: text
-                options:
-                    text: >-
-                        Setelah mimpi basah maka kamu sudah bisa membuahi perempuan. Jadi berhati-hatilah dan tunggu sampai menjadi seorang suami.
-                        Membuahi seorang perempuan perihal yang mudah dikarenakan butuh tanggung jawab yang besar. Itu saran dari See :)
-            samaSama:
-                type: text
-                options:
-                    text: 'Sama-sama, See senang bisa membantu kamu. Ada yang ingin ditanyain lagi tidak?'
-            masukPuber:
-                type: text
-                options:
-                    text: >-
-                        Itu merupakan salah satu tanda kamu memasuki masa pubertas. Jadi kamu nggak perlu khawatir yaa. Ada beberapa tanda tanda
-                        pubertas yang lain juga lhoo.
-            waktuPuber:
-                type: text
-                options:
-                    text: >-
-                        Pada perempuan, pubertas terjadi pada rentang usia 10-14 tahun dan pada laki-laki, pubertas terjadi pada kisaran usia 12-16
-                        tahun.
-            siklusMens:
-                type: text
-                options:
-                    text: >-
-                        Pada umumnya, siklus menstruasi normal rata-rata terjadi setiap 28 hari. Ada pula yang memiliki siklus haid sekitar 25 sampai
-                        35 hari. Ini masih terhitung normal. Anda dianggap memiliki haid yang teratur jika menstruasi datang setiap 23 hari atau
-                        setiap 35 hari, atau di mana saja di antara rentang waktu ini. Menstruasi yang normal berlangsung antara tiga sampai tujuh
-                        hari.
+                    text: ketik "lanjut" untuk mengtahui organ organ reproduksi pria secara detail
         methods: {}
     penyakitMenularSeksual:
         active: true
@@ -1189,7 +1262,7 @@ flows:
         methods: {}
     seks:
         active: true
-        volatile: true
+        volatile: false
         intents:
             pengertianSeks:
                 type: text
@@ -1479,7 +1552,7 @@ nlus:
     pubertas:
         type: nl
         options:
-            threshold: 0.4
+            threshold: 0.7
             nluId: 'futura:seeAi'
             asIntent: pubertas
             output: raw
@@ -1487,7 +1560,7 @@ nlus:
         type: nl
         options:
             nluId: 'futura:seeAi'
-            threshold: 0.5
+            threshold: 0.7
             output: raw
             asIntent: organreproduksi
     penyakitMenularSeksual:
@@ -1501,15 +1574,21 @@ nlus:
         type: nl
         options:
             nluId: 'futura:seeAi'
-            threshold: 0.4
+            threshold: 0.7
             asIntent: seks
             output: raw
     kontrasepsi:
         type: nl
         options:
-            threshold: 0.6
+            threshold: 0.7
             asIntent: kontrasepsi
             output: raw
             nluId: 'futura:seeAi'
+    materi:
+        type: keyword
+        options:
+            keywords:
+                materi:
+                    - materi
 methods: {}
 config: {}
