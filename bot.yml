@@ -1,5 +1,5 @@
 name: seeAi
-tag: latest
+tag: null
 deleted_at: null
 desc: ''
 timezone: 7
@@ -60,7 +60,7 @@ flows:
         methods: {}
     halo:
         active: true
-        volatile: false
+        volatile: true
         intents:
             sapa:
                 type: text
@@ -179,7 +179,7 @@ flows:
         methods: {}
     siapa:
         active: true
-        volatile: false
+        volatile: true
         intents:
             siapa:
                 type: text
@@ -241,7 +241,7 @@ flows:
         methods: {}
     pubertas:
         active: true
-        volatile: false
+        volatile: true
         intents:
             pengertianPubertas:
                 type: text
@@ -573,7 +573,7 @@ flows:
         methods: {}
     organReproduksiPria:
         active: true
-        volatile: false
+        volatile: true
         intents:
             ereksi:
                 type: text
@@ -830,7 +830,7 @@ flows:
         methods: {}
     penyakitMenularSeksual:
         active: true
-        volatile: false
+        volatile: true
         intents:
             pengertianPenyakit:
                 type: text
@@ -1136,7 +1136,7 @@ flows:
         methods: {}
     seks:
         active: true
-        volatile: false
+        volatile: true
         intents:
             pengertianSeks:
                 type: text
@@ -1422,7 +1422,7 @@ flows:
         methods: {}
     kontrasepsi:
         active: true
-        volatile: false
+        volatile: true
         intents:
             pengertianKontrasepsi:
                 type: text
