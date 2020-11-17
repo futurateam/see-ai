@@ -18,11 +18,7 @@ flows:
                 transitions:
                     init:
                         fallback: true
-                action:
-                    -
-                        name: default
-                    -
-                        name: champ
+                action: default
                 initial: true
                 end: true
         actions:
@@ -37,26 +33,9 @@ flows:
                 type: text
                 options:
                     text:
-                        - Ketik "halo" untuk mulai mengobrol dengan see
-                        - ketik "halo" untuk bertanya kepada see
-                        - ketik "halo" untuk berbincang dengan see
-            champ:
-                type: template
-                options:
-                    type: carousel
-                    items:
-                        -
-                            title: valorant
-                            text: valorant
-                            thumbnailImageUrl: 'https://drive.google.com/file/d/1LM19cFxZdWOokUkWkOovZimDfUciBz4W/view?usp=sharing'
-                        -
-                            title: champion
-                            text: champion
-                            thumbnailImageUrl: 'https://drive.google.com/file/d/1JlglRpBECCB8xtNNCJAI8MN0tZHz7xFh/view?usp=sharing'
-                        -
-                            title: ml
-                            text: mobile legend
-                            thumbnailImageUrl: 'https://drive.google.com/file/d/1vAE41V7aRprVEylhWr1_uoqliYngrKAr/view?usp=sharing'
+                        - Ketik "Halo" untuk mulai mengobrol dengan See
+                        - Ketik "Halo" untuk bertanya kepada See
+                        - Ketik "Halo" untuk berbincang dengan see
         methods: {}
     halo:
         active: true
@@ -90,21 +69,11 @@ flows:
                 classifier:
                     nlu: basic
                     match: oke
-            getStarted:
-                type: data
-                initial: true
-                fallback: false
-                condition: payload.type=="follow"
-            reenter:
-                type: command
-                initial: false
-                fallback: false
-                condition: content=="reenter"
         states:
             init:
                 transitions:
                     sapa:
-                        condition: intent=="getStarted"
+                        condition: intent=="sapa"
                 initial: true
             sapa:
                 transitions:
@@ -114,8 +83,6 @@ flows:
                     tidakBantu:
                         fallback: true
                         condition: intent=="tidakBantu"
-                    sapa:
-                        fallback: true
                 action: sapa
             adaBantu:
                 transitions:
@@ -188,11 +155,6 @@ flows:
                 classifier:
                     nlu: basic
                     match: siapa yang buat
-            reenter:
-                type: command
-                initial: false
-                fallback: false
-                condition: content=="reenter"
         states:
             init:
                 transitions:
@@ -226,18 +188,266 @@ flows:
                         - >-
                             Kenalin aku See, Sex Educator for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Tak perlu takut untuk
                             bertanya apapun karena aku tidak akan menghakimimu. Selamat bertanya!
-            buat:
-                type: text
-                options:
-                    text:
-                        - 'Tiga orang jenius ini lah yang melahirkan See ke dunia. Abiel Zulio M, Syaufiq Alaudin, dan Shafa.'
-                        - 'See lahir dari pemikiran tiga orang jenius ini. Abiel Zulio M, Syaufiq Alaudin, dan Shafa.'
             siapaBuat:
                 type: text
                 options:
                     text:
-                        - 'See diwujudkan oleh ketiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Shafa.'
-                        - 'See hadir dibuat oleh tiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Shafa.'
+                        - 'Tiga orang jenius ini lah yang melahirkan See ke dunia. Abiel Zulio M, Syaufiq Alaudin, dan Timurriana Shafa.'
+                        - 'See lahir dari pemikiran tiga orang jenius ini. Abiel Zulio M, Syaufiq Alaudin, dan Timurriana Shafa.'
+                        - 'See diwujudkan oleh ketiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Timurriana Shafa.'
+                        - 'See hadir dibuat oleh tiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Timurriana Shafa.'
+        methods: {}
+    organReproduksiPria:
+        active: true
+        volatile: true
+        intents:
+            ereksi:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: ereksi
+            penyebabereksi:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: penyebab ereksi
+            jenisOrgan:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: jenis pria
+            penis:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: penis
+            testis:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: testis
+            skrotum:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: skrotum
+            kelenjarProstat:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: kelenjar prostat
+            sama2:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: thanks
+        states:
+            init:
+                transitions:
+                    ereksi:
+                        condition: intent=="ereksi"
+                    jenis:
+                        condition: intent=="jenisOrgan"
+                    penis:
+                        condition: intent=="penis"
+                    testis:
+                        condition: intent=="testis"
+                    skrotum:
+                        condition: intent=="skrotum"
+                    kelenjarProstat:
+                        condition: intent=="kelenjarProstat"
+                initial: true
+            ereksi:
+                transitions:
+                    penyebab_ereksi:
+                        condition: intent="penyebabereksi"
+                    penis:
+                        condition: intent=="penis"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                    ereksi:
+                        fallback: true
+                action: ereksi
+            penyebab_ereksi:
+                transitions:
+                    penis:
+                        condition: intent=="penis"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                    penyebab_ereksi:
+                        fallback: true
+                action:
+                    -
+                        name: penyebab_ereksi
+                    -
+                        name: simpulan
+            jenis:
+                transitions:
+                    penis:
+                        condition: intent=="penis"
+                    testis:
+                        condition: intent=="testis"
+                    skrotum:
+                        condition: intent=="skrotum"
+                    kelenjarProstat:
+                        condition: intent=="kelenjarProstat"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                    jenis:
+                        fallback: true
+                action: jenis
+            penis:
+                transitions:
+                    ereksi:
+                        condition: intent=="ereksi"
+                    penyebab_ereksi:
+                        condition: intent="penyebabereksi"
+                    testis:
+                        condition: intent=="testis"
+                    skrotum:
+                        condition: intent=="skrotum"
+                    kelenjarProstat:
+                        condition: intent=="kelenjarProstat"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                    penis:
+                        fallback: true
+                action: penjelasanPenis
+            testis:
+                transitions:
+                    penis:
+                        condition: intent=="penis"
+                    skrotum:
+                        condition: intent=="skrotum"
+                    kelenjarProstat:
+                        condition: intent=="kelenjarProstat"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                    testis:
+                        fallback: true
+                action: penjelasanTestis
+            skrotum:
+                transitions:
+                    penis:
+                        condition: intent=="penis"
+                    testis:
+                        condition: intent=="testis"
+                    kelenjarProstat:
+                        condition: intent=="kelenjarProstat"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                    skrotum:
+                        fallback: true
+                action: penjelasnSkrotum
+            kelenjarProstat:
+                transitions:
+                    penis:
+                        condition: intent=="penis"
+                    testis:
+                        condition: intent=="testis"
+                    skrotum:
+                        condition: intent=="skrotum"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                    kelenjarProstat:
+                        fallback: true
+                action: penjelasanKelenjarProstat
+            sama2:
+                transitions:
+                    sama2:
+                        fallback: true
+                action:
+                    -
+                        name: thanks
+                    -
+                        name: tanyaLagi
+                end: true
+        actions:
+            ereksi:
+                type: text
+                options:
+                    text: Ereksi adalah kondisi penis menjadi tegang dan terangkat
+            penyebab_ereksi:
+                type: text
+                options:
+                    text: 'Ereksi bisa disebabkan oleh berbagai macam stimul seperti psikologis, rangsang sentuh, bau, dan visual stimulus'
+            simpulan:
+                type: text
+                options:
+                    text: Ereksi merupakan hal wajar yang terjadi pada laki laki jadi tidak perlu cemas jika itu terjadi.
+            jenis:
+                type: text
+                options:
+                    text: 'Terdapat beberapa organ reproduksi yang penting bagi pria seperti penis, scrotum, testis, dan kelenjar prostat,'
+            penjelasanPenis:
+                type: text
+                options:
+                    text: >-
+                        Penis merupakan organ kopulasi pada pria jadi ini nih yang bertanggung jawab untuk mentransfer sperma agar bisa masuk ke tubuh
+                        betina. Nah, proses ini dapat terjadi ketika penis pada kondisi ereksi, tapi ada juga loh yang tidak perlu ereksi tapi
+                        spermanya keluar. Contoh gampangnya adalah ketika laki laki mimpi basah.  Selain itu kalian tau tidak? kalo penis itu masuk
+                        salah satu organ erotica yang paling sensitif pada laki laki, sehingga dengan kena rangsang sedikit saja dorongan seksual pada
+                        laki laki dapat langsung naik.
+            penjelasanTestis:
+                type: text
+                options:
+                    text: >-
+                        Testis berfungsi untuk pembentukan sperma. Tapi kalian juga harus tau kalo testis itu penting banget dalam pembentukan
+                        hormon-hormon steroid pada laki laki.
+            penjelasnSkrotum:
+                type: text
+                options:
+                    text: >-
+                        Gini, skrotum itu kalo diperhatiin kan biasanya dia menggantung di tubuh laki-laki jadi seperti berada di luar tubuh cowok.
+                        Nah, ini itu ada fungsinya yaitu agar menjaga suhu testis agar dibawah suhu tubuh karena pada dasarnya sperma itu dibentuk
+                        pada suhu yang relatif lebih rendah daripada suhu tubuh normalnya.
+            penjelasanKelenjarProstat:
+                type: text
+                options:
+                    text: >-
+                        Kelenjar prostat berperan dalam pembentukan 13-33% dari semen (cairan yang dikeluarkan ketika ejakulasi). Cairan dari prostat
+                        ini mengandung nutrisi yang berguna sebagai proteksi pada sperma agar bisa bergerak efisien di dalam saluran reproduksi
+                        perempuan. Ketika pada laki-laki penis mengalami ereksi maka akan membesar sehingga menyumbat jalur kencing supaya ketika akan
+                        ejakulasi yang keluar hanya semen bukan urin.
+            thanks:
+                type: text
+                options:
+                    text: 'Sama-sama, See senang bisa membantu kamu'
+            tanyaLagi:
+                type: text
+                options:
+                    text:
+                        - Ada yang bisa aku bantu lagi?
+                        - 'Baik, apakah sudah cukup?'
+                        - Ada yang bisa See jawab lagi?
+                        - Ada yang mau kamu tanyain lagi kepada See?
+                        - Ada yang ingin ditanyain lagi tidak?
+                        - Ada yang mau ditanyain ke See lagi nggak?
+                        - Ada yang mau ditanyakan lagi nggak?
+                        - Mungkin ada yang bisa See bantu lagi?
         methods: {}
     pubertas:
         active: true
@@ -306,11 +516,6 @@ flows:
                 classifier:
                     nlu: pubertas
                     match: kapan puber
-            reenter:
-                type: command
-                initial: false
-                fallback: false
-                condition: content=="reenter"
         states:
             init:
                 transitions:
@@ -571,263 +776,6 @@ flows:
                         setiap 35 hari, atau di mana saja di antara rentang waktu ini. Menstruasi yang normal berlangsung antara tiga sampai tujuh
                         hari.
         methods: {}
-    organReproduksiPria:
-        active: true
-        volatile: true
-        intents:
-            ereksi:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: organreproduksi
-                    match: ereksi
-            penyebabereksi:
-                type: text
-                initial: false
-                fallback: false
-                classifier:
-                    nlu: organreproduksi
-                    match: penyebab ereksi
-            jenisOrgan:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: organreproduksi
-                    match: jenis pria
-            penis:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: organreproduksi
-                    match: penis
-            testis:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: organreproduksi
-                    match: testis
-            skrotum:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: organreproduksi
-                    match: skrotum
-            kelenjarProstat:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: organreproduksi
-                    match: kelenjar prostat
-            sama2:
-                type: text
-                initial: false
-                fallback: false
-                classifier:
-                    nlu: basic
-                    match: thanks
-            reenter:
-                type: command
-                initial: false
-                fallback: false
-                condition: content=="reenter"
-        states:
-            init:
-                transitions:
-                    ereksi:
-                        condition: intent=="ereksi"
-                    jenis:
-                        condition: intent=="jenisOrgan"
-                    penis:
-                        condition: intent=="penis"
-                    testis:
-                        condition: intent=="testis"
-                    skrotum:
-                        condition: intent=="skrotum"
-                    kelenjarProstat:
-                        condition: intent=="kelenjarProstat"
-                initial: true
-            ereksi:
-                transitions:
-                    penyebab_ereksi:
-                        condition: intent="penyebabereksi"
-                    penis:
-                        condition: intent=="penis"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    ereksi:
-                        fallback: true
-                action: ereksi
-            penyebab_ereksi:
-                transitions:
-                    penis:
-                        condition: intent=="penis"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    penyebab_ereksi:
-                        fallback: true
-                action:
-                    -
-                        name: penyebab_ereksi
-                    -
-                        name: simpulan
-            jenis:
-                transitions:
-                    penis:
-                        condition: intent=="penis"
-                    testis:
-                        condition: intent=="testis"
-                    skrotum:
-                        condition: intent=="skrotum"
-                    kelenjarProstat:
-                        condition: intent=="kelenjarProstat"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    jenis:
-                        fallback: true
-                action: jenis
-            penis:
-                transitions:
-                    ereksi:
-                        condition: intent=="ereksi"
-                    penyebab_ereksi:
-                        condition: intent="penyebabereksi"
-                    testis:
-                        condition: intent=="testis"
-                    skrotum:
-                        condition: intent=="skrotum"
-                    kelenjarProstat:
-                        condition: intent=="kelenjarProstat"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    penis:
-                        fallback: true
-                action: penjelasanPenis
-            testis:
-                transitions:
-                    penis:
-                        condition: intent=="penis"
-                    skrotum:
-                        condition: intent=="skrotum"
-                    kelenjarProstat:
-                        condition: intent=="kelenjarProstat"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    testis:
-                        fallback: true
-                action: penjelasanTestis
-            skrotum:
-                transitions:
-                    penis:
-                        condition: intent=="penis"
-                    testis:
-                        condition: intent=="testis"
-                    kelenjarProstat:
-                        condition: intent=="kelenjarProstat"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    skrotum:
-                        fallback: true
-                action: penjelasnSkrotum
-            kelenjarProstat:
-                transitions:
-                    penis:
-                        condition: intent=="penis"
-                    testis:
-                        condition: intent=="testis"
-                    skrotum:
-                        condition: intent=="skrotum"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    kelenjarProstat:
-                        fallback: true
-                action: penjelasanKelenjarProstat
-            sama2:
-                transitions:
-                    sama2:
-                        fallback: true
-                action:
-                    -
-                        name: thanks
-                    -
-                        name: tanyaLagi
-                end: true
-        actions:
-            ereksi:
-                type: text
-                options:
-                    text: Ereksi adalah kondisi penis menjadi tegang dan terangkat
-            penyebab_ereksi:
-                type: text
-                options:
-                    text: 'Ereksi bisa disebabkan oleh berbagai macam stimul seperti psikologis, rangsang sentuh, bau, dan visual stimulus'
-            simpulan:
-                type: text
-                options:
-                    text: Ereksi merupakan hal wajar yang terjadi pada laki laki jadi tidak perlu cemas jika itu terjadi.
-            jenis:
-                type: text
-                options:
-                    text: 'Terdapat beberapa organ reproduksi yang penting bagi pria seperti penis, scrotum, testis, dan kelenjar prostat,'
-            penjelasanPenis:
-                type: text
-                options:
-                    text: >-
-                        Penis merupakan organ kopulasi pada pria jadi ini nih yang bertanggung jawab untuk mentransfer sperma agar bisa masuk ke tubuh
-                        betina. Nah, proses ini dapat terjadi ketika penis pada kondisi ereksi, tapi ada juga loh yang tidak perlu ereksi tapi
-                        spermanya keluar. Contoh gampangnya adalah ketika laki laki mimpi basah.  Selain itu kalian tau tidak? kalo penis itu masuk
-                        salah satu organ erotica yang paling sensitif pada laki laki, sehingga dengan kena rangsang sedikit saja dorongan seksual pada
-                        laki laki dapat langsung naik.
-            penjelasanTestis:
-                type: text
-                options:
-                    text: >-
-                        Testis berfungsi untuk pembentukan sperma. Tapi kalian juga harus tau kalo testis itu penting banget dalam pembentukan
-                        hormon-hormon steroid pada laki laki.
-            penjelasnSkrotum:
-                type: text
-                options:
-                    text: >-
-                        Gini, skrotum itu kalo diperhatiin kan biasanya dia menggantung di tubuh laki-laki jadi seperti berada di luar tubuh cowok.
-                        Nah, ini itu ada fungsinya yaitu agar menjaga suhu testis agar dibawah suhu tubuh karena pada dasarnya sperma itu dibentuk
-                        pada suhu yang relatif lebih rendah daripada suhu tubuh normalnya.
-            penjelasanKelenjarProstat:
-                type: text
-                options:
-                    text: >-
-                        Kelenjar prostat berperan dalam pembentukan 13-33% dari semen (cairan yang dikeluarkan ketika ejakulasi). Cairan dari prostat
-                        ini mengandung nutrisi yang berguna sebagai proteksi pada sperma agar bisa bergerak efisien di dalam saluran reproduksi
-                        perempuan. Ketika pada laki-laki penis mengalami ereksi maka akan membesar sehingga menyumbat jalur kencing supaya ketika akan
-                        ejakulasi yang keluar hanya semen bukan urin.
-            thanks:
-                type: text
-                options:
-                    text: 'Sama-sama, See senang bisa membantu kamu'
-            tanyaLagi:
-                type: text
-                options:
-                    text:
-                        - Ada yang bisa aku bantu lagi?
-                        - 'Baik, apakah sudah cukup?'
-                        - Ada yang bisa See jawab lagi?
-                        - Ada yang mau kamu tanyain lagi kepada See?
-                        - Ada yang ingin ditanyain lagi tidak?
-                        - Ada yang mau ditanyain ke See lagi nggak?
-                        - Ada yang mau ditanyakan lagi nggak?
-                        - Mungkin ada yang bisa See bantu lagi?
-        methods: {}
     penyakitMenularSeksual:
         active: true
         volatile: true
@@ -895,11 +843,6 @@ flows:
                 classifier:
                     nlu: basic
                     match: 'no'
-            reenter:
-                type: command
-                initial: false
-                fallback: false
-                condition: content=="reenter"
         states:
             init:
                 transitions:
@@ -1134,6 +1077,116 @@ flows:
                 options:
                     text: 'Tetap jaga kesehatan, ya. Agar terhindar dari penyakit menular seksual.'
         methods: {}
+    kontrasepsi:
+        active: true
+        volatile: true
+        intents:
+            pengertianKontrasepsi:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: kontrasepsi
+                    match: apa itu kontrasepsi
+            mengapaKontrasepsi:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: kontrasepsi
+                    match: mengapa menggunkan kontrasepsi
+            kontrasepsiPenting:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: kontrasepsi
+                    match: kontrasepsi penting
+            sama2:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: thanks
+        states:
+            init:
+                transitions:
+                    penjelasanKontrasepsi:
+                        condition: intent=="pengertianKontrasepsi"
+                    mengapaKontrasepsi:
+                        condition: intent=="mengapaKontrasepsi"
+                    kontrasepsiPenting:
+                        condition: intent=="kontrasepsiPenting"
+                initial: true
+            penjelasanKontrasepsi:
+                transitions:
+                    mengapaKontrasepsi:
+                        condition: intent=="mengapaKontrasepsi"
+                    kontrasepsiPenting:
+                        condition: intent=="kontrasepsiPenting"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                    penjelasanKontrasepsi:
+                        fallback: true
+                action: penjelasanKontrasepsi
+            mengapaKontrasepsi:
+                transitions:
+                    kontrasepsiPenting:
+                        condition: intent=="kontrasepsiPenting"
+                    penjelasanKontrasepsi:
+                        condition: intent=="pengertianKontrasepsi"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                    mengapaKontrasepsi:
+                        fallback: true
+                action: mengapaKontrasepsi
+            kontrasepsiPenting:
+                transitions:
+                    mengapaKontrasepsi:
+                        condition: intent=="mengapaKontrasepsi"
+                    penjelasanKontrasepsi:
+                        condition: intent=="pengertianKontrasepsi"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                    kontrasepsiPenting:
+                        fallback: true
+                action: kontrasepsiPenting
+            sama2:
+                transitions:
+                    sama2:
+                        fallback: true
+                action: thanks
+                end: true
+        actions:
+            penjelasanKontrasepsi:
+                type: text
+                options:
+                    text: >-
+                        Kontrasepsi itu hal - hal yang dilakukan untuk mencegah kehamilan saat melakukan hubungan seksual. Kontrasepsi bisa digunakan
+                        pada pihak pria dan juga wanita. Terdapat banyak macam kontrasepsi, contohnya termasuk condom, pill kontrasepsi, dan
+                        intrauterine device (IUD). Beberapa macam kontrasepsi juga bisa berfungsi untuk mencegah penularan penyakit.
+            mengapaKontrasepsi:
+                type: text
+                options:
+                    text: >-
+                        Kontrasepsi bisa digunakan jika seseorang wanita belum merasa siap secara mental atau fisik untuk mengalami kehamilan. Juga
+                        bisa digunakan jika kehamilan bisa membahayakan kesehatan seorang wanita. Selain itu, kontrasepsi penting digunakan untuk
+                        mencegah penularan penyakit.
+            kontrasepsiPenting:
+                type: text
+                options:
+                    text: >-
+                        Kontrasepsi bisa mencegah kehamilan yang tidak diingankan, dan ini bisa mengurangi aborsi. Selain itu, penggunaan alat
+                        kontrasepsi seperti condom bisa mengurangi resiko penularan penyakit menular seksual atau STD.
+            thanks:
+                type: text
+                options:
+                    text: 'sama - sama, See senang bisa membantumu'
+        methods: {}
     seks:
         active: true
         volatile: true
@@ -1194,11 +1247,6 @@ flows:
                 classifier:
                     nlu: basic
                     match: thanks
-            reenter:
-                type: command
-                initial: false
-                fallback: false
-                condition: content=="reenter"
         states:
             init:
                 transitions:
@@ -1419,121 +1467,6 @@ flows:
                         - Ada yang mau ditanyain ke See lagi nggak?
                         - Ada yang mau ditanyakan lagi nggak?
                         - Mungkin ada yang bisa See bantu lagi?
-        methods: {}
-    kontrasepsi:
-        active: true
-        volatile: true
-        intents:
-            pengertianKontrasepsi:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: kontrasepsi
-                    match: apa itu kontrasepsi
-            mengapaKontrasepsi:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: kontrasepsi
-                    match: mengapa menggunkan kontrasepsi
-            kontrasepsiPenting:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: kontrasepsi
-                    match: kontrasepsi penting
-            sama2:
-                type: text
-                initial: false
-                fallback: false
-                classifier:
-                    nlu: basic
-                    match: thanks
-            reenter:
-                type: command
-                initial: false
-                fallback: false
-                condition: content=="reenter"
-        states:
-            init:
-                transitions:
-                    penjelasanKontrasepsi:
-                        condition: intent=="pengertianKontrasepsi"
-                    mengapaKontrasepsi:
-                        condition: intent=="mengapaKontrasepsi"
-                    kontrasepsiPenting:
-                        condition: intent=="kontrasepsiPenting"
-                initial: true
-            penjelasanKontrasepsi:
-                transitions:
-                    mengapaKontrasepsi:
-                        condition: intent=="mengapaKontrasepsi"
-                    kontrasepsiPenting:
-                        condition: intent=="kontrasepsiPenting"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    penjelasanKontrasepsi:
-                        fallback: true
-                action: penjelasanKontrasepsi
-            mengapaKontrasepsi:
-                transitions:
-                    kontrasepsiPenting:
-                        condition: intent=="kontrasepsiPenting"
-                    penjelasanKontrasepsi:
-                        condition: intent=="pengertianKontrasepsi"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    mengapaKontrasepsi:
-                        fallback: true
-                action: mengapaKontrasepsi
-            kontrasepsiPenting:
-                transitions:
-                    mengapaKontrasepsi:
-                        condition: intent=="mengapaKontrasepsi"
-                    penjelasanKontrasepsi:
-                        condition: intent=="pengertianKontrasepsi"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    kontrasepsiPenting:
-                        fallback: true
-                action: kontrasepsiPenting
-            sama2:
-                transitions:
-                    sama2:
-                        fallback: true
-                action: thanks
-                end: true
-        actions:
-            penjelasanKontrasepsi:
-                type: text
-                options:
-                    text: >-
-                        Kontrasepsi itu hal - hal yang dilakukan untuk mencegah kehamilan saat melakukan hubungan seksual. Kontrasepsi bisa digunakan
-                        pada pihak pria dan juga wanita. Terdapat banyak macam kontrasepsi, contohnya termasuk condom, pill kontrasepsi, dan
-                        intrauterine device (IUD). Beberapa macam kontrasepsi juga bisa berfungsi untuk mencegah penularan penyakit.
-            mengapaKontrasepsi:
-                type: text
-                options:
-                    text: >-
-                        Kontrasepsi bisa digunakan jika seseorang wanita belum merasa siap secara mental atau fisik untuk mengalami kehamilan. Juga
-                        bisa digunakan jika kehamilan bisa membahayakan kesehatan seorang wanita. Selain itu, kontrasepsi penting digunakan untuk
-                        mencegah penularan penyakit.
-            kontrasepsiPenting:
-                type: text
-                options:
-                    text: >-
-                        Kontrasepsi bisa mencegah kehamilan yang tidak diingankan, dan ini bisa mengurangi aborsi. Selain itu, penggunaan alat
-                        kontrasepsi seperti condom bisa mengurangi resiko penularan penyakit menular seksual atau STD.
-            thanks:
-                type: text
-                options:
-                    text: 'sama - sama, See senang bisa membantumu'
         methods: {}
 nlus:
     basic:

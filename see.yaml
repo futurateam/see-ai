@@ -54,3 +54,10 @@
                         - 'See lahir dari pemikiran tiga orang jenius ini. Abiel Zulio M, Syaufiq Alaudin, dan Timurriana Shafa.'
                         - 'See diwujudkan oleh ketiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Timurriana Shafa.'
                         - 'See hadir dibuat oleh tiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Timurriana Shafa.'
+            default:
+                type: text
+                options:
+                    text:
+                        - 'Ketik "Halo" untuk mulai mengobrol dengan See'
+                        - 'Ketik "Halo" untuk bertanya kepada See'
+                        - 'Ketik "Halo" untuk berbincang dengan see'
