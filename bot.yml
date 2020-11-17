@@ -1,5 +1,5 @@
 name: seeAi
-tag: null
+tag: latest
 deleted_at: null
 desc: ''
 timezone: 7
@@ -18,7 +18,11 @@ flows:
                 transitions:
                     init:
                         fallback: true
-                action: default
+                action:
+                    -
+                        name: default
+                    -
+                        name: champ
                 initial: true
                 end: true
         actions:
@@ -33,9 +37,26 @@ flows:
                 type: text
                 options:
                     text:
-                        - Ketik "Halo" untuk mulai mengobrol dengan See
-                        - Ketik "Halo" untuk bertanya kepada See
-                        - Ketik "Halo" untuk mulai berbincang dengan See
+                        - Ketik "halo" untuk mulai mengobrol dengan see
+                        - ketik "halo" untuk bertanya kepada see
+                        - ketik "halo" untuk berbincang dengan see
+            champ:
+                type: template
+                options:
+                    type: carousel
+                    items:
+                        -
+                            title: valorant
+                            text: valorant
+                            thumbnailImageUrl: 'https://drive.google.com/file/d/1LM19cFxZdWOokUkWkOovZimDfUciBz4W/view?usp=sharing'
+                        -
+                            title: champion
+                            text: champion
+                            thumbnailImageUrl: 'https://drive.google.com/file/d/1JlglRpBECCB8xtNNCJAI8MN0tZHz7xFh/view?usp=sharing'
+                        -
+                            title: ml
+                            text: mobile legend
+                            thumbnailImageUrl: 'https://drive.google.com/file/d/1vAE41V7aRprVEylhWr1_uoqliYngrKAr/view?usp=sharing'
         methods: {}
     halo:
         active: true
@@ -69,11 +90,21 @@ flows:
                 classifier:
                     nlu: basic
                     match: oke
+            getStarted:
+                type: data
+                initial: true
+                fallback: false
+                condition: payload.type=="follow"
+            reenter:
+                type: command
+                initial: false
+                fallback: false
+                condition: content=="reenter"
         states:
             init:
                 transitions:
                     sapa:
-                        condition: intent=="sapa"
+                        condition: intent=="getStarted"
                 initial: true
             sapa:
                 transitions:
@@ -85,7 +116,6 @@ flows:
                         condition: intent=="tidakBantu"
                     sapa:
                         fallback: true
-                        condition: intent=="sapa"
                 action: sapa
             adaBantu:
                 transitions:
@@ -114,21 +144,9 @@ flows:
             siapa:
                 type: text
                 options:
-                    text:
-                        - >-
-                            Namaku See dengan singkatan dari Sex Education for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Aku hadir
-                            sebagai mentor yang akan menjawab segala pertanyaanmu mengenai edukasi seks tanpa perlu takut dihakimi. Kenapa? Karena aku
-                            sebuah bot. Selamat bertanya!
-                        - >-
-                            Aku See. Aku adalah mentor edukasi seks pribadimu. Aku hadir di tiap saat dikala kamu membutuhkanku. Tenang, aku tidak
-                            akan menghakimimu, kok! Aku kan robot.
-                        - >-
-                            Kenalin aku See, Sex Education for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Tak perlu takut untuk
-                            bertanya apapun karena aku tidak akan menghakimimu. Selamat bertanya!
-                        - >-
-                            Aku memiiki singkatan dari Sex Education for Eudaemonism (SEE). Eudaemonism sendiri memiliki makna kebahagiaan. Harapan
-                            penuh kami ialah dapat memberikan edukasi seks ke siapapun tanpa perlu takut dihakimi karena aku sebuah bot. Selamat
-                            mencari tahu!
+                    text: >-
+                        Aku memiiki singkatan dari Sex Education for Eudaemonism (SEE). Eudaemonsim sendiri memiliki makan kebahagiaan. Harapan penuh
+                        kami ialah dapat memberikan edukasi seks ke siapapun tanpa perlu takut dihakimi karena aku seorang bot. Selamat mencari tahu!
             adaBantu:
                 type: text
                 options:
@@ -170,6 +188,11 @@ flows:
                 classifier:
                     nlu: basic
                     match: siapa yang buat
+            reenter:
+                type: command
+                initial: false
+                fallback: false
+                condition: content=="reenter"
         states:
             init:
                 transitions:
@@ -194,35 +217,27 @@ flows:
                 options:
                     text:
                         - >-
-                            Namaku See dengan singkatan dari Sex Education for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Aku hadir
+                            Namaku See dengan singkatan dari Sex Educator for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Aku hadir
                             sebagai mentor yang akan menjawab segala pertanyaanmu mengenai edukasi seks tanpa perlu takut dihakimi. Kenapa? Karena aku
                             sebuah bot. Selamat bertanya!
                         - >-
-                            Aku See. Aku adalah mentor edukasi seks pribadimu. Aku hadir di tiap saat dikala kamu membutuhkanku. Tenang, aku tidak
-                            akan menghakimimu, kok! Aku kan robot.
+                            Aku See. Aku adalah mentor edukasi seks pribadimu. Aku hadir tiap saat dikala kamu membutuhkanku. Tenang, aku tidak akan
+                            menghakimimu, kok! Aku kan robot.
                         - >-
-                            Kenalin aku See, Sex Education for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Tak perlu takut untuk
+                            Kenalin aku See, Sex Educator for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Tak perlu takut untuk
                             bertanya apapun karena aku tidak akan menghakimimu. Selamat bertanya!
-                        - >-
-                            Aku memiiki singkatan dari Sex Education for Eudaemonism (SEE). Eudaemonism sendiri memiliki makna kebahagiaan. Harapan
-                            penuh kami ialah dapat memberikan edukasi seks ke siapapun tanpa perlu takut dihakimi karena aku sebuah bot. Selamat
-                            mencari tahu!
             buat:
                 type: text
                 options:
                     text:
-                        - 'Tiga orang jenius ini lah yang melahirkan See ke dunia. Abiel Zulio M, Syaufiq Alaudin, dan Timurriana Shafa.'
-                        - 'See lahir dari pemikiran tiga orang jenius ini. Abiel Zulio M, Syaufiq Alaudin, dan Timurriana Shafa.'
-                        - 'See diwujudkan oleh ketiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Timurriana Shafa.'
-                        - 'See hadir dibuat oleh tiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Timurriana Shafa.'
+                        - 'Tiga orang jenius ini lah yang melahirkan See ke dunia. Abiel Zulio M, Syaufiq Alaudin, dan Shafa.'
+                        - 'See lahir dari pemikiran tiga orang jenius ini. Abiel Zulio M, Syaufiq Alaudin, dan Shafa.'
             siapaBuat:
                 type: text
                 options:
                     text:
-                        - 'Tiga orang jenius ini lah yang melahirkan See ke dunia. Abiel Zulio M, Syaufiq Alaudin, dan Timurriana Shafa.'
-                        - 'See lahir dari pemikiran tiga orang jenius ini. Abiel Zulio M, Syaufiq Alaudin, dan Timurriana Shafa.'
-                        - 'See diwujudkan oleh ketiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Timurriana Shafa.'
-                        - 'See hadir dibuat oleh tiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Timurriana Shafa.'
+                        - 'See diwujudkan oleh ketiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Shafa.'
+                        - 'See hadir dibuat oleh tiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Shafa.'
         methods: {}
     pubertas:
         active: true
@@ -235,13 +250,13 @@ flows:
                 classifier:
                     nlu: pubertas
                     match: apa itu pubertas
-            'yes':
+            sudahPuber:
                 type: text
                 initial: false
                 fallback: false
                 classifier:
-                    nlu: basic
-                    match: 'yes'
+                    nlu: pubertas
+                    match: sudah puber
             belumPuber:
                 type: text
                 initial: false
@@ -270,7 +285,7 @@ flows:
                 classifier:
                     nlu: pubertas
                     match: mimpi basah
-            thanks:
+            sama2:
                 type: text
                 initial: false
                 fallback: false
@@ -291,6 +306,11 @@ flows:
                 classifier:
                     nlu: pubertas
                     match: kapan puber
+            reenter:
+                type: command
+                initial: false
+                fallback: false
+                condition: content=="reenter"
         states:
             init:
                 transitions:
@@ -314,7 +334,7 @@ flows:
                         mapping:
                             context.mens: intent
                     yangKamuAlami:
-                        condition: intent=="yes"
+                        condition: intent=="sudahPuber"
                     tandaPuber:
                         condition: intent=="tandaPuber"
                     mimpiBasah:
@@ -328,9 +348,11 @@ flows:
                     belumPuber:
                         fallback: true
                         condition: intent=="belumPuber"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    tentangPuber:
+                        fallback: true
                 action:
                     -
                         name: penjelasanPuber
@@ -339,17 +361,19 @@ flows:
                 initial: false
             yangKamuAlami:
                 transitions:
-                    mens:
-                        fallback: false
-                        condition: intent=="mens"
-                        mapping:
-                            context.mens: intent
                     mimpiBasah:
                         condition: intent=="mimpiBasah"
                         mapping:
                             context.mimpiBasah: intent
                     tandaPuberYangDialami:
                         condition: intent=="tandaPuberYangDialami"
+                    mens:
+                        fallback: false
+                        condition: intent=="mens"
+                        mapping:
+                            context.mens: intent
+                    yangKamuAlami:
+                        fallback: true
                 action: tanya
             belumPuber:
                 transitions:
@@ -365,9 +389,11 @@ flows:
                 transitions:
                     kapanPuber:
                         condition: intent=="kapanPuber"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    mens:
+                        fallback: true
                 action:
                     -
                         name: penjelasnMens
@@ -375,6 +401,8 @@ flows:
                     -
                         name: mens
                         condition: context.mens=="mens"
+                    -
+                        name: siklusMens
             tandaPuber:
                 transitions:
                     mens:
@@ -383,9 +411,11 @@ flows:
                         condition: intent=="mimpiBasah"
                     kapanPuber:
                         condition: intent=="kapanPuber"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    tandaPuber:
+                        fallback: true
                 action:
                     -
                         name: pubercowo
@@ -395,18 +425,20 @@ flows:
                 transitions:
                     kapanPuber:
                         condition: intent=="kapanPuber"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    mimpiBasah:
+                        fallback: true
                 action:
                     -
                         name: penjelasanMimpiBasah
                     -
                         name: pesan
                         condition: context.mimpiBasah=="mimpiBasah"
-            thanks:
+            sama2:
                 transitions:
-                    thanks:
+                    sama2:
                         fallback: true
                 action: samaSama
                 end: true
@@ -416,9 +448,11 @@ flows:
                         condition: intent=="tandaPuber"
                     kapanPuber:
                         condition: intent=="kapanPuber"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    tandaPuberYangDialami:
+                        fallback: true
                 action: masukPuber
             kapanPuber:
                 transitions:
@@ -432,9 +466,11 @@ flows:
                         condition: intent=="mens"
                     mimpiBasah:
                         condition: intent=="mimpiBasah"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="kapanPuber"
+                        condition: intent=="sama2"
+                    kapanPuber:
+                        fallback: true
                 action: waktuPuber
         actions:
             penjelasanPuber:
@@ -526,6 +562,14 @@ flows:
                     text: >-
                         Pada perempuan, pubertas terjadi pada rentang usia 10-14 tahun dan pada laki-laki, pubertas terjadi pada kisaran usia 12-16
                         tahun.
+            siklusMens:
+                type: text
+                options:
+                    text: >-
+                        Pada umumnya, siklus menstruasi normal rata-rata terjadi setiap 28 hari. Ada pula yang memiliki siklus haid sekitar 25 sampai
+                        35 hari. Ini masih terhitung normal. Anda dianggap memiliki haid yang teratur jika menstruasi datang setiap 23 hari atau
+                        setiap 35 hari, atau di mana saja di antara rentang waktu ini. Menstruasi yang normal berlangsung antara tiga sampai tujuh
+                        hari.
         methods: {}
     organReproduksiPria:
         active: true
@@ -580,13 +624,18 @@ flows:
                 classifier:
                     nlu: organreproduksi
                     match: kelenjar prostat
-            thanks:
+            sama2:
                 type: text
                 initial: false
                 fallback: false
                 classifier:
                     nlu: basic
                     match: thanks
+            reenter:
+                type: command
+                initial: false
+                fallback: false
+                condition: content=="reenter"
         states:
             init:
                 transitions:
@@ -609,17 +658,21 @@ flows:
                         condition: intent="penyebabereksi"
                     penis:
                         condition: intent=="penis"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    ereksi:
+                        fallback: true
                 action: ereksi
             penyebab_ereksi:
                 transitions:
                     penis:
                         condition: intent=="penis"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    penyebab_ereksi:
+                        fallback: true
                 action:
                     -
                         name: penyebab_ereksi
@@ -635,9 +688,11 @@ flows:
                         condition: intent=="skrotum"
                     kelenjarProstat:
                         condition: intent=="kelenjarProstat"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    jenis:
+                        fallback: true
                 action: jenis
             penis:
                 transitions:
@@ -651,9 +706,11 @@ flows:
                         condition: intent=="skrotum"
                     kelenjarProstat:
                         condition: intent=="kelenjarProstat"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    penis:
+                        fallback: true
                 action: penjelasanPenis
             testis:
                 transitions:
@@ -663,9 +720,11 @@ flows:
                         condition: intent=="skrotum"
                     kelenjarProstat:
                         condition: intent=="kelenjarProstat"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    testis:
+                        fallback: true
                 action: penjelasanTestis
             skrotum:
                 transitions:
@@ -675,9 +734,11 @@ flows:
                         condition: intent=="testis"
                     kelenjarProstat:
                         condition: intent=="kelenjarProstat"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    skrotum:
+                        fallback: true
                 action: penjelasnSkrotum
             kelenjarProstat:
                 transitions:
@@ -687,13 +748,15 @@ flows:
                         condition: intent=="testis"
                     skrotum:
                         condition: intent=="skrotum"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    kelenjarProstat:
+                        fallback: true
                 action: penjelasanKelenjarProstat
-            thanks:
+            sama2:
                 transitions:
-                    thanks:
+                    sama2:
                         fallback: true
                 action:
                     -
@@ -832,6 +895,11 @@ flows:
                 classifier:
                     nlu: basic
                     match: 'no'
+            reenter:
+                type: command
+                initial: false
+                fallback: false
+                condition: content=="reenter"
         states:
             init:
                 transitions:
@@ -870,6 +938,8 @@ flows:
                     pencegahan:
                         fallback: true
                         condition: intent=="pencegahan"
+                    pengertian:
+                        fallback: true
                 action:
                     -
                         name: pengertian
@@ -892,6 +962,8 @@ flows:
                     pencegahan:
                         fallback: true
                         condition: intent=="pencegahan"
+                    hivaids:
+                        fallback: true
                 action: penjelasan
             gonorrhea:
                 transitions:
@@ -906,6 +978,8 @@ flows:
                     pencegahan:
                         fallback: true
                         condition: intent=="pencegahan"
+                    gonorrhea:
+                        fallback: true
                 action: penjelasangonorrhea
             sifilis:
                 transitions:
@@ -920,6 +994,8 @@ flows:
                     pencegahan:
                         fallback: true
                         condition: intent=="pencegahan"
+                    sifilis:
+                        fallback: true
                 action: penjelasanSifilis
             keputihan:
                 transitions:
@@ -934,12 +1010,16 @@ flows:
                     pencegahan:
                         fallback: true
                         condition: intent=="pencegahan"
+                    keputihan:
+                        fallback: true
                 action: penjelasanKeputihan
             semua:
                 transitions:
                     pencegahan:
                         fallback: true
                         condition: intent=="pencegahan"
+                    semua:
+                        fallback: true
                 action:
                     -
                         name: penjelasan
@@ -993,7 +1073,7 @@ flows:
             jenis:
                 type: text
                 options:
-                    text: 'Ada beberapa jenis penyakit menular seksual diantaranya HIV AIDS, Sifilis, Gonorrhea, Kandidiasis Vaginalis atau keputihan'
+                    text: 'Ada beberapa jenis PMS diantaranya, HIV AIDS, Sifilis, Gonorrhea, Kandidiasis Vaginalis atau keputihan'
             tanya:
                 type: text
                 options:
@@ -1107,13 +1187,18 @@ flows:
                 classifier:
                     nlu: seks
                     match: kepentingan dari consent
-            thanks:
+            sama2:
                 type: text
                 initial: false
                 fallback: false
                 classifier:
                     nlu: basic
                     match: thanks
+            reenter:
+                type: command
+                initial: false
+                fallback: false
+                condition: content=="reenter"
         states:
             init:
                 transitions:
@@ -1144,9 +1229,11 @@ flows:
                         condition: intent=="orgasm"
                     consent:
                         condition: intent=="consent"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    pengertianSeks:
+                        fallback: true
                 action: pengertianJenisKelamin
             perbedaanSeks:
                 transitions:
@@ -1160,9 +1247,11 @@ flows:
                         condition: intent=="hubunganSeksual"
                     consent:
                         condition: intent=="consent"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    perbedaanSeks:
+                        fallback: true
                 action: perbedaanSeks
             jenisSeks:
                 transitions:
@@ -1176,9 +1265,11 @@ flows:
                         condition: intent=="hubunganSeksual"
                     consent:
                         condition: intent=="consent"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    jenisSeks:
+                        fallback: true
                 action: jenisSeks
                 initial: false
             yangMenentukanSeks:
@@ -1191,9 +1282,11 @@ flows:
                         condition: intent=="consent"
                     jenisSeks:
                         condition: intent=="jenisSeks"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    yangMenentukanSeks:
+                        fallback: true
                 action: hormon
             orgasm:
                 transitions:
@@ -1207,9 +1300,11 @@ flows:
                         condition: intent=="consent"
                     jenisSeks:
                         condition: intent=="jenisSeks"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    orgasm:
+                        fallback: true
                 action: orgasm
                 initial: false
             hubunganSeksual:
@@ -1224,9 +1319,11 @@ flows:
                         condition: intent=="consent"
                     yangMenentukanSeks:
                         condition: intent="peranHormon"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    hubunganSeksual:
+                        fallback: true
                 action: pengertianHubSeks
             consent:
                 transitions:
@@ -1240,13 +1337,15 @@ flows:
                         condition: intent="peranHormon"
                     orgasm:
                         condition: intent=="orgasm"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    consent:
+                        fallback: true
                 action: penjelasanConsent
-            thanks:
+            sama2:
                 transitions:
-                    thanks:
+                    sama2:
                         fallback: true
                 action:
                     -
@@ -1264,7 +1363,7 @@ flows:
                 options:
                     text: >-
                         Karakteristik biologis yang membedakan laki-laki dengan perempuan dipandang dari anatomis seperti adanya penis dan vagina,
-                        gonad (sperma/ovary), kromosom, dan hormon.
+                        gonad (sperma/ovary), kromosom, dan hormon
             jenisSeks:
                 type: text
                 options:
@@ -1346,13 +1445,18 @@ flows:
                 classifier:
                     nlu: kontrasepsi
                     match: kontrasepsi penting
-            thanks:
+            sama2:
                 type: text
                 initial: false
                 fallback: false
                 classifier:
                     nlu: basic
                     match: thanks
+            reenter:
+                type: command
+                initial: false
+                fallback: false
+                condition: content=="reenter"
         states:
             init:
                 transitions:
@@ -1369,9 +1473,11 @@ flows:
                         condition: intent=="mengapaKontrasepsi"
                     kontrasepsiPenting:
                         condition: intent=="kontrasepsiPenting"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    penjelasanKontrasepsi:
+                        fallback: true
                 action: penjelasanKontrasepsi
             mengapaKontrasepsi:
                 transitions:
@@ -1379,9 +1485,11 @@ flows:
                         condition: intent=="kontrasepsiPenting"
                     penjelasanKontrasepsi:
                         condition: intent=="pengertianKontrasepsi"
-                    thanks:
+                    sama2:
                         fallback: true
-                        condition: intent=="thanks"
+                        condition: intent=="sama2"
+                    mengapaKontrasepsi:
+                        fallback: true
                 action: mengapaKontrasepsi
             kontrasepsiPenting:
                 transitions:
@@ -1389,12 +1497,15 @@ flows:
                         condition: intent=="mengapaKontrasepsi"
                     penjelasanKontrasepsi:
                         condition: intent=="pengertianKontrasepsi"
-                    thanks:
-                        condition: intent=="thanks"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                    kontrasepsiPenting:
+                        fallback: true
                 action: kontrasepsiPenting
-            thanks:
+            sama2:
                 transitions:
-                    thanks:
+                    sama2:
                         fallback: true
                 action: thanks
                 end: true
@@ -1403,8 +1514,8 @@ flows:
                 type: text
                 options:
                     text: >-
-                        Kontrasepsi itu hal-hal yang dilakukan untuk mencegah kehamilan saat melakukan hubungan seksual. Kontrasepsi bisa digunakan
-                        pada pihak pria dan juga wanita. Terdapat banyak macam kontrasepsi contohnya termasuk kondom, pil kontrasepsi, dan
+                        Kontrasepsi itu hal - hal yang dilakukan untuk mencegah kehamilan saat melakukan hubungan seksual. Kontrasepsi bisa digunakan
+                        pada pihak pria dan juga wanita. Terdapat banyak macam kontrasepsi, contohnya termasuk condom, pill kontrasepsi, dan
                         intrauterine device (IUD). Beberapa macam kontrasepsi juga bisa berfungsi untuk mencegah penularan penyakit.
             mengapaKontrasepsi:
                 type: text
@@ -1422,7 +1533,7 @@ flows:
             thanks:
                 type: text
                 options:
-                    text: 'Sama-sama, See senang bisa membantumu'
+                    text: 'sama - sama, See senang bisa membantumu'
         methods: {}
 nlus:
     basic:
