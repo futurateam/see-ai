@@ -1,5 +1,5 @@
-name: seeAi
-tag: null
+name: null
+tag: latest
 deleted_at: null
 desc: ''
 timezone: 7
@@ -29,7 +29,6 @@ flows:
                         - Ketik "Halo" untuk mulai mengobrol dengan See!
                         - Ketik "Halo" untuk bertanya kepada See!
                         - Ketik "Halo" untuk berbincang dengan See!
-        methods: {}
     greeting:
         active: true
         volatile: false
@@ -45,11 +44,11 @@ flows:
                     greetUser:
                         condition: intent=="getStarted"
                         mapping:
-                            context.userId: metadata.lineSenderId
-                            context.token: metadata.lineAccessToken
+                            context:
+                                userId: metadata.lineSenderId
+                                token: metadata.lineAccessToken
                 initial: true
             greetUser:
-                transitions: {}
                 action:
                     -
                         name: callLineAPI
@@ -76,7 +75,6 @@ flows:
                 type: text
                 options:
                     text: Ketik "Halo" untuk memulai mengobrol. Ketik "Materi" untuk melihat apa saja yang See ketahui.
-        methods: {}
     halo:
         active: true
         volatile: false
@@ -128,11 +126,9 @@ flows:
                     -
                         name: ada
             tidakBantu:
-                transitions: {}
                 action: tidakBantu
                 end: false
             adaBantu:
-                transitions: {}
                 action: adaBantu
                 end: false
         actions:
@@ -183,7 +179,6 @@ flows:
                     text:
                         - Baik kalau begitu. Terima kasih telah mengobrol denganku!
                         - 'Sepertinya cukup begitu, yah. Terima kasih telah menghubungiku!'
-        methods: {}
     materi:
         active: true
         volatile: false
@@ -218,7 +213,8 @@ flows:
                         fallback: true
                         condition: intent=="pilihanMateri"
                         mapping:
-                            context.materi: payload.materi
+                            context:
+                                materi: payload.materi
                     materi:
                         fallback: true
                 action:
@@ -370,7 +366,6 @@ flows:
                 type: text
                 options:
                     text: Silahkan pilih salah satu topik yang ingin kamu ketahui!
-        methods: {}
     pubertas:
         active: true
         volatile: false
@@ -492,7 +487,8 @@ flows:
                     mens:
                         condition: intent=="mens"
                         mapping:
-                            context.mens: intent
+                            context:
+                                mens: intent
                     yangKamuAlami:
                         condition: intent=="sudahPuber"
                     tandaPuber:
@@ -500,7 +496,8 @@ flows:
                     mimpiBasah:
                         condition: intent=="mimpiBasah"
                         mapping:
-                            context.mimpiBasah: intent
+                            context:
+                                mimpiBasah: intent
                     tandaPuberYangDialami:
                         condition: intent=="tandaPuberYangDialami"
                     kapanPuber:
@@ -524,14 +521,16 @@ flows:
                     mimpiBasah:
                         condition: intent=="mimpiBasah"
                         mapping:
-                            context.mimpiBasah: intent
+                            context:
+                                mimpiBasah: intent
                     tandaPuberYangDialami:
                         condition: intent=="tandaPuberYangDialami"
                     mens:
                         fallback: false
                         condition: intent=="mens"
                         mapping:
-                            context.mens: intent
+                            context:
+                                mens: intent
                     yangKamuAlami:
                         fallback: true
                 action: tanya
@@ -663,7 +662,8 @@ flows:
                     mens:
                         condition: intent=="mens"
                         mapping:
-                            context.mens: intent
+                            context:
+                                mens: intent
                     tandaPuberYangDialami:
                         fallback: true
                 action:
@@ -844,7 +844,6 @@ flows:
                     text:
                         - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See ketahui.
                         - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See ketahui.
-        methods: {}
     kontrasepsi:
         active: true
         volatile: false
@@ -975,7 +974,6 @@ flows:
                 action: thanks
                 end: false
             pertanyaanApaItu:
-                transitions: {}
                 action: apaItu
             terimaKasih:
                 transitions:
@@ -983,7 +981,6 @@ flows:
                         condition: intent=="samasama"
                 action: terimaKasih
             haloLagi:
-                transitions: {}
                 action: haloLagi
         actions:
             penjelasanKontrasepsi:
@@ -1039,7 +1036,6 @@ flows:
                     text:
                         - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See ketahui.
                         - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See ketahui.
-        methods: {}
     seks:
         active: true
         volatile: false
@@ -1341,7 +1337,6 @@ flows:
                         name: tanyaLagi
                 end: false
             pertanyaanApaItu:
-                transitions: {}
                 action: apaItu
             terimaKasih:
                 transitions:
@@ -1349,7 +1344,6 @@ flows:
                         condition: intent=="samasama"
                 action: terimaKasih
             haloLagi:
-                transitions: {}
                 action: haloLagi
         actions:
             pengertianJenisKelamin:
@@ -1454,7 +1448,6 @@ flows:
                 type: text
                 options:
                     text: 'Ada beberapa faktor yang menentukan jenis kelamin salah satunya hormon. Untuk mengetahuinya, ketik "peran hormon".'
-        methods: {}
     organReproduksi:
         active: true
         volatile: false
@@ -1898,7 +1891,6 @@ flows:
                     -
                         name: lanjutMerawat
             pertanyaanApaItu:
-                transitions: {}
                 action: apaItu
             caraMerawat:
                 transitions:
@@ -1917,7 +1909,6 @@ flows:
                         condition: intent=="samasama"
                 action: terimaKasih
             haloLagi:
-                transitions: {}
                 action: haloLagi
         actions:
             ereksi:
@@ -2060,7 +2051,6 @@ flows:
                         - Terima kasih
                         - Baik kalau begitu. Terima kasih telah mengobrol denganku!
                         - 'Sepertinya cukup begitu, yah. Terima kasih telah menghubungiku!'
-        methods: {}
     penyakitMenularSeksual:
         active: true
         volatile: false
@@ -2203,7 +2193,8 @@ flows:
                     -
                         name: tanya
                 transit:
-                    context.answer: intent
+                    context:
+                        answer: intent
             hivaids:
                 transitions:
                     gonorrhea:
@@ -2340,10 +2331,8 @@ flows:
                     -
                         name: terimaKasih
             haloLagi:
-                transitions: {}
                 action: haloLagi
             pertanyaanApaItu:
-                transitions: {}
                 action: apaitu
         actions:
             pengertian:
@@ -2448,7 +2437,6 @@ flows:
                         - Apakah itu kalau See boleh tau?
                         - Coba jelaskan ke See apa itu?
                         - Apakah itu?
-        methods: {}
 nlus:
     basic:
         type: nl
@@ -2538,5 +2526,3 @@ nlus:
                     - tidak
                     - Tidak
                     - TIDAK
-methods: {}
-config: {}
