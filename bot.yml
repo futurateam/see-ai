@@ -105,6 +105,11 @@ flows:
                 classifier:
                     nlu: lainLain
                     match: tidak
+            reenter:
+                type: command
+                initial: false
+                fallback: false
+                condition: content=="reenter"
         states:
             init:
                 transitions:
@@ -114,12 +119,12 @@ flows:
                 initial: true
             sapa:
                 transitions:
-                    adaBantu:
-                        condition: intent=="adaBantu"
                     tidakBantu:
-                        fallback: true
+                        fallback: false
                         condition: intent=="tidakBantu"
-                        mapping: {}
+                    adaBantu:
+                        fallback: false
+                        condition: intent=="adaBantu"
                 action:
                     -
                         name: sapa
@@ -132,6 +137,7 @@ flows:
             adaBantu:
                 transitions: {}
                 action: adaBantu
+                end: false
         actions:
             sapa:
                 type: text
@@ -171,7 +177,9 @@ flows:
             ada:
                 type: text
                 options:
-                    text: Ketik "Ada" jika ada yang perlu dibantu. Ketik "Tidak" jika tidak ada yang perlu dibantu.
+                    text: >-
+                        Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.. Ketik "Materi" untuk
+                        mengetahui apa yang See pahami
             tidakBantu:
                 type: text
                 options:
@@ -195,6 +203,11 @@ flows:
                 initial: false
                 fallback: false
                 condition: payload.type=="materi"
+            reenter:
+                type: command
+                initial: false
+                fallback: false
+                condition: content=="reenter"
         states:
             init:
                 transitions:
@@ -456,6 +469,11 @@ flows:
                 classifier:
                     nlu: basic
                     match: sama sama
+            reenter:
+                type: command
+                initial: false
+                fallback: false
+                condition: content=="reenter"
         states:
             init:
                 transitions:
@@ -506,26 +524,29 @@ flows:
                 initial: false
             yangKamuAlami:
                 transitions:
+                    mens:
+                        fallback: false
+                        condition: intent=="mens"
+                        mapping:
+                            context.mens: intent
                     mimpiBasah:
                         condition: intent=="mimpiBasah"
                         mapping:
                             context.mimpiBasah: intent
                     tandaPuberYangDialami:
                         condition: intent=="tandaPuberYangDialami"
-                    mens:
-                        fallback: false
-                        condition: intent=="mens"
-                        mapping:
-                            context.mens: intent
                     yangKamuAlami:
                         fallback: true
                 action: tanya
             belumPuber:
                 transitions:
-                    pertanyaanApaItu:
-                        condition: intent=="tanyaLagi"
                     terimaKasih:
                         condition: intent=="tidakTanyaLagi"
+                    pertanyaanApaItu:
+                        fallback: true
+                        condition: intent=="tanyaLagi"
+                    belumPuber:
+                        fallback: true
                 action:
                     -
                         name: kasihTau
@@ -551,6 +572,8 @@ flows:
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
+                    mens:
+                        fallback: true
                 action:
                     -
                         name: penjelasnMens
@@ -581,6 +604,8 @@ flows:
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
+                    tandaPuber:
+                        fallback: true
                 action:
                     -
                         name: pubercowo
@@ -607,6 +632,8 @@ flows:
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
+                    mimpiBasah:
+                        fallback: true
                 action:
                     -
                         name: penjelasanMimpiBasah
@@ -625,9 +652,6 @@ flows:
                 end: false
             tandaPuberYangDialami:
                 transitions:
-                    sama2:
-                        fallback: false
-                        condition: intent=="sama2"
                     tandaPuber:
                         condition: intent=="lanjut"
                     kapanPuber:
@@ -640,6 +664,9 @@ flows:
                         condition: intent=="mens"
                         mapping:
                             context.mens: intent
+                    sama2:
+                        fallback: false
+                        condition: intent=="sama2"
                     tandaPuberYangDialami:
                         fallback: true
                 action:
@@ -666,21 +693,30 @@ flows:
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
+                    kapanPuber:
+                        fallback: true
                 action:
                     -
                         name: waktuPuber
                     -
                         name: tanyaLagi
             pertanyaanApaItu:
-                transitions: {}
+                transitions:
+                    pertanyaanApaItu:
+                        fallback: true
                 action: apaItu
+                end: false
             terimaKasih:
                 transitions:
                     haloLagi:
                         condition: intent=="samasama"
+                    terimaKasih:
+                        fallback: true
                 action: terimaKasih
             haloLagi:
-                transitions: {}
+                transitions:
+                    haloLagi:
+                        fallback: true
                 action: haloLagi
         actions:
             penjelasanPuber:
@@ -785,7 +821,9 @@ flows:
             ketik:
                 type: text
                 options:
-                    text: Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.
+                    text: >-
+                        Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.. Ketik "Materi" untuk
+                        mengetahui apa yang See pahami
             apaItu:
                 type: text
                 options:
@@ -863,16 +901,21 @@ flows:
                 classifier:
                     nlu: basic
                     match: sama sama
+            reenter:
+                type: command
+                initial: false
+                fallback: false
+                condition: content=="reenter"
         states:
             init:
                 transitions:
+                    penjelasanKontrasepsi:
+                        fallback: false
+                        condition: intent=="pengertianKontrasepsi"
                     mengapaKontrasepsi:
                         condition: intent=="mengapaKontrasepsi"
                     kontrasepsiPenting:
                         condition: intent=="kontrasepsiPenting"
-                    penjelasanKontrasepsi:
-                        fallback: false
-                        condition: intent=="pengertianKontrasepsi"
                 initial: true
             penjelasanKontrasepsi:
                 transitions:
@@ -890,6 +933,10 @@ flows:
                 action:
                     -
                         name: penjelasanKontrasepsi
+                    -
+                        name: whyKontrasepsi
+                    -
+                        name: alasanKontrasepsi
                     -
                         name: tanyaLagi
             mengapaKontrasepsi:
@@ -999,6 +1046,14 @@ flows:
                     text:
                         - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See pahami.
                         - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See pahami.
+            whyKontrasepsi:
+                type: text
+                options:
+                    text: Ada beberapa alasan kenapa alat kontrasepsi ini penting.
+            alasanKontrasepsi:
+                type: text
+                options:
+                    text: Beberapa orang memilih menggunaka alat kontrasepsi karena memiliki alasan tertentu
         methods: {}
     seks:
         active: true
@@ -1081,6 +1136,11 @@ flows:
                 classifier:
                     nlu: basic
                     match: sama sama
+            reenter:
+                type: command
+                initial: false
+                fallback: false
+                condition: content=="reenter"
         states:
             init:
                 transitions:
@@ -1121,6 +1181,10 @@ flows:
                 action:
                     -
                         name: pengertianJenisKelamin
+                    -
+                        name: perbedaan
+                    -
+                        name: peran
                     -
                         name: tanyaLagi
                     -
@@ -1371,7 +1435,9 @@ flows:
             ketik:
                 type: text
                 options:
-                    text: Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.
+                    text: >-
+                        Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.. Ketik "Materi" untuk
+                        mengetahui apa yang See pahami
             apaItu:
                 type: text
                 options:
@@ -1395,6 +1461,14 @@ flows:
                     text:
                         - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See pahami.
                         - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See pahami.
+            perbedaan:
+                type: text
+                options:
+                    text: Ada beberapa perbedaan antara laki - laki dan perempuan. Untuk mengetahuinya ketik "perbedaan"
+            peran:
+                type: text
+                options:
+                    text: Ada beberapa faktor yang menentukan jenis kelamin salah satunya hormon. Untuk mengetahui peran hormon ketik "peran hormon"
         methods: {}
     organReproduksi:
         active: true
@@ -1512,6 +1586,11 @@ flows:
                 classifier:
                     nlu: lanjut
                     match: lanjut
+            reenter:
+                type: command
+                initial: false
+                fallback: false
+                condition: content=="reenter"
         states:
             init:
                 transitions:
@@ -1968,7 +2047,9 @@ flows:
             ketik:
                 type: text
                 options:
-                    text: Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.
+                    text: >-
+                        Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.. Ketik "Materi" untuk
+                        mengetahui apa yang See pahami
             caraMerawat:
                 type: text
                 options:
@@ -2087,6 +2168,11 @@ flows:
                 classifier:
                     nlu: basic
                     match: sama sama
+            reenter:
+                type: command
+                initial: false
+                fallback: false
+                condition: content=="reenter"
         states:
             init:
                 transitions:
@@ -2359,7 +2445,9 @@ flows:
             ketik:
                 type: text
                 options:
-                    text: Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.
+                    text: >-
+                        Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.. Ketik "Materi" untuk
+                        mengetahui apa yang See pahami
             haloLagi:
                 type: text
                 options:
