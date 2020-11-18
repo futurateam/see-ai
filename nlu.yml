@@ -28,6 +28,10 @@ entities:
       - testis
       - skrotum
       - kelenjar prostat
+      - vagina
+      - uterus
+      - ovum
+      - cervix
   penyakitkelamin:
     type: trait
     profile: default
@@ -62,6 +66,7 @@ entities:
       - 'no'
       - thanks
       - siapa yang buat
+      - sama sama
   kontrasepsi:
     type: trait
     profile: default

@@ -1,5 +1,5 @@
 name: seeAi
-tag: latest
+tag: null
 deleted_at: null
 desc: ''
 timezone: 7
@@ -62,12 +62,9 @@ flows:
                 type: text
                 options:
                     text: >-
-                        Halo, $(result.displayName)! Terima kasih telah menambahkan See sebagai temanmu.  
-
-                        Perkenalkan namaku See, Sex Education for Eudaemonism. Aku akan menjawab segala pertanyaanmu mengenai edukasi seks sesukamu
-                        kapanpun. Tak perlu khawatir, aku tidak akan menghakimimu karena aku merupakan robot dengan kecerdasan buatan. 
-
-                        Selamat bertanya, $(result.displayName)!
+                        Halo, $(result.displayName)! Terima kasih telah menambahkan See sebagai temanmu. Perkenalkan namaku See, Sex Education for
+                        Eudaemonism.  Aku akan menjawab segala pertanyaanmu mengenai edukasi seks sesukamu kapanpun. Tak perlu khawatir, aku tidak
+                        akan menghakimimu karena  aku merupakan robot dengan kecerdasan buatan. Selamat bertanya, $(result.displayName)!
             callLineAPI:
                 type: api
                 options:
@@ -78,7 +75,7 @@ flows:
             ketik:
                 type: text
                 options:
-                    text: Ketik "Halo" untuk memulai mengobrol. Ketik "Materi" untuk melihat apa saja yang See pahami.
+                    text: Ketik "Halo" untuk memulai mengobrol. Ketik "Materi" untuk melihat apa saja yang See ketahui.
         methods: {}
     halo:
         active: true
@@ -151,8 +148,8 @@ flows:
                 type: text
                 options:
                     text: >-
-                        Aku memiiki singkatan dari Sex Education for Eudaemonism (SEE). Eudaemonsim sendiri memiliki makan kebahagiaan. Harapan penuh
-                        kami ialah dapat memberikan edukasi seks ke siapapun tanpa perlu takut dihakimi karena aku seorang bot. Selamat mencari tahu!
+                        Aku memiiki singkatan dari Sex Education for Eudaemonism (SEE). Eudaemonism sendiri memiliki makna kebahagiaan. Harapan penuh
+                        kami ialah dapat memberikan edukasi seks ke siapapun tanpa perlu takut dihakimi karena aku sebuah bot. Selamat mencari tahu!
             adaBantu:
                 type: text
                 options:
@@ -178,8 +175,8 @@ flows:
                 type: text
                 options:
                     text: >-
-                        Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.. Ketik "Materi" untuk
-                        mengetahui apa yang See pahami
+                        Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada. Ketik "Materi" untuk melihat apa saja yang See
+                        ketahui.
             tidakBantu:
                 type: text
                 options:
@@ -348,7 +345,7 @@ flows:
             seks:
                 type: text
                 options:
-                    text: Seks disini yang dibahas ialah jenis kelamin.
+                    text: Sex disini yang dibahas ialah jenis kelamin.
             detailPubertas:
                 type: text
                 options:
@@ -360,15 +357,15 @@ flows:
             detailPMS:
                 type: text
                 options:
-                    text: ketik "penyakit menular seksual" untuk mengetahui penyakit menular seksual lebih detail.
+                    text: Ketik "penyakit menular seksual" untuk mengetahui penyakit menular seksual lebih detail.
             detailKontrasepsi:
                 type: text
                 options:
-                    text: ketik "kontrasepsi" untuk mengetahui kontrasepsi lebih detail.
+                    text: Ketik "kontrasepsi" untuk mengetahui kontrasepsi lebih detail.
             detailSeks:
                 type: text
                 options:
-                    text: ketik "seks" untuk mengetahui seks lebih detail.
+                    text: Ketik "sex" untuk mengetahui seks lebih detail.
             pilih:
                 type: text
                 options:
@@ -524,17 +521,17 @@ flows:
                 initial: false
             yangKamuAlami:
                 transitions:
-                    mens:
-                        fallback: false
-                        condition: intent=="mens"
-                        mapping:
-                            context.mens: intent
                     mimpiBasah:
                         condition: intent=="mimpiBasah"
                         mapping:
                             context.mimpiBasah: intent
                     tandaPuberYangDialami:
                         condition: intent=="tandaPuberYangDialami"
+                    mens:
+                        fallback: false
+                        condition: intent=="mens"
+                        mapping:
+                            context.mens: intent
                     yangKamuAlami:
                         fallback: true
                 action: tanya
@@ -652,6 +649,9 @@ flows:
                 end: false
             tandaPuberYangDialami:
                 transitions:
+                    sama2:
+                        fallback: false
+                        condition: intent=="sama2"
                     tandaPuber:
                         condition: intent=="lanjut"
                     kapanPuber:
@@ -664,9 +664,6 @@ flows:
                         condition: intent=="mens"
                         mapping:
                             context.mens: intent
-                    sama2:
-                        fallback: false
-                        condition: intent=="sama2"
                     tandaPuberYangDialami:
                         fallback: true
                 action:
@@ -736,7 +733,7 @@ flows:
             kasihTau:
                 type: text
                 options:
-                    text: 'Ohh begitu, kamu nanti pasti bakal ngalamin kok!'
+                    text: 'Ohh begitu, kamu nanti pasti bakal ngalamin, kok!'
             tanyaLagi:
                 type: text
                 options:
@@ -783,7 +780,7 @@ flows:
                 type: text
                 options:
                     text: >-
-                        Selama pubertas, remaja pria juga akan mengalami mimpi basah, yaitu ejakulasi yang terjadi saat sedang tidur. Mimpi basah yang
+                        Selama pubertas, remaja pria juga akan mengalami mimpi basah yaitu ejakulasi yang terjadi saat sedang tidur. Mimpi basah yang
                         kamu alami terjadi karena adanya peningkatan kadar hormon testosteron dalam tubuh. Seiring bertambahnya usia, intensitas mimpi
                         basah akan berkurang.
             pesan:
@@ -817,13 +814,13 @@ flows:
             lanjutTanda:
                 type: text
                 options:
-                    text: Ketik "lanjut" untuk mengetahui tanda tanda pubertas yang lain.
+                    text: Ketik "Lanjut" untuk mengetahui tanda tanda pubertas yang lain.
             ketik:
                 type: text
                 options:
                     text: >-
-                        Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.. Ketik "Materi" untuk
-                        mengetahui apa yang See pahami
+                        Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada. Ketik "Materi" untuk melihat apa saja yang See
+                        ketahui.
             apaItu:
                 type: text
                 options:
@@ -845,8 +842,8 @@ flows:
                 type: text
                 options:
                     text:
-                        - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See pahami.
-                        - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See pahami.
+                        - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See ketahui.
+                        - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See ketahui.
         methods: {}
     kontrasepsi:
         active: true
@@ -909,13 +906,13 @@ flows:
         states:
             init:
                 transitions:
-                    penjelasanKontrasepsi:
-                        fallback: false
-                        condition: intent=="pengertianKontrasepsi"
                     mengapaKontrasepsi:
                         condition: intent=="mengapaKontrasepsi"
                     kontrasepsiPenting:
                         condition: intent=="kontrasepsiPenting"
+                    penjelasanKontrasepsi:
+                        fallback: false
+                        condition: intent=="pengertianKontrasepsi"
                 initial: true
             penjelasanKontrasepsi:
                 transitions:
@@ -1011,8 +1008,8 @@ flows:
                 type: text
                 options:
                     text: >-
-                        Kontrasepsi bisa mencegah kehamilan yang tidak diingankan, dan ini bisa mengurangi aborsi. Selain itu, penggunaan alat
-                        kontrasepsi seperti condom bisa mengurangi resiko penularan penyakit menular seksual atau STD.
+                        Kontrasepsi bisa mencegah kehamilan yang tidak diingankan dan ini dapat mengurangi aborsi. Selain itu, penggunaan alat
+                        kontrasepsi seperti condom bisa mengurangi resiko penularan penyakit menular seksual atau STD (sexually transmitted disease).
             thanks:
                 type: text
                 options:
@@ -1044,8 +1041,8 @@ flows:
                 type: text
                 options:
                     text:
-                        - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See pahami.
-                        - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See pahami.
+                        - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See ketahui.
+                        - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See ketahui.
             whyKontrasepsi:
                 type: text
                 options:
@@ -1053,7 +1050,7 @@ flows:
             alasanKontrasepsi:
                 type: text
                 options:
-                    text: Beberapa orang memilih menggunaka alat kontrasepsi karena memiliki alasan tertentu
+                    text: Beberapa orang memilih menggunakan alat kontrasepsi karena memiliki alasan tertentu.
         methods: {}
     seks:
         active: true
@@ -1376,7 +1373,7 @@ flows:
                 options:
                     text: >-
                         Karakteristik biologis yang membedakan pria dengan perempuan dipandang dari anatomis seperti adanya penis dan vagina, gonad
-                        (sperma/ovary), kromosom, dan hormon
+                        (sperma/ovary), kromosom, dan hormon.
             jenisSeks:
                 type: text
                 options:
@@ -1436,8 +1433,8 @@ flows:
                 type: text
                 options:
                     text: >-
-                        Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.. Ketik "Materi" untuk
-                        mengetahui apa yang See pahami
+                        Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada. Ketik "Materi" untuk melihat apa saja yang See
+                        ketahui.
             apaItu:
                 type: text
                 options:
@@ -1459,16 +1456,16 @@ flows:
                 type: text
                 options:
                     text:
-                        - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See pahami.
-                        - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See pahami.
+                        - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See ketahui.
+                        - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See ketahui.
             perbedaan:
                 type: text
                 options:
-                    text: Ada beberapa perbedaan antara laki - laki dan perempuan. Untuk mengetahuinya ketik "perbedaan"
+                    text: 'Ada beberapa perbedaan antara pria dan perempuan. Untuk mengetahuinya, ketik "perbedaan".'
             peran:
                 type: text
                 options:
-                    text: Ada beberapa faktor yang menentukan jenis kelamin salah satunya hormon. Untuk mengetahui peran hormon ketik "peran hormon"
+                    text: 'Ada beberapa faktor yang menentukan jenis kelamin salah satunya hormon. Untuk mengetahuinya, ketik "peran hormon".'
         methods: {}
     organReproduksi:
         active: true
@@ -1952,7 +1949,7 @@ flows:
                 options:
                     text: >-
                         Terdapat beberapa organ reproduksi yang penting bagi pria seperti penis, scrotum, testis, dan kelenjar prostat,. Untuk wanita
-                        organ reproduksi yang penting seperti vagina, ovarium, rahim, cervix (mulut rahim), tuba uterina, clitoris
+                        organ reproduksi yang penting seperti vagina, ovarium, rahim, cervix (mulut rahim), tuba uterina, clitoris.
             penjelasanPenis:
                 type: text
                 options:
@@ -2003,8 +2000,8 @@ flows:
                 type: text
                 options:
                     text: >-
-                        Ketik nama organ reproduksi untuk mengtahui organ reproduksi tersebut secara detail. Ketik "tidak" apabila tidak ingin
-                        mengetahui secara lebih detail
+                        Ketik nama organ reproduksi untuk mengtahui organ reproduksi tersebut secara detail. Ketik "tidak" jika tidak ingin
+                        mengetahuinya.
             penjelasanVagina:
                 type: text
                 options:
@@ -2048,15 +2045,15 @@ flows:
                 type: text
                 options:
                     text: >-
-                        Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.. Ketik "Materi" untuk
-                        mengetahui apa yang See pahami
+                        Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada. Ketik "Materi" untuk melihat apa saja yang See
+                        ketahui.
             caraMerawat:
                 type: text
                 options:
                     text: >-
-                        diusahakan untuk cebok setiap kali kalian pipis ya, karena ini penting untuk menjaga kebersihan, urin itu mengandung bakteri
-                        bakteri yang kalu ada sisanya bisa membuat bau pada kemaluan. pastikan kalian menjaga celana dalam agar tetap kering karena
-                        celana dalan yang lembab bs membuat pertumbuhan jamur, nah ini bisa menyebabkan keputihan.
+                        Diusahakan untuk membersihkan kelamin setiap kali kalian pipis, ya. Ini penting untuk menjaga kebersihan. Urin itu mengandung
+                        bakteri bakteri yang kalu terdapat sisanya dapat menimbulkan bau pada kemaluan. Pastikan kalian menjaga celana dalam agar
+                        tetap kering karena celana dalam yang lembab dapat membuat pertumbuhan jamur yang nanti dapat menyebabkan keputihan.
             lanjutMerawat:
                 type: text
                 options:
@@ -2368,7 +2365,7 @@ flows:
             jenis:
                 type: text
                 options:
-                    text: 'Ada beberapa jenis PMS diantaranya, HIV AIDS, Sifilis, Gonorrhea, Kandidiasis Vaginalis atau keputihan'
+                    text: 'Ada beberapa jenis PMS diantaranya HIV AIDS, Sifilis, Gonorrhea, Kandidiasis Vaginalis atau keputihan.'
             tanya:
                 type: text
                 options:
@@ -2411,9 +2408,9 @@ flows:
                 type: text
                 options:
                     text: >-
-                        Menjaga kebersihan alat kelamin, Menggunakan pakaian dalam yang dapat menyerap keringat, Mengganti pakaian dalam minimal 2
-                        kali sehari, Menjaga agar alat kelamin tetap kering, Tidak menggunakan pakaian yang ketat, Menahan dorongan seksual
-                        (abstinence), Tidak berganti-ganti pasangan seksual, Vaksinasi (Hepatitis Bdan HPV).
+                        (1) Menjaga kebersihan alat kelamin, (2) Menggunakan pakaian dalam yang dapat menyerap keringat, (3) Mengganti pakaian dalam
+                        minimal 2 kali sehari, (4) Menjaga agar alat kelamin tetap kering, (5) Tidak menggunakan pakaian yang ketat, (6) Menahan
+                        dorongan seksual (abstinence), dan (7) Tidak berganti-ganti pasangan seksual, Vaksinasi (Hepatitis Bdan HPV).
             tanyaAkhir:
                 type: text
                 options:
@@ -2433,7 +2430,7 @@ flows:
             ketikCegah:
                 type: text
                 options:
-                    text: Ketik "Lanjut" untuk mengetahui cara pencegahannya. Ketik "Tidak" jika tidak ingin mengetahui cara pencegahannya
+                    text: Ketik "Lanjut" untuk mengetahui cara pencegahannya. Ketik "Tidak" jika tidak ingin mengetahuinya.
             terimaKasih:
                 type: text
                 options:
@@ -2446,14 +2443,14 @@ flows:
                 type: text
                 options:
                     text: >-
-                        Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.. Ketik "Materi" untuk
-                        mengetahui apa yang See pahami
+                        Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada. Ketik "Materi" untuk melihat apa saja yang See
+                        ketahui.
             haloLagi:
                 type: text
                 options:
                     text:
-                        - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See pahami.
-                        - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See pahami.
+                        - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See ketahui.
+                        - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See ketahui.
             apaitu:
                 type: text
                 options:
