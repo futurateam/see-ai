@@ -1,5 +1,5 @@
 name: seeAi
-tag: latest
+tag: null
 deleted_at: null
 desc: ''
 timezone: 7
@@ -18,71 +18,67 @@ flows:
                 transitions:
                     init:
                         fallback: true
-                action:
-                    -
-                        name: yangDipahami
-                    -
-                        name: default
+                action: default
                 initial: true
                 end: true
         actions:
-            sayDontUnderstand:
-                type: text
-                options:
-                    text:
-                        - 'Maaf, See belum mengetahui hal tersebut.'
-                        - 'Sayang sekali, See belum mengerti hal tersebut.'
-                        - 'Maaf beribu maaf, See belum memahami hal tersebut.'
             default:
                 type: text
                 options:
                     text:
-                        - Ketik "halo" untuk mulai mengobrol dengan see
-                        - ketik "halo" untuk bertanya kepada see
-                        - ketik "halo" untuk berbincang dengan see
-            yangDipahami:
-                type: text
-                options:
-                    text: ketik "materi" unutk mengetahui apa yang see pahami
+                        - Ketik "Halo" untuk mulai mengobrol dengan See!
+                        - Ketik "Halo" untuk bertanya kepada See!
+                        - Ketik "Halo" untuk berbincang dengan See!
         methods: {}
-    materi:
+    greeting:
         active: true
         volatile: false
         intents:
-            materi:
-                type: text
+            getStarted:
+                type: data
                 initial: true
                 fallback: false
-                classifier:
-                    nlu: materi
-                    match: materi
+                condition: payload.type == "follow"
         states:
-            init:
+            addAsFriend:
                 transitions:
-                    materi:
-                        condition: intent=="materi"
+                    greetUser:
+                        condition: intent=="getStarted"
+                        mapping:
+                            context.userId: metadata.lineSenderId
+                            context.token: metadata.lineAccessToken
                 initial: true
-            materi:
+            greetUser:
                 transitions: {}
-                action: materi
-                initial: false
+                action:
+                    -
+                        name: callLineAPI
+                    -
+                        name: displayResult
+                    -
+                        name: ketik
         actions:
-            materi:
-                type: template
+            displayResult:
+                type: text
                 options:
-                    type: carousel
-                    items:
-                        -
-                            title: pubertas
-                            text: Pubertas
-                            thumbnailImageUrl: 'https://i.ibb.co/2k4PghC/Blog-Banner-Icon-Only-2.jpg'
-                            actions:
-                                -
-                                    type: postback
-                                    label: pubertas
-                                    payload:
-                                        type: materi
-                                        materi: pubertas
+                    text: >-
+                        Halo, $(result.displayName)! Terima kasih telah menambahkan See sebagai temanmu.  
+
+                        Perkenalkan namaku See, Sex Education for Eudaemonism. Aku akan menjawab segala pertanyaanmu mengenai edukasi seks sesukamu
+                        kapanpun. Tak perlu khawatir, aku tidak akan menghakimimu karena aku merupakan robot dengan kecerdasan buatan. 
+
+                        Selamat bertanya, $(result.displayName)!
+            callLineAPI:
+                type: api
+                options:
+                    uri: 'https://api.line.me/v2/bot/profile/$(context.userId)'
+                    method: GET
+                    headers:
+                        Authorization: Bearer $(context.token)
+            ketik:
+                type: text
+                options:
+                    text: Ketik "Halo" untuk memulai mengobrol. Ketik "Materi" untuk melihat apa saja yang See pahami.
         methods: {}
     halo:
         active: true
@@ -93,15 +89,15 @@ flows:
                 initial: true
                 fallback: false
                 classifier:
-                    nlu: basic
-                    match: sapa
+                    nlu: lainLain
+                    match: halo
             adaBantu:
                 type: text
                 initial: false
                 fallback: false
                 classifier:
-                    nlu: basic
-                    match: adaBantu
+                    nlu: lainLain
+                    match: ada
             tidakBantu:
                 type: text
                 initial: false
@@ -109,45 +105,37 @@ flows:
                 classifier:
                     nlu: basic
                     match: tidakBantu
-            oke:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: basic
-                    match: oke
         states:
             init:
                 transitions:
                     sapa:
+                        fallback: true
                         condition: intent=="sapa"
                 initial: true
             sapa:
                 transitions:
-                    adaBantu:
-                        fallback: true
-                        condition: intent=="adaBantu"
-                    tidakBantu:
+                    bantu:
                         fallback: true
                         condition: intent=="tidakBantu"
-                    sapa:
-                        fallback: true
-                action: sapa
-            adaBantu:
+                        mapping:
+                            context.jawaban: content
+                action:
+                    -
+                        name: sapa
+                    -
+                        name: ada
+            bantu:
                 transitions:
-                    adaBantu:
+                    bantu:
                         fallback: true
-                action: adaBantu
+                action:
+                    -
+                        name: tidakBantu
+                        condition: context.jawaban=="tidak"
+                    -
+                        name: adaBantu
+                        condition: context.jawaban=="ada"
                 end: true
-            tidakBantu:
-                transitions:
-                    tidakBantu:
-                        fallback: true
-                action: tidakBantu
-                end: true
-            oke:
-                transitions: {}
-                action: oke
         actions:
             sapa:
                 type: text
@@ -171,15 +159,7 @@ flows:
                         - 'Kalau boleh See tau, apakah itu?'
                         - Apa yang membuatmu penasaran?
                         - Coba jelaskan ke See apa itu?
-                        - Silahkan bercerita kepada See.
                         - Apakah itu kalau See boleh tau?
-                        - 'Kalau See boleh tau, bagaimana ceritanya?'
-            tidakBantu:
-                type: text
-                options:
-                    text:
-                        - 'Baik kalau begitu, terima kasih telah bertanya pada See!'
-                        - Okey kalau begitu. Sampai jumpa!
             oke:
                 type: text
                 options:
@@ -192,67 +172,202 @@ flows:
                         - Ada yang mau ditanyain ke See lagi nggak?
                         - Ada yang mau ditanyakan lagi nggak?
                         - Mungkin ada yang bisa See bantu lagi?
+            ada:
+                type: text
+                options:
+                    text: Ketik "Ada" jika ada yang perlu dibantu. Ketik "Tidak" jika tidak ada yang perlu dibantu.
+            tidakBantu:
+                type: text
+                options:
+                    text:
+                        - Baik kalau begitu. Terima kasih telah mengobrol denganku!
+                        - 'Sepertinya cukup begitu, yah. Terima kasih telah menghubungiku!'
         methods: {}
-    siapa:
+    materi:
         active: true
-        volatile: true
+        volatile: false
         intents:
-            siapa:
+            materi:
                 type: text
                 initial: true
                 fallback: false
                 classifier:
-                    nlu: basic
-                    match: siapa yang buat
+                    nlu: materi
+                    match: materi
+            pilihanMateri:
+                type: data
+                initial: false
+                fallback: false
+                condition: payload.type=="materi"
         states:
             init:
                 transitions:
-                    siapa:
-                        fallback: true
-                        condition: intent=="siapa"
+                    materi:
+                        fallback: false
+                        condition: intent=="materi"
                 initial: true
-            siapa:
+            materi:
                 transitions:
-                    siapa:
+                    penjelasan:
+                        fallback: true
+                        condition: intent=="pilihanMateri"
+                        mapping:
+                            context.materi: payload.materi
+                    materi:
                         fallback: true
                 action:
                     -
-                        name: siapa
+                        name: materi
                     -
-                        name: siapaBuat
-                initial: true
-                end: true
+                        name: pilih
+                initial: false
+            penjelasan:
+                transitions:
+                    penjelasan:
+                        fallback: true
+                action:
+                    -
+                        name: pubertas
+                        condition: context.materi=="pubertas"
+                    -
+                        name: detailPubertas
+                        condition: context.materi=="pubertas"
+                    -
+                        name: organReproduksi
+                        condition: context.materi=="organReproduksi"
+                    -
+                        name: detailOrganReproduksi
+                        condition: context.materi=="organReproduksi"
+                    -
+                        name: penyakitMenularSeksual
+                        condition: context.materi=="penyakitMenularSeksual"
+                    -
+                        name: detailPMS
+                        condition: context.materi=="penyakitMenularSeksual"
+                    -
+                        name: kontrasepsi
+                        condition: context.materi=="kontrasepsi"
+                    -
+                        name: detailKontrasepsi
+                        condition: context.materi=="kontrasepsi"
+                    -
+                        name: seks
+                        condition: context.materi=="sex"
+                    -
+                        name: detailSeks
+                        condition: context.materi=="sex"
+                end: false
         actions:
-            siapa:
+            materi:
+                type: template
+                options:
+                    type: carousel
+                    items:
+                        -
+                            title: Pubertas
+                            text: 'Apa itu pubertas? Ciri-cirinya bagaimana, sih?'
+                            thumbnailImageUrl: 'https://i.ibb.co/XDfVs57/1-puber.png'
+                            actions:
+                                -
+                                    type: postback
+                                    label: Klik
+                                    payload:
+                                        type: materi
+                                        materi: pubertas
+                        -
+                            title: Organ Reproduksi
+                            text: Cari tau yuk tentang organ reproduksi!
+                            thumbnailImageUrl: 'https://i.ibb.co/YWmp2VZ/2-organ-repro.png'
+                            actions:
+                                -
+                                    type: postback
+                                    label: Klik
+                                    payload:
+                                        type: materi
+                                        materi: organReproduksi
+                        -
+                            title: Penyakit Menular Seksual
+                            text: 'Cari tahu bagaimana cara meminimalisirnya, yuk!'
+                            thumbnailImageUrl: 'https://i.ibb.co/xSmcS8f/3-pms.png'
+                            actions:
+                                -
+                                    type: postback
+                                    label: Klik
+                                    payload:
+                                        type: materi
+                                        materi: penyakitMenularSeksual
+                        -
+                            title: Sex
+                            text: 'Kelamin di dunia hanya ada dua menurut ilmu medis, apa itu?'
+                            thumbnailImageUrl: 'https://i.ibb.co/W25F5qS/4-sex.png'
+                            actions:
+                                -
+                                    type: postback
+                                    label: Klik
+                                    payload:
+                                        type: materi
+                                        materi: sex
+                        -
+                            title: Alat Kontrapsesi
+                            text: 'Melakukan hubungan seksual itu tidak sembarang, lho!'
+                            thumbnailImageUrl: 'https://i.ibb.co/Lt7fM2w/5-kontrasep.png'
+                            actions:
+                                -
+                                    type: postback
+                                    label: Klik
+                                    payload:
+                                        type: materi
+                                        materi: kontrasepsi
+            pubertas:
                 type: text
                 options:
-                    text:
-                        - >-
-                            Namaku See dengan singkatan dari Sex Educator for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Aku hadir
-                            sebagai mentor yang akan menjawab segala pertanyaanmu mengenai edukasi seks tanpa perlu takut dihakimi. Kenapa? Karena aku
-                            sebuah bot. Selamat bertanya!
-                        - >-
-                            Aku See. Aku adalah mentor edukasi seks pribadimu. Aku hadir tiap saat dikala kamu membutuhkanku. Tenang, aku tidak akan
-                            menghakimimu, kok! Aku kan robot.
-                        - >-
-                            Kenalin aku See, Sex Educator for Eudaemonism yang berarti edukasi seks untuk rasa kebahagiaan. Tak perlu takut untuk
-                            bertanya apapun karena aku tidak akan menghakimimu. Selamat bertanya!
-            buat:
+                    text: >-
+                        Pubertas adalah suatu proses dimana akan terdapat perkembangan dan perubahan tubuh yang menandakan masa transisi dari anak
+                        menjadi orang dewasa.
+            organReproduksi:
                 type: text
                 options:
-                    text:
-                        - 'Tiga orang jenius ini lah yang melahirkan See ke dunia. Abiel Zulio M, Syaufiq Alaudin, dan Shafa.'
-                        - 'See lahir dari pemikiran tiga orang jenius ini. Abiel Zulio M, Syaufiq Alaudin, dan Shafa.'
-            siapaBuat:
+                    text: Organ reproduksi pada manusia terdapat beberapa jenis yakni organ reproduksi wanita dan organ reproduksi pria.
+            penyakitMenularSeksual:
                 type: text
                 options:
-                    text:
-                        - 'See diwujudkan oleh ketiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Shafa.'
-                        - 'See hadir dibuat oleh tiga orang jenius ini. Abiel Zulio M, Syafiq Alaudin, dan Shafa.'
+                    text: Penyakit menular seksual adalah penyakit atau infeksi yang menular melalui hubungan intim atau seksual.
+            kontrasepsi:
+                type: text
+                options:
+                    text: Kontrasepsi merupakan hal-hal yang dilakukan atau digunakan untuk mencegah atau mengatur kehamilan.
+            seks:
+                type: text
+                options:
+                    text: Seks disini yang dibahas ialah jenis kelamin.
+            detailPubertas:
+                type: text
+                options:
+                    text: Ketik "pubertas" untuk mengetahui pubertas lebih detail.
+            detailOrganReproduksi:
+                type: text
+                options:
+                    text: Ketik "organ reproduksi" untuk mengetahui organ reproduksi lebih detail.
+            detailPMS:
+                type: text
+                options:
+                    text: ketik "penyakit menular seksual" untuk mengetahui penyakit menular seksual lebih detail.
+            detailKontrasepsi:
+                type: text
+                options:
+                    text: ketik "kontrasepsi" untuk mengetahui kontrasepsi lebih detail.
+            detailSeks:
+                type: text
+                options:
+                    text: ketik "seks" untuk mengetahui seks lebih detail.
+            pilih:
+                type: text
+                options:
+                    text: Silahkan pilih salah satu topik yang ingin kamu ketahui!
         methods: {}
     pubertas:
         active: true
-        volatile: true
+        volatile: false
         intents:
             pengertianPubertas:
                 type: text
@@ -317,6 +432,34 @@ flows:
                 classifier:
                     nlu: pubertas
                     match: kapan puber
+            lanjut:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: lanjut
+                    match: lanjut
+            tanyaLagi:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: lainLain
+                    match: ada
+            tidakTanyaLagi:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: lainLain
+                    match: tidak
+            samasama:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: sama sama
         states:
             init:
                 transitions:
@@ -383,23 +526,35 @@ flows:
                 action: tanya
             belumPuber:
                 transitions:
-                    belumPuber:
-                        fallback: true
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
                 action:
                     -
                         name: kasihTau
                     -
                         name: tanyaLagi
-                end: true
+                    -
+                        name: ketik
+                end: false
             mens:
                 transitions:
                     kapanPuber:
                         condition: intent=="kapanPuber"
+                    tandaPuber:
+                        condition: intent=="tandaPuber"
+                    mimpiBasah:
+                        condition: intent=="mimpiBasah"
+                    tentangPuber:
+                        condition: intent=="pengertianPubertas"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
-                    mens:
-                        fallback: true
                 action:
                     -
                         name: penjelasnMens
@@ -409,6 +564,10 @@ flows:
                     -
                         name: mens
                         condition: context.mens=="mens"
+                    -
+                        name: tanyaLagi
+                    -
+                        name: ketik
             tandaPuber:
                 transitions:
                     mens:
@@ -419,6 +578,10 @@ flows:
                         condition: intent=="kapanPuber"
                     tentangPuber:
                         condition: intent=="pengertianPubertas"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
@@ -427,31 +590,47 @@ flows:
                         name: pubercowo
                     -
                         name: pubercewe
+                    -
+                        name: tanyaLagi
+                    -
+                        name: ketik
             mimpiBasah:
                 transitions:
                     kapanPuber:
                         condition: intent=="kapanPuber"
+                    tandaPuber:
+                        condition: intent=="tandaPuber"
+                    mens:
+                        condition: intent=="mens"
+                    tentangPuber:
+                        condition: intent=="pengertianPubertas"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
-                    mimpiBasah:
-                        fallback: true
                 action:
                     -
                         name: penjelasanMimpiBasah
                     -
                         name: pesan
                         condition: context.mimpiBasah=="mimpiBasah"
+                    -
+                        name: tanyaLagi
+                    -
+                        name: ketik
             sama2:
                 transitions:
                     sama2:
                         fallback: true
                 action: samaSama
-                end: true
+                end: false
             tandaPuberYangDialami:
                 transitions:
                     tandaPuber:
-                        condition: intent=="tandaPuber"
+                        condition: intent=="lanjut"
                     kapanPuber:
                         condition: intent=="kapanPuber"
                     tentangPuber:
@@ -460,9 +639,13 @@ flows:
                         condition: intent=="mimpiBasah"
                     mens:
                         condition: intent=="mens"
+                        mapping:
+                            context.mens: intent
                     sama2:
-                        fallback: true
+                        fallback: false
                         condition: intent=="sama2"
+                    tandaPuberYangDialami:
+                        fallback: true
                 action:
                     -
                         name: masukPuber
@@ -480,19 +663,36 @@ flows:
                         condition: intent=="mens"
                     mimpiBasah:
                         condition: intent=="mimpiBasah"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
-                    kapanPuber:
-                        fallback: true
-                action: waktuPuber
+                action:
+                    -
+                        name: waktuPuber
+                    -
+                        name: tanyaLagi
+            pertanyaanApaItu:
+                transitions: {}
+                action: apaItu
+            terimaKasih:
+                transitions:
+                    haloLagi:
+                        condition: intent=="samasama"
+                action: terimaKasih
+            haloLagi:
+                transitions: {}
+                action: haloLagi
         actions:
             penjelasanPuber:
                 type: text
                 options:
                     text: >-
                         Pubertas adalah proses perubahan ketidakmatangan fisik dan seksual menuju kematangan fisik dan seksual. Fase kematangan fisik
-                        dan seksual dapat membuat organ reproduksi seorang remaja dapat berfungsi untuk bereproduksi
+                        dan seksual dapat membuat organ reproduksi seorang remaja dapat berfungsi untuk bereproduksi.
             sudahPuber:
                 type: text
                 options:
@@ -520,12 +720,12 @@ flows:
             mimpiBasah:
                 type: text
                 options:
-                    text: Itu wajar terjadi pada laki laki
+                    text: 'Itu wajar terjadi pada pria, kok.'
             mens:
                 type: text
                 options:
                     text: >-
-                        Itu berarti kamu sudah bisa hamil jika pada masa subur dan juga telah dibuahi oleh laki-laki yang sudah pubertas. Jaga dirimu
+                        Itu berarti kamu sudah bisa hamil jika pada masa subur dan juga telah dibuahi oleh pria yang sudah pubertas. Jaga dirimu
                         sebaik mungkin dan tunggu sampai menjadi seorang istri yang sah, ya. Itu saran dari See!
             pubercewe:
                 type: text
@@ -537,23 +737,23 @@ flows:
                 type: text
                 options:
                     text: >-
-                        Ada beberapa tanda pubertas pada laki-laki seperti, (1) ukuran testikel dan penis yang membesar, (2) mengalami mimpi basah,
-                        (3) tumbuh rambut pada daerah kemaluan dan ketiak, dan (4) suara menjadi lebih berat
+                        Ada beberapa tanda pubertas pada pria seperti, (1) ukuran testikel dan penis yang membesar, (2) mengalami mimpi basah, (3)
+                        tumbuh rambut pada daerah kemaluan dan ketiak, dan (4) suara menjadi lebih berat.
             penjelasnMens:
                 type: text
                 options:
                     text: >-
-                        Perempuan memiliki sel telur yang akan menjadi janin bila dibuahi atau bertemu sperma dari laki-laki. Tiap bulan, rahim
-                        membuat lapisan darah dan jaringan sebagai tempat menempel sel telur yang akan dibuahi. Namun, jika sel telur tidak dibuahi,
-                        pada akhirnya akan luruh dan keluar dari vagina dalam bentuk darah menstruasi. Periode menstruasi umumnya berlangsung sekitar
-                        2-7 hari. Ganti pembalut secara teratur tiap 4-8 jam untuk menjaga kebersihan organ vitalmu, ya!
+                        Perempuan memiliki sel telur yang akan menjadi janin bila dibuahi atau bertemu sperma dari pria. Tiap bulan, rahim membuat
+                        lapisan darah dan jaringan sebagai tempat menempel sel telur yang akan dibuahi. Namun, jika sel telur tidak dibuahi, pada
+                        akhirnya akan luruh dan keluar dari vagina dalam bentuk darah menstruasi. Periode menstruasi umumnya berlangsung sekitar 2-7
+                        hari. Ganti pembalut secara teratur tiap 4-8 jam untuk menjaga kebersihan organ vitalmu, ya!
             penjelasanMimpiBasah:
                 type: text
                 options:
                     text: >-
-                        Selama pubertas, remaja laki-laki juga akan mengalami mimpi basah, yaitu ejakulasi yang terjadi saat sedang tidur. Mimpi basah
-                        yang kamu alami terjadi karena adanya peningkatan kadar hormon testosteron dalam tubuh. Seiring bertambahnya usia, intensitas
-                        mimpi basah akan berkurang.
+                        Selama pubertas, remaja pria juga akan mengalami mimpi basah, yaitu ejakulasi yang terjadi saat sedang tidur. Mimpi basah yang
+                        kamu alami terjadi karena adanya peningkatan kadar hormon testosteron dalam tubuh. Seiring bertambahnya usia, intensitas mimpi
+                        basah akan berkurang.
             pesan:
                 type: text
                 options:
@@ -563,19 +763,17 @@ flows:
             samaSama:
                 type: text
                 options:
-                    text: 'Sama-sama, See senang bisa membantu kamu. Ada yang ingin ditanyain lagi tidak?'
+                    text: 'Sama-sama, See senang bisa membantu kamu.'
             masukPuber:
                 type: text
                 options:
                     text: >-
-                        Itu merupakan salah satu tanda kamu memasuki masa pubertas. Jadi kamu nggak perlu khawatir yaa. Ada beberapa tanda tanda
-                        pubertas yang lain juga lhoo.
+                        Itu merupakan salah satu tanda kamu memasuki masa pubertas. Jadi kamu nggak perlu khawatir, ya. Ada beberapa tanda tanda
+                        pubertas yang lain juga, lho!
             waktuPuber:
                 type: text
                 options:
-                    text: >-
-                        Pada perempuan, pubertas terjadi pada rentang usia 10-14 tahun dan pada laki-laki, pubertas terjadi pada kisaran usia 12-16
-                        tahun.
+                    text: 'Pada perempuan, pubertas terjadi pada rentang usia 10-14 tahun. Pada pria, pubertas terjadi pada kisaran usia 12-16 tahun.'
             siklusMens:
                 type: text
                 options:
@@ -587,572 +785,38 @@ flows:
             lanjutTanda:
                 type: text
                 options:
-                    text: ketik "lanjut" untuk mengetahuinya
-        methods: {}
-    organReproduksiPria:
-        active: true
-        volatile: true
-        intents:
-            ereksi:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: organreproduksi
-                    match: ereksi
-            penyebabereksi:
-                type: text
-                initial: false
-                fallback: false
-                classifier:
-                    nlu: organreproduksi
-                    match: penyebab ereksi
-            jenisOrgan:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: organreproduksi
-                    match: jenis pria
-            penis:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: organreproduksi
-                    match: penis
-            testis:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: organreproduksi
-                    match: testis
-            skrotum:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: organreproduksi
-                    match: skrotum
-            kelenjarProstat:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: organreproduksi
-                    match: kelenjar prostat
-            sama2:
-                type: text
-                initial: false
-                fallback: false
-                classifier:
-                    nlu: basic
-                    match: thanks
-        states:
-            init:
-                transitions:
-                    ereksi:
-                        condition: intent=="ereksi"
-                    jenis:
-                        condition: intent=="jenisOrgan"
-                    penis:
-                        condition: intent=="penis"
-                    testis:
-                        condition: intent=="testis"
-                    skrotum:
-                        condition: intent=="skrotum"
-                    kelenjarProstat:
-                        condition: intent=="kelenjarProstat"
-                initial: true
-            ereksi:
-                transitions:
-                    penyebab_ereksi:
-                        condition: intent="penyebabereksi"
-                    penis:
-                        condition: intent=="penis"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    ereksi:
-                        fallback: true
-                action: ereksi
-            penyebab_ereksi:
-                transitions:
-                    penis:
-                        condition: intent=="penis"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    penyebab_ereksi:
-                        fallback: true
-                action:
-                    -
-                        name: penyebab_ereksi
-                    -
-                        name: simpulan
-            jenis:
-                transitions:
-                    penis:
-                        condition: intent=="penis"
-                    testis:
-                        condition: intent=="testis"
-                    skrotum:
-                        condition: intent=="skrotum"
-                    kelenjarProstat:
-                        condition: intent=="kelenjarProstat"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    jenis:
-                        fallback: true
-                action:
-                    -
-                        name: jenis
-                    -
-                        name: lanjut
-            penis:
-                transitions:
-                    ereksi:
-                        condition: intent=="ereksi"
-                    penyebab_ereksi:
-                        condition: intent="penyebabereksi"
-                    testis:
-                        condition: intent=="testis"
-                    skrotum:
-                        condition: intent=="skrotum"
-                    kelenjarProstat:
-                        condition: intent=="kelenjarProstat"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    penis:
-                        fallback: true
-                action: penjelasanPenis
-            testis:
-                transitions:
-                    penis:
-                        condition: intent=="penis"
-                    skrotum:
-                        condition: intent=="skrotum"
-                    kelenjarProstat:
-                        condition: intent=="kelenjarProstat"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    testis:
-                        fallback: true
-                action: penjelasanTestis
-            skrotum:
-                transitions:
-                    penis:
-                        condition: intent=="penis"
-                    testis:
-                        condition: intent=="testis"
-                    kelenjarProstat:
-                        condition: intent=="kelenjarProstat"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    skrotum:
-                        fallback: true
-                action: penjelasnSkrotum
-            kelenjarProstat:
-                transitions:
-                    penis:
-                        condition: intent=="penis"
-                    testis:
-                        condition: intent=="testis"
-                    skrotum:
-                        condition: intent=="skrotum"
-                    sama2:
-                        fallback: true
-                        condition: intent=="sama2"
-                    kelenjarProstat:
-                        fallback: true
-                action: penjelasanKelenjarProstat
-            sama2:
-                transitions:
-                    sama2:
-                        fallback: true
-                action:
-                    -
-                        name: thanks
-                    -
-                        name: tanyaLagi
-                end: true
-        actions:
-            ereksi:
+                    text: Ketik "lanjut" untuk mengetahui tanda tanda pubertas yang lain.
+            ketik:
                 type: text
                 options:
-                    text: Ereksi adalah kondisi penis menjadi tegang dan terangkat
-            penyebab_ereksi:
-                type: text
-                options:
-                    text: 'Ereksi bisa disebabkan oleh berbagai macam stimul seperti psikologis, rangsang sentuh, bau, dan visual stimulus'
-            simpulan:
-                type: text
-                options:
-                    text: Ereksi merupakan hal wajar yang terjadi pada laki laki jadi tidak perlu cemas jika itu terjadi.
-            jenis:
-                type: text
-                options:
-                    text: 'Terdapat beberapa organ reproduksi yang penting bagi pria seperti penis, scrotum, testis, dan kelenjar prostat,'
-            penjelasanPenis:
-                type: text
-                options:
-                    text: >-
-                        Penis merupakan organ kopulasi pada pria jadi ini nih yang bertanggung jawab untuk mentransfer sperma agar bisa masuk ke tubuh
-                        betina. Nah, proses ini dapat terjadi ketika penis pada kondisi ereksi, tapi ada juga loh yang tidak perlu ereksi tapi
-                        spermanya keluar. Contoh gampangnya adalah ketika laki laki mimpi basah.  Selain itu kalian tau tidak? kalo penis itu masuk
-                        salah satu organ erotica yang paling sensitif pada laki laki, sehingga dengan kena rangsang sedikit saja dorongan seksual pada
-                        laki laki dapat langsung naik.
-            penjelasanTestis:
-                type: text
-                options:
-                    text: >-
-                        Testis berfungsi untuk pembentukan sperma. Tapi kalian juga harus tau kalo testis itu penting banget dalam pembentukan
-                        hormon-hormon steroid pada laki laki.
-            penjelasnSkrotum:
-                type: text
-                options:
-                    text: >-
-                        Gini, skrotum itu kalo diperhatiin kan biasanya dia menggantung di tubuh laki-laki jadi seperti berada di luar tubuh cowok.
-                        Nah, ini itu ada fungsinya yaitu agar menjaga suhu testis agar dibawah suhu tubuh karena pada dasarnya sperma itu dibentuk
-                        pada suhu yang relatif lebih rendah daripada suhu tubuh normalnya.
-            penjelasanKelenjarProstat:
-                type: text
-                options:
-                    text: >-
-                        Kelenjar prostat berperan dalam pembentukan 13-33% dari semen (cairan yang dikeluarkan ketika ejakulasi). Cairan dari prostat
-                        ini mengandung nutrisi yang berguna sebagai proteksi pada sperma agar bisa bergerak efisien di dalam saluran reproduksi
-                        perempuan. Ketika pada laki-laki penis mengalami ereksi maka akan membesar sehingga menyumbat jalur kencing supaya ketika akan
-                        ejakulasi yang keluar hanya semen bukan urin.
-            thanks:
-                type: text
-                options:
-                    text: 'Sama-sama, See senang bisa membantu kamu'
-            tanyaLagi:
+                    text: Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.
+            apaItu:
                 type: text
                 options:
                     text:
-                        - Ada yang bisa aku bantu lagi?
-                        - 'Baik, apakah sudah cukup?'
-                        - Ada yang bisa See jawab lagi?
-                        - Ada yang mau kamu tanyain lagi kepada See?
-                        - Ada yang ingin ditanyain lagi tidak?
-                        - Ada yang mau ditanyain ke See lagi nggak?
-                        - Ada yang mau ditanyakan lagi nggak?
-                        - Mungkin ada yang bisa See bantu lagi?
-            lanjut:
-                type: text
-                options:
-                    text: ketik "lanjut" untuk mengtahui organ organ reproduksi pria secara detail
-        methods: {}
-    penyakitMenularSeksual:
-        active: true
-        volatile: true
-        intents:
-            pengertianPenyakit:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: penyakitMenularSeksual
-                    match: penyakit menular seksual
-            hivaids:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: penyakitMenularSeksual
-                    match: HIV AIDS
-            gonorrhea:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: penyakitMenularSeksual
-                    match: gonorrhea
-            sifilis:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: penyakitMenularSeksual
-                    match: sifilis
-            keputihan:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: penyakitMenularSeksual
-                    match: keputihan
-            semua:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: penyakitMenularSeksual
-                    match: semua penyakit
-            pencegahan:
-                type: text
-                initial: true
-                fallback: false
-                classifier:
-                    nlu: penyakitMenularSeksual
-                    match: pencegahan
-            'yes':
-                type: text
-                initial: false
-                fallback: false
-                classifier:
-                    nlu: basic
-                    match: 'yes'
-            'no':
-                type: text
-                initial: false
-                fallback: false
-                classifier:
-                    nlu: basic
-                    match: 'no'
-        states:
-            init:
-                transitions:
-                    pengertian:
-                        condition: intent="pengertianPenyakit"
-                    hivaids:
-                        condition: intent=="hivaids"
-                    gonorrhea:
-                        condition: intent=="gonorrhea"
-                    sifilis:
-                        condition: intent=="sifilis"
-                    keputihan:
-                        condition: intent=="keputihan"
-                    semua:
-                        condition: intent=="semua"
-                    pencegahan:
-                        fallback: true
-                        condition: intent=="pencegahan"
-                initial: true
-            pengertian:
-                transitions:
-                    hivaids:
-                        condition: intent="hivaids"
-                    gonorrhea:
-                        condition: intent=="gonorrhea"
-                    sifilis:
-                        condition: intent=="sifilis"
-                    keputihan:
-                        condition: intent=="keputihan"
-                    semua:
-                        fallback: true
-                        condition: intent=="semua"
-                    end:
-                        fallback: true
-                        condition: intent="no"
-                    pencegahan:
-                        fallback: true
-                        condition: intent=="pencegahan"
-                    pengertian:
-                        fallback: true
-                action:
-                    -
-                        name: pengertian
-                    -
-                        name: jenis
-                    -
-                        name: tanya
-                transit:
-                    context.answer: intent
-            hivaids:
-                transitions:
-                    gonorrhea:
-                        condition: intent=="gonorrhea"
-                    sifilis:
-                        condition: intent=="sifilis"
-                    keputihan:
-                        condition: intent=="keputihan"
-                    semua:
-                        condition: intent=="semua"
-                    pencegahan:
-                        fallback: true
-                        condition: intent=="pencegahan"
-                    hivaids:
-                        fallback: true
-                action: penjelasan
-            gonorrhea:
-                transitions:
-                    hivaids:
-                        condition: intent=="hivaids"
-                    sifilis:
-                        condition: intent=="sifilis"
-                    keputihan:
-                        condition: intent=="keputihan"
-                    semua:
-                        condition: intent=="semua"
-                    pencegahan:
-                        fallback: true
-                        condition: intent=="pencegahan"
-                    gonorrhea:
-                        fallback: true
-                action: penjelasangonorrhea
-            sifilis:
-                transitions:
-                    gonorrhea:
-                        condition: intent=="gonorrhea"
-                    hivaids:
-                        condition: intent=="hivaids"
-                    keputihan:
-                        condition: intent=="keputihan"
-                    semua:
-                        condition: intent=="semua"
-                    pencegahan:
-                        fallback: true
-                        condition: intent=="pencegahan"
-                    sifilis:
-                        fallback: true
-                action: penjelasanSifilis
-            keputihan:
-                transitions:
-                    gonorrhea:
-                        condition: intent=="gonorrhea"
-                    hivaids:
-                        condition: intent=="hivaids"
-                    sifilis:
-                        condition: intent=="sifilis"
-                    semua:
-                        condition: intent=="semua"
-                    pencegahan:
-                        fallback: true
-                        condition: intent=="pencegahan"
-                    keputihan:
-                        fallback: true
-                action: penjelasanKeputihan
-            semua:
-                transitions:
-                    pencegahan:
-                        fallback: true
-                        condition: intent=="pencegahan"
-                    semua:
-                        fallback: true
-                action:
-                    -
-                        name: penjelasan
-                        condition: intent=="semua"
-                    -
-                        name: penjelasangonorrhea
-                        condition: intent=="semua"
-                    -
-                        name: penjelasanSifilis
-                        condition: intent=="semua"
-                    -
-                        name: penjelasanKeputihan
-                        condition: intent=="semua"
-                    -
-                        name: penjelasan
-                        condition: intent=="yes"
-                    -
-                        name: penjelasangonorrhea
-                        condition: intent=="yes"
-                    -
-                        name: penjelasanSifilis
-                        condition: intent=="yes"
-                    -
-                        name: penjelasanKeputihan
-                        condition: intent=="yes"
-            pencegahan:
-                transitions:
-                    pencegahan:
-                        fallback: true
-                action:
-                    -
-                        name: pencegahan
-                    -
-                        name: tanyaAkhir
-                end: true
-            end:
-                transitions:
-                    end:
-                        fallback: true
-                action:
-                    -
-                        name: pesanAkhir
-                    -
-                        name: tanyaAkhir
-                end: true
-        actions:
-            pengertian:
-                type: text
-                options:
-                    text: Penyakit menular seksual (PMS) adalah infeksi yang ditularkan dari satu orang ke orang lain melalui kontak seksual.
-            jenis:
-                type: text
-                options:
-                    text: 'Ada beberapa jenis PMS diantaranya, HIV AIDS, Sifilis, Gonorrhea, Kandidiasis Vaginalis atau keputihan'
-            tanya:
-                type: text
-                options:
-                    text: 'Kamu pengen tau lebih jauh tentang mengenai penyakit menular seksual ini? Bisa salah satu atau semuanya, kok!'
-            penjelasan:
-                type: text
-                options:
-                    text: >-
-                        AIDS memiliki kepanjangan dari Acquired Immuno Deficiency Syndrome atau Acquired Immune Deficiency Syndrome. Penyakit AIDS
-                        disebabkan oleh virus Human Immunodeficiency Virus (HIV) yang menyerang sistem kekebalan tubuh manusia sehingga penderita AIDS
-                        menjadi rentan terhadap berbagai infeksi.
-            penjelasangonorrhea:
-                type: text
-                options:
-                    text: >-
-                        Penyakit ini disebabkan oleh Neisseria gonorrhoeae. Masa inkubasi pada pria ialah selama 2-5 hari, sedangkan pada perempuan
-                        sulit diketahui  karena sering mengalami asimtomatik. Gejala klinis pada pria terjadi di tubuh uretra yakni bersifat kental,
-                        putih kekuningan atau kuning,  kadang-kadang mukoid atau mukopurulen; eritema dan atau edema pada meatus. Sedangkan pada
-                        perempuan seringkali asimtomatik. Apabila ada dua tubuh serviks purulen atau mukopurulen, kadang kadang disertai eksudat
-                        purulen dari uretra atau kelenjar Bartholini. Pada perempuan biasanya datang berobat setelah ada komplikasi antara lain
-                        servisitis, bartilinitis, dan nyeri pada panggul bagian bawah.
-            penjelasanSifilis:
-                type: text
-                options:
-                    text: >-
-                        Sifilis adalah penyakit menular yang disebabkan oleh bakteri Treponema palladium. Infeksi terjadi pada organ kelamin bagian
-                        luar. Sifilis dapat berkembang ke tahap sekunder dan tersier yang sulit diamati. Sifilis sekunder menular sedangkan yang
-                        tersier tidak menular. Akan tetapi sifilis tersier menimbulkan dapat menimbulkan kerusakan pada otak, jantung, pembuluh darah,
-                        hati.
-            penjelasanKeputihan:
-                type: text
-                options:
-                    text: >-
-                        Keputihan atau kandidiasis adalah infeksi dengan berbagai manifestasi klinis yang disebabkan oleh candida, candida albicans
-                        dan ragi (yeast) lain (terkadang C.glabarata) dari genus candida. Gejala penyakit ini adalah rasa panas dan iritasi pada
-                        vulva, selain itu juga sekret vagina yang berlebihan berwarna putih susu. Pada dinding vagina terdapat gumpalan seperti keju.
-            pencegahan:
-                type: text
-                options:
-                    text: >-
-                        Menjaga kebersihan alat kelamin, Menggunakan pakaian dalam yang dapat menyerap keringat, Mengganti pakaian dalam minimal 2
-                        kali sehari, Menjaga agar alat kelamin tetap kering, Tidak menggunakan pakaian yang ketat, Menahan dorongan seksual
-                        (abstinence), Tidak berganti-ganti pasangan seksual, Vaksinasi (Hepatitis Bdan HPV)
-            tanyaAkhir:
+                        - Apakah itu?
+                        - 'Kalau boleh See tau, apakah itu?'
+                        - Apa yang membuatmu penasaran?
+                        - Coba jelaskan ke See apa itu?
+                        - Apakah itu kalau See boleh tau?
+            terimaKasih:
                 type: text
                 options:
                     text:
-                        - Ada yang bisa aku bantu lagi?
-                        - 'Baik, apakah sudah cukup?'
-                        - Ada yang bisa See jawab lagi?
-                        - Ada yang mau kamu tanyain lagi kepada See?
-                        - Ada yang ingin ditanyain lagi tidak?
-                        - Ada yang mau ditanyain ke See lagi nggak?
-                        - Ada yang mau ditanyakan lagi nggak?
-                        - Mungkin ada yang bisa See bantu lagi?
-            pesanAkhir:
+                        - Terima kasih telah bertanya kepada See.
+                        - Terima kasih
+                        - Baik kalau begitu. Terima kasih telah mengobrol denganku!
+                        - 'Sepertinya cukup begitu, yah. Terima kasih telah menghubungiku!'
+            haloLagi:
                 type: text
                 options:
-                    text: 'Tetap jaga kesehatan, ya. Agar terhindar dari penyakit menular seksual.'
+                    text:
+                        - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See pahami.
+                        - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See pahami.
         methods: {}
     kontrasepsi:
         active: true
-        volatile: true
+        volatile: false
         intents:
             pengertianKontrasepsi:
                 type: text
@@ -1182,6 +846,27 @@ flows:
                 classifier:
                     nlu: basic
                     match: thanks
+            tanyaLagi:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: ada
+            tidakTanyaLagi:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: tidak
+            samasama:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: sama sama
         states:
             init:
                 transitions:
@@ -1198,49 +883,78 @@ flows:
                         condition: intent=="mengapaKontrasepsi"
                     kontrasepsiPenting:
                         condition: intent=="kontrasepsiPenting"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
-                    penjelasanKontrasepsi:
-                        fallback: true
-                action: penjelasanKontrasepsi
+                action:
+                    -
+                        name: penjelasanKontrasepsi
+                    -
+                        name: tanyaLagi
             mengapaKontrasepsi:
                 transitions:
                     kontrasepsiPenting:
                         condition: intent=="kontrasepsiPenting"
                     penjelasanKontrasepsi:
                         condition: intent=="pengertianKontrasepsi"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
-                    mengapaKontrasepsi:
-                        fallback: true
-                action: mengapaKontrasepsi
+                action:
+                    -
+                        name: mengapaKontrasepsi
+                    -
+                        name: tanyaLagi
             kontrasepsiPenting:
                 transitions:
                     mengapaKontrasepsi:
                         condition: intent=="mengapaKontrasepsi"
                     penjelasanKontrasepsi:
                         condition: intent=="pengertianKontrasepsi"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
-                    kontrasepsiPenting:
-                        fallback: true
-                action: kontrasepsiPenting
+                action:
+                    -
+                        name: kontrasepsiPenting
+                    -
+                        name: tanyaLagi
             sama2:
                 transitions:
                     sama2:
                         fallback: true
                 action: thanks
-                end: true
+                end: false
+            pertanyaanApaItu:
+                transitions: {}
+                action: apaItu
+            terimaKasih:
+                transitions:
+                    haloLagi:
+                        condition: intent=="samasama"
+                action: terimaKasih
+            haloLagi:
+                transitions: {}
+                action: haloLagi
         actions:
             penjelasanKontrasepsi:
                 type: text
                 options:
                     text: >-
-                        Kontrasepsi itu hal - hal yang dilakukan untuk mencegah kehamilan saat melakukan hubungan seksual. Kontrasepsi bisa digunakan
-                        pada pihak pria dan juga wanita. Terdapat banyak macam kontrasepsi, contohnya termasuk condom, pill kontrasepsi, dan
+                        Kontrasepsi merupakan hal-hal yang dilakukan untuk mencegah kehamilan saat melakukan hubungan seksual. Kontrasepsi bisa
+                        digunakan pada pihak pria dan juga wanita. Terdapat banyak macam kontrasepsi, contohnya termasuk condom, pill kontrasepsi, dan
                         intrauterine device (IUD). Beberapa macam kontrasepsi juga bisa berfungsi untuk mencegah penularan penyakit.
             mengapaKontrasepsi:
                 type: text
@@ -1258,7 +972,36 @@ flows:
             thanks:
                 type: text
                 options:
-                    text: 'sama - sama, See senang bisa membantumu'
+                    text: Sama-sama. See senang bisa membantumu!
+            tanyaLagi:
+                type: text
+                options:
+                    text:
+                        - Ada yang ingin ditanyakan lagi?
+                        - Ada yang mau ditanyakan lagi?
+            apaItu:
+                type: text
+                options:
+                    text:
+                        - Kalo boleh tau apa itu?
+                        - 'Kalau boleh See tau, apakah itu?'
+                        - Apakah itu kalau See boleh tau?
+                        - Coba jelaskan ke See apa itu?
+                        - Apakah itu?
+            terimaKasih:
+                type: text
+                options:
+                    text:
+                        - Terima kasih telah bertanya kepada See.
+                        - Terima kasih
+                        - Baik kalau begitu. Terima kasih telah mengobrol denganku!
+                        - 'Sepertinya cukup begitu, yah. Terima kasih telah menghubungiku!'
+            haloLagi:
+                type: text
+                options:
+                    text:
+                        - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See pahami.
+                        - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See pahami.
         methods: {}
     seks:
         active: true
@@ -1320,6 +1063,27 @@ flows:
                 classifier:
                     nlu: basic
                     match: thanks
+            tanyaLagi:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: lainLain
+                    match: ada
+            tidakTanyaLagi:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: lainLain
+                    match: tidak
+            samasama:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: sama sama
         states:
             init:
                 transitions:
@@ -1350,12 +1114,20 @@ flows:
                         condition: intent=="orgasm"
                     consent:
                         condition: intent=="consent"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
-                    pengertianSeks:
-                        fallback: true
-                action: pengertianJenisKelamin
+                action:
+                    -
+                        name: pengertianJenisKelamin
+                    -
+                        name: tanyaLagi
+                    -
+                        name: ketik
             perbedaanSeks:
                 transitions:
                     jenisSeks:
@@ -1368,12 +1140,20 @@ flows:
                         condition: intent=="hubunganSeksual"
                     consent:
                         condition: intent=="consent"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
-                    perbedaanSeks:
-                        fallback: true
-                action: perbedaanSeks
+                action:
+                    -
+                        name: perbedaanSeks
+                    -
+                        name: tanyaLagi
+                    -
+                        name: ketik
             jenisSeks:
                 transitions:
                     yangMenentukanSeks:
@@ -1386,12 +1166,20 @@ flows:
                         condition: intent=="hubunganSeksual"
                     consent:
                         condition: intent=="consent"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
-                    jenisSeks:
-                        fallback: true
-                action: jenisSeks
+                action:
+                    -
+                        name: jenisSeks
+                    -
+                        name: tanyaLagi
+                    -
+                        name: ketik
                 initial: false
             yangMenentukanSeks:
                 transitions:
@@ -1403,12 +1191,20 @@ flows:
                         condition: intent=="consent"
                     jenisSeks:
                         condition: intent=="jenisSeks"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
-                    yangMenentukanSeks:
-                        fallback: true
-                action: hormon
+                action:
+                    -
+                        name: hormon
+                    -
+                        name: tanyaLagi
+                    -
+                        name: ketik
             orgasm:
                 transitions:
                     pengertianSeks:
@@ -1421,12 +1217,20 @@ flows:
                         condition: intent=="consent"
                     jenisSeks:
                         condition: intent=="jenisSeks"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
-                    orgasm:
-                        fallback: true
-                action: orgasm
+                action:
+                    -
+                        name: orgasm
+                    -
+                        name: tanyaLagi
+                    -
+                        name: ketik
                 initial: false
             hubunganSeksual:
                 transitions:
@@ -1440,12 +1244,20 @@ flows:
                         condition: intent=="consent"
                     yangMenentukanSeks:
                         condition: intent="peranHormon"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
-                    hubunganSeksual:
-                        fallback: true
-                action: pengertianHubSeks
+                action:
+                    -
+                        name: pengertianHubSeks
+                    -
+                        name: tanyaLagi
+                    -
+                        name: ketik
             consent:
                 transitions:
                     pengertianSeks:
@@ -1458,12 +1270,20 @@ flows:
                         condition: intent="peranHormon"
                     orgasm:
                         condition: intent=="orgasm"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
                     sama2:
                         fallback: true
                         condition: intent=="sama2"
-                    consent:
-                        fallback: true
-                action: penjelasanConsent
+                action:
+                    -
+                        name: penjelasanConsent
+                    -
+                        name: tanyaLagi
+                    -
+                        name: ketik
             sama2:
                 transitions:
                     sama2:
@@ -1473,54 +1293,65 @@ flows:
                         name: sama2
                     -
                         name: tanyaLagi
-                end: true
+                end: false
+            pertanyaanApaItu:
+                transitions: {}
+                action: apaItu
+            terimaKasih:
+                transitions:
+                    haloLagi:
+                        condition: intent=="samasama"
+                action: terimaKasih
+            haloLagi:
+                transitions: {}
+                action: haloLagi
         actions:
             pengertianJenisKelamin:
                 type: text
                 options:
-                    text: Sex adalah karakteristik biologis yang membedakan antara laki-laki dengan perempuan.
+                    text: Sex adalah karakteristik biologis yang membedakan antara pria dengan perempuan.
             perbedaanSeks:
                 type: text
                 options:
                     text: >-
-                        Karakteristik biologis yang membedakan laki-laki dengan perempuan dipandang dari anatomis seperti adanya penis dan vagina,
-                        gonad (sperma/ovary), kromosom, dan hormon
+                        Karakteristik biologis yang membedakan pria dengan perempuan dipandang dari anatomis seperti adanya penis dan vagina, gonad
+                        (sperma/ovary), kromosom, dan hormon
             jenisSeks:
                 type: text
                 options:
                     text: >-
                         Sex yang dibahas disini lebih menekan pada jenis kelamin sehingga jika ditinjau dari prespektif anatomis maka type sex hanya
-                        2, perempuan atau laki laki. Untuk keadaan seperti pada negara tertenu dimana terdapat banyak sekali cabang dari sex, itu 
+                        2, perempuan atau pria. Untuk keadaan seperti pada negara tertenu dimana terdapat banyak sekali cabang dari sex, itu 
                         dipandang dari sisi selain medis yakni sisi sosial.
             hormon:
                 type: text
                 options:
                     text: >-
                         Salah satu yang menentukan sex yaitu hormon. Hormon itu penting banget untuk menentukan sex kita karena banyak sekali
-                        karakter- karakter biologis yang muncul karena adanya hormon misal pada perempuan ditemui adanya esterogen dimana estrogen ini
-                        bertanggung jawab untuk membesarkan payudara pada perempuan. Pada laki-laki yang paling umum adalah testosteron yang berperan
-                        dalam perkembangan penis dan testis.
+                        karakter-karakter biologis yang muncul karena adanya hormon misal pada perempuan ditemui adanya esterogen dimana estrogen ini
+                        bertanggung jawab untuk membesarkan payudara pada perempuan. Pada pria yang paling umum adalah testosteron yang berperan dalam
+                        perkembangan penis dan testis.
             orgasm:
                 type: text
                 options:
                     text: >-
                         Orgasme merupakan titik tertinggi dimana seorang individu merasa puas/senang. Hal ini biasanya terjadi ketika ejakulasi pada
                         pria (keluarnya semen) dan pengeluaran cairan vagina yang involunter dari perempuan yang disebut climax terjadi di waktu yang
-                        sama. Orgasme umumnya terjadi pada laki-laki yakni 1 kali namun pada perempuan sering dijumpai multiple orgasme atau lebih
-                        dari 1. Pada kondisi tertentu, perempuan tidak bisa mengalami orgasme sama sekali. Hal ini terjadi berkaitan dengan emosional
+                        sama. Orgasme umumnya terjadi pada pria yakni 1 kali namun pada perempuan sering dijumpai multiple orgasme atau lebih dari 1.
+                        Pada kondisi tertentu, perempuan tidak bisa mengalami orgasme sama sekali. Hal ini terjadi berkaitan dengan emosional
                         perempuan. Ada peristiwa fake orgasme (orgasme palsu) pada perempuan dimana tidak ada kontraksi otot pada dasar panggul.
             pengertianHubSeks:
                 type: text
                 options:
                     text: >-
-                        Penyatuan sexual antara organ reproduksi laki-laki yakni penis dan organ reproduksi perempuan yakni vagina. Pada bahasa medis
+                        Penyatuan sexual antara organ reproduksi pria yakni penis dan organ reproduksi perempuan yakni vagina. Pada bahasa medis
                         sering juga disebut coitus namun ada beberapa referensi juga yang menyebutkan bahwa hubungan sexual atau sexual intercourse
                         ini tidak harus memasukan penis ke vagina namun bisa juga memasukan penis ke anus atau mulut.
             penjelasanConsent:
                 type: text
                 options:
                     text: >-
-                        Konsent adalah suatu kesepakatan antara 2 pihak baik dari sisi laki-laki ataupun sisi perempuan sehingga tidak ada pemaksaan.
+                        Konsent adalah suatu kesepakatan antara 2 pihak baik dari sisi pria ataupun sisi perempuan sehingga tidak ada pemaksaan.
                         Kesepakatan ini dapat sangat mempengaruhi emosi dari salah satunya terutama pada perempuan jika tidak berkenan. Konsent ini
                         juga dapat menetukan apakah memang itu hubungan yang saling diinginkan atau pemerkosaan. Dimana pemerkosaan ini dapat enjadi
                         momok tersendiri bagi korbannya.
@@ -1540,13 +1371,1016 @@ flows:
                         - Ada yang mau ditanyain ke See lagi nggak?
                         - Ada yang mau ditanyakan lagi nggak?
                         - Mungkin ada yang bisa See bantu lagi?
+            ketik:
+                type: text
+                options:
+                    text: Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.
+            apaItu:
+                type: text
+                options:
+                    text:
+                        - Kalo boleh tau apa itu?
+                        - 'Kalau boleh See tau, apakah itu?'
+                        - Apakah itu kalau See boleh tau?
+                        - Coba jelaskan ke See apa itu?
+                        - Apakah itu?
+            terimaKasih:
+                type: text
+                options:
+                    text:
+                        - Terima kasih telah bertanya kepada See.
+                        - Terima kasih
+                        - Baik kalau begitu. Terima kasih telah mengobrol denganku!
+                        - 'Sepertinya cukup begitu, yah. Terima kasih telah menghubungiku!'
+            haloLagi:
+                type: text
+                options:
+                    text:
+                        - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See pahami.
+                        - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See pahami.
+        methods: {}
+    organReproduksi:
+        active: true
+        volatile: false
+        intents:
+            ereksi:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: ereksi
+            penyebabereksi:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: penyebab ereksi
+            jenisOrgan:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: jenis pria
+            penis:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: penis
+            testis:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: testis
+            skrotum:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: skrotum
+            kelenjarProstat:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: kelenjar prostat
+            sama2:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: thanks
+            vagina:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: vagina
+            cervix:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: cervix
+            uterus:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: uterus
+            ovum:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: organreproduksi
+                    match: ovum
+            tidakTanyaLagi:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: lainLain
+                    match: tidak
+            tanyaLagi:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: lainLain
+                    match: ada
+            samasama:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: sama sama
+            caraMerawat:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: lanjut
+                    match: lanjut
+        states:
+            init:
+                transitions:
+                    ereksi:
+                        condition: intent=="ereksi"
+                    jenis:
+                        condition: intent=="jenisOrgan"
+                    penis:
+                        condition: intent=="penis"
+                    testis:
+                        condition: intent=="testis"
+                    skrotum:
+                        condition: intent=="skrotum"
+                    kelenjarProstat:
+                        condition: intent=="kelenjarProstat"
+                    vagina:
+                        condition: intent=="vagina"
+                    uterus:
+                        condition: intent=="uterus"
+                    cervix:
+                        condition: intent=="cervix"
+                    ovum:
+                        condition: intent=="ovum"
+                initial: true
+            ereksi:
+                transitions:
+                    penyebab_ereksi:
+                        condition: intent="penyebabereksi"
+                    penis:
+                        condition: intent=="penis"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                    ereksi:
+                        fallback: true
+                action: ereksi
+            penyebab_ereksi:
+                transitions:
+                    penis:
+                        condition: intent=="penis"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                action:
+                    -
+                        name: penyebab_ereksi
+                    -
+                        name: simpulan
+                    -
+                        name: tanyaLagi
+                    -
+                        name: ketik
+            jenis:
+                transitions:
+                    penis:
+                        condition: intent=="penis"
+                    testis:
+                        condition: intent=="testis"
+                    skrotum:
+                        condition: intent=="skrotum"
+                    kelenjarProstat:
+                        condition: intent=="kelenjarProstat"
+                    vagina:
+                        condition: intent=="vagina"
+                    uterus:
+                        condition: intent=="uterus"
+                    cervix:
+                        condition: intent=="cervix"
+                    ovum:
+                        condition: intent=="ovum"
+                    caraMerawat:
+                        condition: intent=="caraMerawat"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                action:
+                    -
+                        name: jenis
+                    -
+                        name: lanjut
+            penis:
+                transitions:
+                    ereksi:
+                        condition: intent=="ereksi"
+                    penyebab_ereksi:
+                        condition: intent="penyebabereksi"
+                    testis:
+                        condition: intent=="testis"
+                    skrotum:
+                        condition: intent=="skrotum"
+                    kelenjarProstat:
+                        condition: intent=="kelenjarProstat"
+                    vagina:
+                        condition: intent=="vagina"
+                    uterus:
+                        condition: intent=="uterus"
+                    cervix:
+                        condition: intent=="cervix"
+                    ovum:
+                        condition: intent=="ovum"
+                    caraMerawat:
+                        condition: intent=="caraMerawat"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                action:
+                    -
+                        name: penjelasanPenis
+                    -
+                        name: lanjutMerawat
+            testis:
+                transitions:
+                    penis:
+                        condition: intent=="penis"
+                    skrotum:
+                        condition: intent=="skrotum"
+                    kelenjarProstat:
+                        condition: intent=="kelenjarProstat"
+                    vagina:
+                        condition: intent=="vagina"
+                    uterus:
+                        condition: intent=="uterus"
+                    cervix:
+                        condition: intent=="cervix"
+                    ovum:
+                        condition: intent=="ovum"
+                    caraMerawat:
+                        condition: intent=="caraMerawat"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                action:
+                    -
+                        name: penjelasanTestis
+                    -
+                        name: lanjutMerawat
+            skrotum:
+                transitions:
+                    penis:
+                        condition: intent=="penis"
+                    testis:
+                        condition: intent=="testis"
+                    kelenjarProstat:
+                        condition: intent=="kelenjarProstat"
+                    vagina:
+                        condition: intent=="vagina"
+                    uterus:
+                        condition: intent=="uterus"
+                    cervix:
+                        condition: intent=="cervix"
+                    ovum:
+                        condition: intent=="ovum"
+                    caraMerawat:
+                        condition: intent=="caraMerawat"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                action:
+                    -
+                        name: penjelasnSkrotum
+                    -
+                        name: lanjutMerawat
+            kelenjarProstat:
+                transitions:
+                    penis:
+                        condition: intent=="penis"
+                    testis:
+                        condition: intent=="testis"
+                    skrotum:
+                        condition: intent=="skrotum"
+                    vagina:
+                        condition: intent=="vagina"
+                    uterus:
+                        condition: intent=="uterus"
+                    cervix:
+                        condition: intent=="cervix"
+                    ovum:
+                        condition: intent=="ovum"
+                    caraMerawat:
+                        condition: intent=="caraMerawat"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    sama2:
+                        fallback: true
+                        condition: intent=="sama2"
+                action:
+                    -
+                        name: penjelasanKelenjarProstat
+                    -
+                        name: lanjutMerawat
+            sama2:
+                transitions:
+                    sama2:
+                        fallback: true
+                action:
+                    -
+                        name: thanks
+                    -
+                        name: tanyaLagi
+                end: false
+            vagina:
+                transitions:
+                    uterus:
+                        condition: intent=="uterus"
+                    cervix:
+                        condition: intent=="cervix"
+                    sama2:
+                        condition: intent=="thanks"
+                    ovum:
+                        condition: intent=="ovum"
+                    kelenjarProstat:
+                        condition: intent=="kelenjarProstat"
+                    skrotum:
+                        condition: intent=="skrotum"
+                    testis:
+                        condition: intent=="testis"
+                    penis:
+                        condition: intent=="penis"
+                    caraMerawat:
+                        condition: intent=="caraMerawat"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                action:
+                    -
+                        name: penjelasanVagina
+                    -
+                        name: lanjutMerawat
+                initial: false
+            uterus:
+                transitions:
+                    sama2:
+                        condition: intent=="thanks"
+                    cervix:
+                        condition: intent=="cervix"
+                    ovum:
+                        condition: intent=="ovum"
+                    vagina:
+                        condition: intent=="vagina"
+                    kelenjarProstat:
+                        condition: intent=="kelenjarProstat"
+                    skrotum:
+                        condition: intent=="skrotum"
+                    testis:
+                        condition: intent=="testis"
+                    penis:
+                        condition: intent=="penis"
+                    caraMerawat:
+                        condition: intent=="caraMerawat"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                action:
+                    -
+                        name: uterus
+                    -
+                        name: lanjutMerawat
+            ovum:
+                transitions:
+                    sama2:
+                        condition: intent=="thanks"
+                    cervix:
+                        condition: intent=="cervix"
+                    uterus:
+                        condition: intent=="uterus"
+                    vagina:
+                        condition: intent=="vagina"
+                    kelenjarProstat:
+                        condition: intent=="kelenjarProstat"
+                    skrotum:
+                        condition: intent=="skrotum"
+                    testis:
+                        condition: intent=="testis"
+                    penis:
+                        condition: intent=="penis"
+                    caraMerawat:
+                        condition: intent=="caraMerawat"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                action:
+                    -
+                        name: penjelasanOvum
+                    -
+                        name: lanjutMerawat
+            cervix:
+                transitions:
+                    sama2:
+                        condition: intent=="thanks"
+                    ovum:
+                        condition: intent=="ovum"
+                    uterus:
+                        condition: intent=="uterus"
+                    vagina:
+                        condition: intent=="vagina"
+                    kelenjarProstat:
+                        condition: intent=="kelenjarProstat"
+                    skrotum:
+                        condition: intent=="skrotum"
+                    testis:
+                        condition: intent=="testis"
+                    penis:
+                        condition: intent=="penis"
+                    caraMerawat:
+                        condition: intent=="caraMerawat"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                action:
+                    -
+                        name: penjelasanCervix
+                    -
+                        name: lanjutMerawat
+            pertanyaanApaItu:
+                transitions: {}
+                action: apaItu
+            caraMerawat:
+                transitions:
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
+                action: caraMerawat
+            terimaKasih:
+                transitions:
+                    haloLagi:
+                        condition: intent=="samasama"
+                action: terimaKasih
+            haloLagi:
+                transitions: {}
+                action: haloLagi
+        actions:
+            ereksi:
+                type: text
+                options:
+                    text: Ereksi adalah kondisi penis menjadi tegang dan terangkat.
+            penyebab_ereksi:
+                type: text
+                options:
+                    text: 'Ereksi bisa disebabkan oleh berbagai macam stimul seperti psikologis, rangsang sentuh, bau, dan visual stimulus'
+            simpulan:
+                type: text
+                options:
+                    text: Ereksi merupakan hal wajar yang terjadi pada pria jadi tidak perlu cemas jika itu terjadi.
+            jenis:
+                type: text
+                options:
+                    text: >-
+                        Terdapat beberapa organ reproduksi yang penting bagi pria seperti penis, scrotum, testis, dan kelenjar prostat,. Untuk wanita
+                        organ reproduksi yang penting seperti vagina, ovarium, rahim, cervix (mulut rahim), tuba uterina, clitoris
+            penjelasanPenis:
+                type: text
+                options:
+                    text: >-
+                        Penis merupakan organ kopulasi pada pria jadi ini nih yang bertanggung jawab untuk mentransfer sperma agar bisa masuk ke tubuh
+                        betina. Nah, proses ini dapat terjadi ketika penis pada kondisi ereksi, tapi ada juga loh yang tidak perlu ereksi tapi
+                        spermanya keluar. Contoh gampangnya adalah ketika pria mimpi basah.  Selain itu kalian tau tidak? kalo penis itu masuk salah
+                        satu organ erotica yang paling sensitif pada pria, sehingga dengan kena rangsang sedikit saja dorongan seksual pada pria dapat
+                        langsung naik.
+            penjelasanTestis:
+                type: text
+                options:
+                    text: >-
+                        Testis berfungsi untuk pembentukan sperma. Tapi kalian juga harus tau kalo testis itu penting banget dalam pembentukan
+                        hormon-hormon steroid pada pria.
+            penjelasnSkrotum:
+                type: text
+                options:
+                    text: >-
+                        Gini, skrotum itu kalo diperhatiin kan biasanya dia menggantung di tubuh pria jadi seperti berada di luar tubuh cowok. Nah,
+                        ini itu ada fungsinya yaitu agar menjaga suhu testis agar dibawah suhu tubuh karena pada dasarnya sperma itu dibentuk pada
+                        suhu yang relatif lebih rendah daripada suhu tubuh normalnya.
+            penjelasanKelenjarProstat:
+                type: text
+                options:
+                    text: >-
+                        Kelenjar prostat berperan dalam pembentukan 13-33% dari semen (cairan yang dikeluarkan ketika ejakulasi). Cairan dari prostat
+                        ini mengandung nutrisi yang berguna sebagai proteksi pada sperma agar bisa bergerak efisien di dalam saluran reproduksi
+                        perempuan. Ketika pada pria penis mengalami ereksi maka akan membesar sehingga menyumbat jalur kencing supaya ketika akan
+                        ejakulasi yang keluar hanya semen bukan urin.
+            thanks:
+                type: text
+                options:
+                    text: 'Sama-sama, See senang bisa membantu kamu'
+            tanyaLagi:
+                type: text
+                options:
+                    text:
+                        - Ada yang bisa aku bantu lagi?
+                        - 'Baik, apakah sudah cukup?'
+                        - Ada yang bisa See jawab lagi?
+                        - Ada yang mau kamu tanyain lagi kepada See?
+                        - Ada yang ingin ditanyain lagi tidak?
+                        - Ada yang mau ditanyain ke See lagi nggak?
+                        - Ada yang mau ditanyakan lagi nggak?
+                        - Mungkin ada yang bisa See bantu lagi?
+            lanjut:
+                type: text
+                options:
+                    text: >-
+                        Ketik nama organ reproduksi untuk mengtahui organ reproduksi tersebut secara detail. Ketik "tidak" apabila tidak ingin
+                        mengetahui secara lebih detail
+            penjelasanVagina:
+                type: text
+                options:
+                    text: >-
+                        sejatinya vagina merupakan saluran yang digunakan untuk kopulasi yang dimana jika terjadi pelepasan sperma di dalam tubuh
+                        perempuan akan bertumpah di sini. Ketika melahirkan pun bayi akan keluar melewati vagina. Selain itu akan terletak hymen atau
+                        yang biasa dikenal dengan selaput darah pada wanita. Lokasi dari hymen itu sekitar 2 cm dari bukaan vaginanya.
+            uterus:
+                type: text
+                options:
+                    text: >-
+                        Uterus merupakan istilah medis untuk rahim. Perlu diketahui bahwa rahim memiliki 3 lapisan dinding. Lapisan pertama dari dalam
+                        adalah endometrium yang berfungsi sebagai tempat menempelnya ovum ketika dibuahi. Selain itu endometrium juga akan meluruh
+                        kita menstruasi. Lalu lapisan kedua adalah myometrium yang berfungsi sebagai lapisan otot pada rahim, dan terakhir adalah
+                        perimetrium.
+            penjelasanOvum:
+                type: text
+                options:
+                    text: >-
+                        Ovum adalah gamat pada wanita yang mengandung haploid chromosom untuk perannya ovum akan memastikan sel kromosom tersebut
+                        berada dalam lingkungan yang tepat sehingga memungkinkan terjadinya pembuahan oleh sel sperma. Nah, ketika dia nanti fusi
+                        dengan sperma dia akan berkembang menjadi bayii di rahim.
+            penjelasanCervix:
+                type: text
+                options:
+                    text: >-
+                        Cervix dikenal dengan leher rahim dimana leher rahim ini membatasi antara rahim dan vagina. Cervix memiliki fungsi untuk dapat
+                        memproduksi mukus atau lendir yang dimana mukus dan lendir ini diperlukan ketika terjadi kopulasi. Selain itu, cervix juga
+                        dapat menutup ketika kehamilan agar janin tetap didalam rahim dan cervix dapat membuka ketika proses persalinan selain itu
+                        cervix juga mengeluarkan lendir yang mampu membantu sperma untuk masuk kedalam rahim.
+            apaItu:
+                type: text
+                options:
+                    text:
+                        - Kalo boleh tau apa itu?
+                        - 'Kalau boleh See tau, apakah itu?'
+                        - Apakah itu kalau See boleh tau?
+                        - Coba jelaskan ke See apa itu?
+                        - Apakah itu?
+            ketik:
+                type: text
+                options:
+                    text: Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.
+            caraMerawat:
+                type: text
+                options:
+                    text: >-
+                        diusahakan untuk cebok setiap kali kalian pipis ya, karena ini penting untuk menjaga kebersihan, urin itu mengandung bakteri
+                        bakteri yang kalu ada sisanya bisa membuat bau pada kemaluan. pastikan kalian menjaga celana dalam agar tetap kering karena
+                        celana dalan yang lembab bs membuat pertumbuhan jamur, nah ini bisa menyebabkan keputihan.
+            lanjutMerawat:
+                type: text
+                options:
+                    text: Ketik "Lanjut" untuk mengetahui bagaimana cara merawat organ reproduksi. Ketik "Tidak" jika tidak ingin mengetahuinya.
+            terimaKasih:
+                type: text
+                options:
+                    text:
+                        - Terima kasih telah bertanya kepada See!
+                        - Terima kasih atas keingintahuanmu!
+            haloLagi:
+                type: text
+                options:
+                    text:
+                        - Terima kasih telah bertanya kepada See.
+                        - Terima kasih
+                        - Baik kalau begitu. Terima kasih telah mengobrol denganku!
+                        - 'Sepertinya cukup begitu, yah. Terima kasih telah menghubungiku!'
+        methods: {}
+    penyakitMenularSeksual:
+        active: true
+        volatile: false
+        intents:
+            pengertianPenyakit:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: penyakitMenularSeksual
+                    match: penyakit menular seksual
+            hivaids:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: penyakitMenularSeksual
+                    match: HIV AIDS
+            gonorrhea:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: penyakitMenularSeksual
+                    match: gonorrhea
+            sifilis:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: penyakitMenularSeksual
+                    match: sifilis
+            keputihan:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: penyakitMenularSeksual
+                    match: keputihan
+            semua:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    nlu: penyakitMenularSeksual
+                    match: semua penyakit
+            pencegahan:
+                type: text
+                initial: true
+                fallback: false
+                classifier:
+                    -
+                        nlu: penyakitMenularSeksual
+                        match: pencegahan
+                    -
+                        nlu: lanjut
+                        match: lanjut
+            'yes':
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: 'yes'
+            'no':
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: 'no'
+            tidakTanyaLagi:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: lainLain
+                    match: tidak
+            tanyaLagi:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: lainLain
+                    match: ada
+            samasama:
+                type: text
+                initial: false
+                fallback: false
+                classifier:
+                    nlu: basic
+                    match: sama sama
+        states:
+            init:
+                transitions:
+                    pengertian:
+                        condition: intent="pengertianPenyakit"
+                    hivaids:
+                        condition: intent=="hivaids"
+                    gonorrhea:
+                        condition: intent=="gonorrhea"
+                    sifilis:
+                        condition: intent=="sifilis"
+                    keputihan:
+                        condition: intent=="keputihan"
+                    semua:
+                        condition: intent=="semua"
+                    pencegahan:
+                        fallback: true
+                        condition: intent=="pencegahan"
+                initial: true
+            pengertian:
+                transitions:
+                    hivaids:
+                        condition: intent="hivaids"
+                    gonorrhea:
+                        condition: intent=="gonorrhea"
+                    sifilis:
+                        condition: intent=="sifilis"
+                    keputihan:
+                        condition: intent=="keputihan"
+                    semua:
+                        fallback: true
+                        condition: intent=="semua"
+                    pencegahan:
+                        fallback: true
+                        condition: intent=="pencegahan"
+                    pengertian:
+                        fallback: true
+                action:
+                    -
+                        name: pengertian
+                    -
+                        name: jenis
+                    -
+                        name: tanya
+                transit:
+                    context.answer: intent
+            hivaids:
+                transitions:
+                    gonorrhea:
+                        condition: intent=="gonorrhea"
+                    sifilis:
+                        condition: intent=="sifilis"
+                    keputihan:
+                        condition: intent=="keputihan"
+                    semua:
+                        condition: intent=="semua"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pencegahan:
+                        fallback: true
+                        condition: intent=="pencegahan"
+                action:
+                    -
+                        name: penjelasan
+                    -
+                        name: ketikCegah
+            gonorrhea:
+                transitions:
+                    hivaids:
+                        condition: intent=="hivaids"
+                    sifilis:
+                        condition: intent=="sifilis"
+                    keputihan:
+                        condition: intent=="keputihan"
+                    semua:
+                        condition: intent=="semua"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pencegahan:
+                        fallback: true
+                        condition: intent=="pencegahan"
+                action:
+                    -
+                        name: penjelasangonorrhea
+                    -
+                        name: ketikCegah
+            sifilis:
+                transitions:
+                    gonorrhea:
+                        condition: intent=="gonorrhea"
+                    hivaids:
+                        condition: intent=="hivaids"
+                    keputihan:
+                        condition: intent=="keputihan"
+                    semua:
+                        condition: intent=="semua"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pencegahan:
+                        fallback: true
+                        condition: intent=="pencegahan"
+                action:
+                    -
+                        name: penjelasanSifilis
+                    -
+                        name: ketikCegah
+            keputihan:
+                transitions:
+                    gonorrhea:
+                        condition: intent=="gonorrhea"
+                    hivaids:
+                        condition: intent=="hivaids"
+                    sifilis:
+                        condition: intent=="sifilis"
+                    semua:
+                        condition: intent=="semua"
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pencegahan:
+                        fallback: true
+                        condition: intent=="pencegahan"
+                action:
+                    -
+                        name: penjelasanKeputihan
+                    -
+                        name: ketikCegah
+            semua:
+                transitions:
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pencegahan:
+                        fallback: true
+                        condition: intent=="pencegahan"
+                action:
+                    -
+                        name: penjelasan
+                        condition: intent=="semua"
+                    -
+                        name: penjelasangonorrhea
+                        condition: intent=="semua"
+                    -
+                        name: penjelasanSifilis
+                        condition: intent=="semua"
+                    -
+                        name: penjelasanKeputihan
+                        condition: intent=="semua"
+                    -
+                        name: penjelasan
+                        condition: intent=="yes"
+                    -
+                        name: penjelasangonorrhea
+                        condition: intent=="yes"
+                    -
+                        name: penjelasanSifilis
+                        condition: intent=="yes"
+                    -
+                        name: penjelasanKeputihan
+                        condition: intent=="yes"
+            pencegahan:
+                transitions:
+                    terimaKasih:
+                        condition: intent=="tidakTanyaLagi"
+                    pertanyaanApaItu:
+                        condition: intent=="tanyaLagi"
+                action:
+                    -
+                        name: pencegahan
+                    -
+                        name: tanyaAkhir
+                    -
+                        name: ketik
+                end: false
+            terimaKasih:
+                transitions:
+                    haloLagi:
+                        condition: intent=="samasama"
+                action:
+                    -
+                        name: pesanAkhir
+                    -
+                        name: terimaKasih
+            haloLagi:
+                transitions: {}
+                action: haloLagi
+            pertanyaanApaItu:
+                transitions: {}
+                action: apaitu
+        actions:
+            pengertian:
+                type: text
+                options:
+                    text: Penyakit menular seksual (PMS) adalah infeksi yang ditularkan dari satu orang ke orang lain melalui kontak seksual.
+            jenis:
+                type: text
+                options:
+                    text: 'Ada beberapa jenis PMS diantaranya, HIV AIDS, Sifilis, Gonorrhea, Kandidiasis Vaginalis atau keputihan'
+            tanya:
+                type: text
+                options:
+                    text: >-
+                        Kamu pengen tau lebih jauh tentang mengenai penyakit menular seksual ini? Bisa salah satu atau semuanya, kok! Ketik aja nama
+                        penyakit menular seksualnya.
+            penjelasan:
+                type: text
+                options:
+                    text: >-
+                        AIDS memiliki kepanjangan dari Acquired Immuno Deficiency Syndrome atau Acquired Immune Deficiency Syndrome. Penyakit AIDS
+                        disebabkan oleh virus Human Immunodeficiency Virus (HIV) yang menyerang sistem kekebalan tubuh manusia sehingga penderita AIDS
+                        menjadi rentan terhadap berbagai infeksi.
+            penjelasangonorrhea:
+                type: text
+                options:
+                    text: >-
+                        Penyakit ini disebabkan oleh Neisseria gonorrhoeae. Masa inkubasi pada pria ialah selama 2-5 hari, sedangkan pada perempuan
+                        sulit diketahui  karena sering mengalami asimtomatik. Gejala klinis pada pria terjadi di tubuh uretra yakni bersifat kental,
+                        putih kekuningan atau kuning,  kadang-kadang mukoid atau mukopurulen; eritema dan atau edema pada meatus. Sedangkan pada
+                        perempuan seringkali asimtomatik. Apabila ada dua tubuh serviks purulen atau mukopurulen, kadang kadang disertai eksudat
+                        purulen dari uretra atau kelenjar Bartholini. Pada perempuan biasanya datang berobat setelah ada komplikasi antara lain
+                        servisitis, bartilinitis, dan nyeri pada panggul bagian bawah.
+            penjelasanSifilis:
+                type: text
+                options:
+                    text: >-
+                        Sifilis adalah penyakit menular yang disebabkan oleh bakteri Treponema palladium. Infeksi terjadi pada organ kelamin bagian
+                        luar. Sifilis dapat berkembang ke tahap sekunder dan tersier yang sulit diamati. Sifilis sekunder menular sedangkan yang
+                        tersier tidak menular. Akan tetapi sifilis tersier menimbulkan dapat menimbulkan kerusakan pada otak, jantung, pembuluh darah,
+                        hati.
+            penjelasanKeputihan:
+                type: text
+                options:
+                    text: >-
+                        Keputihan atau kandidiasis adalah infeksi dengan berbagai manifestasi klinis yang disebabkan oleh candida, candida albicans
+                        dan ragi (yeast) lain (terkadang C.glabarata) dari genus candida. Gejala penyakit ini adalah rasa panas dan iritasi pada
+                        vulva, selain itu juga sekret vagina yang berlebihan berwarna putih susu. Pada dinding vagina terdapat gumpalan seperti keju.
+            pencegahan:
+                type: text
+                options:
+                    text: >-
+                        Menjaga kebersihan alat kelamin, Menggunakan pakaian dalam yang dapat menyerap keringat, Mengganti pakaian dalam minimal 2
+                        kali sehari, Menjaga agar alat kelamin tetap kering, Tidak menggunakan pakaian yang ketat, Menahan dorongan seksual
+                        (abstinence), Tidak berganti-ganti pasangan seksual, Vaksinasi (Hepatitis Bdan HPV).
+            tanyaAkhir:
+                type: text
+                options:
+                    text:
+                        - Ada yang bisa aku bantu lagi?
+                        - 'Baik, apakah sudah cukup?'
+                        - Ada yang bisa See jawab lagi?
+                        - Ada yang mau kamu tanyain lagi kepada See?
+                        - Ada yang ingin ditanyain lagi tidak?
+                        - Ada yang mau ditanyain ke See lagi nggak?
+                        - Ada yang mau ditanyakan lagi nggak?
+                        - Mungkin ada yang bisa See bantu lagi?
+            pesanAkhir:
+                type: text
+                options:
+                    text: 'Tetap jaga kesehatan, ya. Agar terhindar dari penyakit menular seksual.'
+            ketikCegah:
+                type: text
+                options:
+                    text: Ketik "Lanjut" untuk mengetahui cara pencegahannya. Ketik "Tidak" jika tidak ingin mengetahui cara pencegahannya
+            terimaKasih:
+                type: text
+                options:
+                    text:
+                        - Terima kasih telah bertanya kepada See.
+                        - Terima kasih
+                        - Baik kalau begitu. Terima kasih telah mengobrol denganku!
+                        - 'Sepertinya cukup begitu, yah. Terima kasih telah menghubungiku!'
+            ketik:
+                type: text
+                options:
+                    text: Ketik "Ada" jika ada yang ingin ditanyakan lagi. Ketik "Tidak" jika tidak ada yang ingin ditanyakan.
+            haloLagi:
+                type: text
+                options:
+                    text:
+                        - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See pahami.
+                        - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See pahami.
+            apaitu:
+                type: text
+                options:
+                    text:
+                        - Kalo boleh tau apa itu?
+                        - 'Kalau boleh See tau, apakah itu?'
+                        - Apakah itu kalau See boleh tau?
+                        - Coba jelaskan ke See apa itu?
+                        - Apakah itu?
         methods: {}
 nlus:
     basic:
         type: nl
         options:
             nluId: 'futura:seeAi'
-            threshold: 0.7
+            threshold: 0.6
             asIntent: basic
             output: raw
     pubertas:
@@ -1590,5 +2424,67 @@ nlus:
             keywords:
                 materi:
                     - materi
+    lanjut:
+        type: keyword
+        options:
+            keywords:
+                lanjut:
+                    - lanjut
+    lainLain:
+        type: keyword
+        options:
+            keywords:
+                ada:
+                    - ada
+                    - iya ada
+                    - ada nih
+                    - ada nieh
+                    - ada neh
+                    - ada ni
+                    - ada ne
+                    - ada nie
+                tidakAda:
+                    - gada
+                    - tdk ada
+                    - ga ada
+                    - nggak ada
+                    - gda
+                    - enggak ada
+                    - ngga ada
+                    - tidak jadi
+                    - ga jadi
+                    - tdk jadi
+                    - tdk jd
+                    - ga jd
+                    - nggak jadi
+                    - enggak jadi
+                    - gak jadi
+                    - engga jadi
+                    - engga jd
+                    - tida ada
+                    - tidak jadi
+                    - tida ada
+                    - tida jadi
+                    - tidak ada
+                    - tidak
+                halo:
+                    - halo
+                    - hai
+                    - hey
+                    - hi
+                    - he
+                    - hei
+                    - hola
+                    - ola
+                    - alo
+                    - hello
+                    - helo
+                    - hay
+                    - tok tok
+                    - permisi
+                    - misi
+                    - samlekum
+                tidak:
+                    - tidak
 methods: {}
 config: {}

@@ -16,6 +16,7 @@ entities:
       - yang dialami
       - kapan puber
       - belum puber
+      - sudah puber
   organreproduksi:
     type: trait
     profile: default

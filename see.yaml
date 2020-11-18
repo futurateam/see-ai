@@ -26,9 +26,7 @@
                         - 'Kalau boleh See tau, apakah itu?'
                         - Apa yang membuatmu penasaran?
                         - Coba jelaskan ke See apa itu?
-                        - Silahkan bercerita kepada See.
                         - Apakah itu kalau See boleh tau?
-                        - 'Kalau See boleh tau, bagaimana ceritanya?'
             siapa:
                 type: text
                 options:
@@ -61,3 +59,17 @@
                         - 'Ketik "Halo" untuk mulai mengobrol dengan See'
                         - 'Ketik "Halo" untuk bertanya kepada See'
                         - 'Ketik "Halo" untuk berbincang dengan see'
+            terimaKasih:
+                type: text
+                options:
+                    text:
+                        - Terima kasih telah bertanya kepada See.
+                        - Terima kasih
+                        - Baik kalau begitu. Terima kasih telah mengobrol denganku!
+                        - Sepertinya cukup begitu, yah. Terima kasih telah menghubungiku!
+            haloLagi:
+                type: text
+                options:
+                    text:
+                        - Ketik "Halo" untuk memulai percakapan lagi denganku.
+                        - Ketik "Halo" untuk mengobrol kembali.
