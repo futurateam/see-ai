@@ -1,5 +1,5 @@
 name: seeAi
-tag: null
+tag: latest
 deleted_at: null
 desc: ''
 timezone: 7
@@ -931,10 +931,6 @@ flows:
                     -
                         name: penjelasanKontrasepsi
                     -
-                        name: whyKontrasepsi
-                    -
-                        name: alasanKontrasepsi
-                    -
                         name: tanyaLagi
             mengapaKontrasepsi:
                 transitions:
@@ -1043,14 +1039,6 @@ flows:
                     text:
                         - Ketik "Halo" untuk memulai percakapan lagi denganku. Ketik "Materi" untuk melihat apa saja yang See ketahui.
                         - Ketik "Halo" untuk mengobrol kembali. Ketik "Materi" untuk melihat apa saja yang See ketahui.
-            whyKontrasepsi:
-                type: text
-                options:
-                    text: Ada beberapa alasan kenapa alat kontrasepsi ini penting.
-            alasanKontrasepsi:
-                type: text
-                options:
-                    text: Beberapa orang memilih menggunakan alat kontrasepsi karena memiliki alasan tertentu.
         methods: {}
     seks:
         active: true
