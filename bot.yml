@@ -1,5 +1,5 @@
 name: null
-tag: latest
+tag: null
 deleted_at: null
 desc: ''
 timezone: 7
@@ -164,8 +164,8 @@ flows:
                         - Ada yang bisa See jawab lagi?
                         - Ada yang mau kamu tanyain lagi kepada See?
                         - Ada yang ingin ditanyain lagi tidak?
-                        - Ada yang mau ditanyain ke See lagi nggak?
-                        - Ada yang mau ditanyakan lagi nggak?
+                        - Ada yang mau ditanyain ke See lagi tidak?
+                        - Ada yang mau ditanyakan lagi tidak?
                         - Mungkin ada yang bisa See bantu lagi?
             ada:
                 type: text
@@ -743,8 +743,8 @@ flows:
                         - Ada yang bisa See jawab lagi?
                         - Ada yang mau kamu tanyain lagi kepada See?
                         - Ada yang ingin ditanyain lagi tidak?
-                        - Ada yang mau ditanyain ke See lagi nggak?
-                        - Ada yang mau ditanyakan lagi nggak?
+                        - Ada yang mau ditanyain ke See lagi tidak?
+                        - Ada yang mau ditanyakan lagi tidak?
                         - Mungkin ada yang bisa See bantu lagi?
             mimpiBasah:
                 type: text
@@ -797,7 +797,7 @@ flows:
                 type: text
                 options:
                     text: >-
-                        Itu merupakan salah satu tanda kamu memasuki masa pubertas. Jadi kamu nggak perlu khawatir, ya. Ada beberapa tanda tanda
+                        Itu merupakan salah satu tanda kamu memasuki masa pubertas. Jadi kamu tidak perlu khawatir, ya. Ada beberapa tanda tanda
                         pubertas yang lain juga, lho!
             waktuPuber:
                 type: text
@@ -1408,8 +1408,8 @@ flows:
                         - Ada yang bisa See jawab lagi?
                         - Ada yang mau kamu tanyain lagi kepada See?
                         - Ada yang ingin ditanyain lagi tidak?
-                        - Ada yang mau ditanyain ke See lagi nggak?
-                        - Ada yang mau ditanyakan lagi nggak?
+                        - Ada yang mau ditanyain ke See lagi tidak?
+                        - Ada yang mau ditanyakan lagi tidak?
                         - Mungkin ada yang bisa See bantu lagi?
             ketik:
                 type: text
@@ -1972,8 +1972,8 @@ flows:
                         - Ada yang bisa See jawab lagi?
                         - Ada yang mau kamu tanyain lagi kepada See?
                         - Ada yang ingin ditanyain lagi tidak?
-                        - Ada yang mau ditanyain ke See lagi nggak?
-                        - Ada yang mau ditanyakan lagi nggak?
+                        - Ada yang mau ditanyain ke See lagi tidak?
+                        - Ada yang mau ditanyakan lagi tidak?
                         - Mungkin ada yang bisa See bantu lagi?
             lanjut:
                 type: text
@@ -2397,8 +2397,8 @@ flows:
                         - Ada yang bisa See jawab lagi?
                         - Ada yang mau kamu tanyain lagi kepada See?
                         - Ada yang ingin ditanyain lagi tidak?
-                        - Ada yang mau ditanyain ke See lagi nggak?
-                        - Ada yang mau ditanyakan lagi nggak?
+                        - Ada yang mau ditanyain ke See lagi tidak?
+                        - Ada yang mau ditanyakan lagi tidak?
                         - Mungkin ada yang bisa See bantu lagi?
             pesanAkhir:
                 type: text
