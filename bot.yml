@@ -1,5 +1,5 @@
 name: seeAi
-tag: null
+tag: latest
 deleted_at: null
 desc: ''
 timezone: 7
@@ -103,8 +103,8 @@ flows:
                 initial: false
                 fallback: false
                 classifier:
-                    nlu: basic
-                    match: tidakBantu
+                    nlu: lainLain
+                    match: tidak
         states:
             init:
                 transitions:
@@ -114,28 +114,24 @@ flows:
                 initial: true
             sapa:
                 transitions:
-                    bantu:
+                    adaBantu:
+                        condition: intent=="adaBantu"
+                    tidakBantu:
                         fallback: true
                         condition: intent=="tidakBantu"
-                        mapping:
-                            context.jawaban: content
+                        mapping: {}
                 action:
                     -
                         name: sapa
                     -
                         name: ada
-            bantu:
-                transitions:
-                    bantu:
-                        fallback: true
-                action:
-                    -
-                        name: tidakBantu
-                        condition: context.jawaban=="tidak"
-                    -
-                        name: adaBantu
-                        condition: context.jawaban=="ada"
-                end: true
+            tidakBantu:
+                transitions: {}
+                action: tidakBantu
+                end: false
+            adaBantu:
+                transitions: {}
+                action: adaBantu
         actions:
             sapa:
                 type: text
@@ -510,17 +506,17 @@ flows:
                 initial: false
             yangKamuAlami:
                 transitions:
-                    mens:
-                        fallback: false
-                        condition: intent=="mens"
-                        mapping:
-                            context.mens: intent
                     mimpiBasah:
                         condition: intent=="mimpiBasah"
                         mapping:
                             context.mimpiBasah: intent
                     tandaPuberYangDialami:
                         condition: intent=="tandaPuberYangDialami"
+                    mens:
+                        fallback: false
+                        condition: intent=="mens"
+                        mapping:
+                            context.mens: intent
                     yangKamuAlami:
                         fallback: true
                 action: tanya
@@ -629,6 +625,9 @@ flows:
                 end: false
             tandaPuberYangDialami:
                 transitions:
+                    sama2:
+                        fallback: false
+                        condition: intent=="sama2"
                     tandaPuber:
                         condition: intent=="lanjut"
                     kapanPuber:
@@ -641,9 +640,6 @@ flows:
                         condition: intent=="mens"
                         mapping:
                             context.mens: intent
-                    sama2:
-                        fallback: false
-                        condition: intent=="sama2"
                     tandaPuberYangDialami:
                         fallback: true
                 action:
@@ -870,12 +866,13 @@ flows:
         states:
             init:
                 transitions:
-                    penjelasanKontrasepsi:
-                        condition: intent=="pengertianKontrasepsi"
                     mengapaKontrasepsi:
                         condition: intent=="mengapaKontrasepsi"
                     kontrasepsiPenting:
                         condition: intent=="kontrasepsiPenting"
+                    penjelasanKontrasepsi:
+                        fallback: false
+                        condition: intent=="pengertianKontrasepsi"
                 initial: true
             penjelasanKontrasepsi:
                 transitions:
@@ -1051,7 +1048,7 @@ flows:
                     match: hubungan seksual
             consent:
                 type: text
-                initial: false
+                initial: true
                 fallback: false
                 classifier:
                     nlu: seks
@@ -1845,7 +1842,11 @@ flows:
                         condition: intent=="tidakTanyaLagi"
                     pertanyaanApaItu:
                         condition: intent=="tanyaLagi"
-                action: caraMerawat
+                action:
+                    -
+                        name: caraMerawat
+                    -
+                        name: ketik
             terimaKasih:
                 transitions:
                     haloLagi:
@@ -2380,7 +2381,7 @@ nlus:
         type: nl
         options:
             nluId: 'futura:seeAi'
-            threshold: 0.6
+            threshold: 0.7
             asIntent: basic
             output: raw
     pubertas:
@@ -2443,30 +2444,6 @@ nlus:
                     - ada ni
                     - ada ne
                     - ada nie
-                tidakAda:
-                    - gada
-                    - tdk ada
-                    - ga ada
-                    - nggak ada
-                    - gda
-                    - enggak ada
-                    - ngga ada
-                    - tidak jadi
-                    - ga jadi
-                    - tdk jadi
-                    - tdk jd
-                    - ga jd
-                    - nggak jadi
-                    - enggak jadi
-                    - gak jadi
-                    - engga jadi
-                    - engga jd
-                    - tida ada
-                    - tidak jadi
-                    - tida ada
-                    - tida jadi
-                    - tidak ada
-                    - tidak
                 halo:
                     - halo
                     - hai
@@ -2486,5 +2463,7 @@ nlus:
                     - samlekum
                 tidak:
                     - tidak
+                    - Tidak
+                    - TIDAK
 methods: {}
 config: {}
