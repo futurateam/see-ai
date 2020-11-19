@@ -5,9 +5,9 @@
 
 ## Table of Content
 1. List of knowledge
-2. How SEE flows
+2. How See flows
 3. Platform & APIs
-3. How to use SEE
+3. How to use See
 3. Demo
 
 ### List of knowledge
@@ -44,7 +44,7 @@ Here's one of See flows called *pubertas* in a flowchart diagram
 1. Add our deployed chatbot into our LINE account here (https://line.me/R/ti/p/@027hrnkc)
 2. Type "halo" to start a conversation or ask anything you desired
 ![Demo](/img/demo-1.jpg)
-3. Type "materi" to see our list of knowledge
+3. Type "materi" to show See's list of knowledge
 ![Demo](/img/demo-2.jpg)
 
 ### **Video demo**
