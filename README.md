@@ -1,13 +1,13 @@
 # SEE.AI
-__SEE__ is stands for Sex Education for Eudaemonism. Eudaemonism means a state of being full of happiness. __SEE__ rethinks our society's bad justification about sex education becomes a fun one. SEE gives sex education awareness for the user without giving any out of context judgment, so the user does not need to be worried about being judged, just full of happiness of being awared.
+*See* is stands for Sex Education for Eudaemonism. Eudaemonism means a state of being full of happiness. *See* rethinks our society's bad justification about sex education becomes a fun one. SEE gives sex education awareness for the user without giving any out of context judgment, so the user does not need to be worried about being judged, just full of happiness of being awared.
 
-__SEE__ utilizes Kata.ai's technology such as Kata Flow and Kata NL under Kata Platform 3.0. Kata Flow allows __SEE__ to do the conversation automation while Kata NL does text analysis and content classification.
+*See* utilizes Kata.ai's technology such as Kata Flow and Kata NL under Kata Platform 3.0. Kata Flow allows *See* to do the conversation automation while Kata NL does text analysis and content classification.
 
 ## Table of Content
 1. List of knowledge
-2. How See flows
+2. How SEE flows
 3. Platform & APIs
-3. How to use See
+3. How to use SEE
 3. Demo
 
 ### List of knowledge
